@@ -58,6 +58,25 @@ struct LessonRunTests {
     #expect(dashboard.weeklySummary.practiceSeconds == 360)
   }
 
+  @Test("Öğreten yolculuğun son quizini ders denemesi olarak kaydeder")
+  func finishesTeachingJourneyWithQuizResult() {
+    let startedAt = Date(timeIntervalSince1970: 100)
+    let completedAt = Date(timeIntervalSince1970: 220)
+    var journey = LessonJourney(lesson: .introduction)
+    journey.startExample()
+    for _ in journey.lesson.trace {
+      journey.advanceExample()
+    }
+    journey.submitQuizAnswer("6")
+    let run = LessonRun(lessonID: "variables", startedAt: startedAt)
+
+    let result = run.finish(journey: journey, completedAt: completedAt)
+
+    #expect(result.attempt.predictionCorrect == true)
+    #expect(result.attempt.transferCorrect == true)
+    #expect(result.events.map(\.name).last == .lessonCompleted)
+  }
+
   private var utcCalendar: Calendar {
     var calendar = Calendar(identifier: .gregorian)
     calendar.timeZone = TimeZone(secondsFromGMT: 0)!

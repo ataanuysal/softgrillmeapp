@@ -155,7 +155,7 @@ private struct LessonMapView: View {
             .foregroundStyle(.white)
             .fixedSize(horizontal: false, vertical: true)
 
-          Text("Bugün 10 dakika ayır. Tahmin et, çalıştır ve değerlerin izini sür.")
+          Text("Önce konuyu öğren, örneği adım adım izle ve en son quizde uygula.")
             .adaptiveFont(size: 15, design: .rounded)
             .foregroundStyle(AppPalette.secondaryText)
             .fixedSize(horizontal: false, vertical: true)
@@ -242,12 +242,12 @@ private struct LessonMapView: View {
       )
       summaryMetric(
         value: percentage(dashboard.weeklySummary.predictionAccuracy),
-        label: "İlk tahmin",
+        label: "Quiz",
         icon: "scope"
       )
       summaryMetric(
         value: percentage(dashboard.weeklySummary.transferAccuracy),
-        label: "Aktarım",
+        label: "Yeni kod",
         icon: "arrow.triangle.branch"
       )
     }
@@ -469,7 +469,7 @@ private struct XRayLessonView: View {
   let lesson: XRayLesson
   let onComplete: (LessonRunResult) -> Void
   @Environment(\.dismiss) private var dismiss
-  @State private var session: XRaySession
+  @State private var journey: LessonJourney
   @State private var run: LessonRun
   @State private var selectedLanguage: CodeLanguage = .swift
   @State private var debugSession: DebugSession?
@@ -484,7 +484,7 @@ private struct XRayLessonView: View {
   init(lesson: XRayLesson, onComplete: @escaping (LessonRunResult) -> Void) {
     self.lesson = lesson
     self.onComplete = onComplete
-    _session = State(initialValue: XRaySession(lesson: lesson))
+    _journey = State(initialValue: LessonJourney(lesson: lesson))
     _run = State(initialValue: LessonRun(lessonID: lesson.id, startedAt: Date()))
     _debugSession = State(
       initialValue: lesson.debugChallenge.map { DebugSession(challenge: $0) }
@@ -515,25 +515,7 @@ private struct XRayLessonView: View {
         VStack(spacing: 24) {
           header
           lessonHeading
-          lensStrip
-          languagePicker
-          CodeCard(
-            lines: session.lesson.code(for: selectedLanguage),
-            activeLineNumber: selectedLanguage == .swift ? session.currentStep?.lineNumber : nil,
-            languageLabel: selectedLanguage.displayName.uppercased()
-          )
-          languageComparison
-
-          switch session.phase {
-          case .predicting:
-            predictionPanel
-          case .tracing:
-            tracePanel
-          case .transfer:
-            transferPanel
-          case .complete:
-            completionPanel
-          }
+          lessonStage
         }
         .padding(.horizontal, 20)
         .padding(.top, 12)
@@ -600,16 +582,55 @@ private struct XRayLessonView: View {
         .tracking(1.2)
         .foregroundStyle(AppPalette.mint)
 
-      Text(session.lesson.title)
+      Text(lesson.title)
         .adaptiveFont(size: 34, weight: .bold, design: .rounded)
         .foregroundStyle(.white)
 
-      Text("Kodu çalıştırmadan önce zihninde izle. Bilgisayarın gördüğünü görmeye çalış.")
+      Text(stageInstruction)
         .adaptiveFont(size: 16, weight: .regular, design: .rounded)
         .foregroundStyle(AppPalette.secondaryText)
         .fixedSize(horizontal: false, vertical: true)
     }
     .frame(maxWidth: .infinity, alignment: .leading)
+  }
+
+  @ViewBuilder
+  private var lessonStage: some View {
+    switch journey.phase {
+    case .topic:
+      topicPanel
+
+    case .example:
+      lensStrip
+      languagePicker
+      CodeCard(
+        lines: lesson.code(for: selectedLanguage),
+        activeLineNumber:
+          selectedLanguage == .swift ? journey.currentExampleStep?.lineNumber : nil,
+        languageLabel: selectedLanguage.displayName.uppercased()
+      )
+      languageComparison
+      examplePanel
+
+    case .quiz:
+      quizPanel
+
+    case .complete:
+      completionPanel
+    }
+  }
+
+  private var stageInstruction: String {
+    switch journey.phase {
+    case .topic:
+      "Önce konuyu anlayalım. Soru çözmeden önce sağlam bir zihinsel model kur."
+    case .example:
+      "Şimdi konu ile ilgili örneği bilgisayarın çalışma sırasıyla incele."
+    case .quiz:
+      "Son adım: öğrendiğini yeni bir kod üzerinde kendi başına uygula."
+    case .complete:
+      "Quiz tamamlandı. Sonucu incele ve öğrendiğin fikri kendi cümlenle özetle."
+    }
   }
 
   private var lensStrip: some View {
@@ -679,124 +700,44 @@ private struct XRayLessonView: View {
     }
   }
 
-  private var predictionPanel: some View {
-    VStack(alignment: .leading, spacing: 16) {
-      Label(session.lesson.question, systemImage: "sparkles")
-        .adaptiveFont(size: 18, weight: .bold, design: .rounded)
-        .foregroundStyle(.white)
+  private var topicPanel: some View {
+    VStack(alignment: .leading, spacing: 20) {
+      stageMap
 
-      if session.lesson.choices.allSatisfy({ $0.count <= 3 }) {
-        HStack(spacing: 12) {
-          ForEach(session.lesson.choices, id: \.self) { choice in
-            predictionButton(choice)
-          }
-        }
-      } else {
-        VStack(spacing: 10) {
-          ForEach(session.lesson.choices, id: \.self) { choice in
-            predictionButton(choice)
-          }
-        }
-      }
-
-      Text("Yanlış cevap sorun değil. Önemli olan, değerin neden değiştiğini görebilmek.")
-        .adaptiveFont(size: 13, design: .rounded)
-        .foregroundStyle(AppPalette.tertiaryText)
-    }
-    .padding(20)
-    .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 24))
-    .overlay(
-      RoundedRectangle(cornerRadius: 24)
-        .stroke(AppPalette.border, lineWidth: 1)
-    )
-  }
-
-  private func predictionButton(_ choice: String) -> some View {
-    Button {
-      withAnimation(.snappy) {
-        session.submitPrediction(choice)
-      }
-    } label: {
-      Text(choice)
-        .adaptiveFont(size: 19, weight: .bold, design: .monospaced)
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 16)
-        .foregroundStyle(.white)
-        .background(AppPalette.card, in: RoundedRectangle(cornerRadius: 16))
-        .overlay(
-          RoundedRectangle(cornerRadius: 16)
-            .stroke(AppPalette.border, lineWidth: 1)
-        )
-    }
-    .buttonStyle(.plain)
-    .accessibilityHint("Tahminini seçer ve kodun yürütülmesini başlatır")
-  }
-
-  private var tracePanel: some View {
-    VStack(spacing: 16) {
-      predictionResult
-
-      if let step = session.currentStep {
-        TraceInspector(step: step)
-          .transition(.opacity.combined(with: .move(edge: .bottom)))
-          .id(step.lineNumber)
-      }
-
-      traceAction
-    }
-    .animation(.snappy, value: session.phase)
-  }
-
-  private var predictionResult: some View {
-    HStack(spacing: 12) {
-      Image(
-        systemName: session.isPredictionCorrect == true
-          ? "checkmark" : "arrow.trianglehead.2.clockwise.rotate.90"
-      )
-      .adaptiveFont(size: 14, weight: .bold)
-      .foregroundStyle(
-        session.isPredictionCorrect == true ? AppPalette.background : AppPalette.amber
-      )
-      .frame(width: 32, height: 32)
-      .background(
-        session.isPredictionCorrect == true ? AppPalette.mint : AppPalette.amber.opacity(0.15),
-        in: Circle()
-      )
-
-      VStack(alignment: .leading, spacing: 3) {
-        Text(session.isPredictionCorrect == true ? "Tahminin doğru" : "Şimdi birlikte izleyelim")
-          .adaptiveFont(size: 15, weight: .bold, design: .rounded)
-          .foregroundStyle(.white)
-        Text("Cevabın: \(session.selectedAnswer ?? "—")")
-          .adaptiveFont(size: 13, design: .rounded)
-          .foregroundStyle(AppPalette.secondaryText)
-      }
-
-      Spacer()
-
-      Text(traceProgress)
-        .adaptiveFont(size: 12, weight: .semibold, design: .rounded)
+      Label("KONU ANLATIMI", systemImage: "book.pages.fill")
+        .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+        .tracking(1)
         .foregroundStyle(AppPalette.mint)
-    }
-    .padding(16)
-    .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 18))
-    .overlay(
-      RoundedRectangle(cornerRadius: 18)
-        .stroke(AppPalette.border, lineWidth: 1)
-    )
-  }
 
-  @ViewBuilder
-  private var traceAction: some View {
-    switch session.phase {
-    case .tracing(let step):
+      Text(journey.teachingContent.explanation)
+        .adaptiveFont(size: 20, weight: .semibold, design: .rounded)
+        .foregroundStyle(.white)
+        .fixedSize(horizontal: false, vertical: true)
+
+      HStack(alignment: .top, spacing: 12) {
+        Image(systemName: "lightbulb.max.fill")
+          .foregroundStyle(AppPalette.amber)
+
+        VStack(alignment: .leading, spacing: 5) {
+          Text("AKLINDA KALSIN")
+            .adaptiveFont(size: 11, weight: .bold, design: .rounded)
+            .tracking(0.8)
+            .foregroundStyle(AppPalette.amber)
+          Text(journey.teachingContent.keyIdea)
+            .adaptiveFont(size: 15, weight: .semibold, design: .rounded)
+            .foregroundStyle(.white)
+        }
+      }
+      .padding(16)
+      .background(AppPalette.amber.opacity(0.09), in: RoundedRectangle(cornerRadius: 16))
+
       Button {
         withAnimation(.snappy) {
-          session.advance()
+          journey.startExample()
         }
       } label: {
         HStack {
-          Text(step == session.lesson.trace.count - 1 ? "Sonucu gör" : "Sonraki satırı çalıştır")
+          Text("Konu ile ilgili örneğe geç")
           Spacer()
           Image(systemName: "arrow.right")
         }
@@ -806,64 +747,167 @@ private struct XRayLessonView: View {
         .background(AppPalette.mint, in: RoundedRectangle(cornerRadius: 18))
       }
       .buttonStyle(.plain)
-
-    case .predicting, .transfer, .complete:
-      EmptyView()
+      .accessibilityHint("Rehberli kod örneğini açar")
     }
+    .padding(20)
+    .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 24))
+    .overlay(
+      RoundedRectangle(cornerRadius: 24)
+        .stroke(AppPalette.border, lineWidth: 1)
+    )
+  }
+
+  private var stageMap: some View {
+    HStack(spacing: 8) {
+      stageBadge(number: 1, title: "Konu", isActive: journey.phase == .topic)
+      Image(systemName: "chevron.right")
+        .foregroundStyle(AppPalette.tertiaryText)
+      stageBadge(
+        number: 2,
+        title: "Örnek",
+        isActive: {
+          if case .example = journey.phase { return true }
+          return false
+        }()
+      )
+      Image(systemName: "chevron.right")
+        .foregroundStyle(AppPalette.tertiaryText)
+      stageBadge(number: 3, title: "Quiz", isActive: journey.phase == .quiz)
+    }
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel("Ders sırası: konu anlatımı, örnek, quiz")
+  }
+
+  private func stageBadge(
+    number: Int,
+    title: String,
+    isActive: Bool
+  ) -> some View {
+    HStack(spacing: 6) {
+      Text("\(number)")
+        .frame(width: 22, height: 22)
+        .background(isActive ? AppPalette.mint : AppPalette.card, in: Circle())
+        .foregroundStyle(isActive ? AppPalette.background : AppPalette.secondaryText)
+      Text(title)
+    }
+    .adaptiveFont(size: 11, weight: .bold, design: .rounded)
+    .foregroundStyle(isActive ? .white : AppPalette.secondaryText)
+  }
+
+  private var examplePanel: some View {
+    VStack(spacing: 16) {
+      HStack(spacing: 12) {
+        Image(systemName: "eye.fill")
+          .foregroundStyle(AppPalette.mint)
+          .frame(width: 32, height: 32)
+          .background(AppPalette.mint.opacity(0.12), in: Circle())
+
+        VStack(alignment: .leading, spacing: 3) {
+          Text("KONU İLE İLGİLİ ÖRNEK")
+            .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+            .tracking(0.8)
+            .foregroundStyle(AppPalette.mint)
+          Text("Kodun nasıl çalıştığını adım adım birlikte izliyoruz.")
+            .adaptiveFont(size: 13, design: .rounded)
+            .foregroundStyle(AppPalette.secondaryText)
+        }
+
+        Spacer()
+
+        Text(exampleProgress)
+          .adaptiveFont(size: 12, weight: .semibold, design: .rounded)
+          .foregroundStyle(AppPalette.mint)
+      }
+      .padding(16)
+      .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 18))
+
+      if let step = journey.currentExampleStep {
+        TraceInspector(step: step)
+          .transition(.opacity.combined(with: .move(edge: .bottom)))
+          .id(step.lineNumber)
+      }
+
+      exampleAction
+    }
+    .animation(.snappy, value: journey.phase)
   }
 
   @ViewBuilder
-  private var transferPanel: some View {
-    if let challenge = lesson.transferChallenge {
-      VStack(spacing: 14) {
-        predictionResult
-
-        VStack(alignment: .leading, spacing: 16) {
-          Label("AYNI MANTIK · YENİ DURUM", systemImage: "arrow.triangle.branch")
-            .adaptiveFont(size: 12, weight: .bold, design: .rounded)
-            .tracking(0.8)
-            .foregroundStyle(AppPalette.indigo)
-
-          Text(challenge.prompt)
-            .adaptiveFont(size: 20, weight: .bold, design: .rounded)
-            .foregroundStyle(.white)
-            .fixedSize(horizontal: false, vertical: true)
-
-          CodeCard(lines: challenge.code, activeLineNumber: nil)
-
-          if challenge.choices.allSatisfy({ $0.count <= 3 }) {
-            HStack(spacing: 12) {
-              ForEach(challenge.choices, id: \.self) { choice in
-                transferButton(choice)
-              }
-            }
-          } else {
-            VStack(spacing: 10) {
-              ForEach(challenge.choices, id: \.self) { choice in
-                transferButton(choice)
-              }
-            }
-          }
-
-          Text("Ezber değil aktarım: aynı düşünme biçimini yeni koda uygula.")
-            .adaptiveFont(size: 13, design: .rounded)
-            .foregroundStyle(AppPalette.tertiaryText)
+  private var exampleAction: some View {
+    if case .example(let step) = journey.phase {
+      Button {
+        withAnimation(.snappy) {
+          journey.advanceExample()
         }
-        .padding(20)
-        .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 24))
-        .overlay(
-          RoundedRectangle(cornerRadius: 24)
-            .stroke(AppPalette.indigo.opacity(0.28), lineWidth: 1)
-        )
+      } label: {
+        HStack {
+          Text(
+            step == lesson.trace.count - 1
+              ? "Örneği anladım, quiz'e geç" : "Sonraki adımı göster"
+          )
+          Spacer()
+          Image(systemName: "arrow.right")
+        }
+        .adaptiveFont(size: 16, weight: .bold, design: .rounded)
+        .foregroundStyle(AppPalette.background)
+        .padding(18)
+        .background(AppPalette.mint, in: RoundedRectangle(cornerRadius: 18))
       }
-      .animation(.snappy, value: session.phase)
+      .buttonStyle(.plain)
     }
   }
 
-  private func transferButton(_ choice: String) -> some View {
+  private var quizPanel: some View {
+    let quiz = journey.quiz
+    return VStack(alignment: .leading, spacing: 18) {
+      stageMap
+
+      Label("SON ADIM · QUIZ", systemImage: "checkmark.diamond.fill")
+        .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+        .tracking(1)
+        .foregroundStyle(AppPalette.indigo)
+
+      Text("Şimdi sıra sende")
+        .adaptiveFont(size: 24, weight: .bold, design: .rounded)
+        .foregroundStyle(.white)
+
+      Text(quiz.prompt)
+        .adaptiveFont(size: 18, weight: .semibold, design: .rounded)
+        .foregroundStyle(AppPalette.secondaryText)
+        .fixedSize(horizontal: false, vertical: true)
+
+      CodeCard(lines: quiz.code, activeLineNumber: nil)
+
+      if quiz.choices.allSatisfy({ $0.count <= 3 }) {
+        HStack(spacing: 12) {
+          ForEach(quiz.choices, id: \.self) { choice in
+            quizButton(choice)
+          }
+        }
+      } else {
+        VStack(spacing: 10) {
+          ForEach(quiz.choices, id: \.self) { choice in
+            quizButton(choice)
+          }
+        }
+      }
+
+      Text("Önce konu, sonra örnek, şimdi bağımsız uygulama. Yanlış cevap da öğrenmenin parçası.")
+        .adaptiveFont(size: 13, design: .rounded)
+        .foregroundStyle(AppPalette.tertiaryText)
+    }
+    .padding(20)
+    .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 24))
+    .overlay(
+      RoundedRectangle(cornerRadius: 24)
+        .stroke(AppPalette.indigo.opacity(0.28), lineWidth: 1)
+    )
+  }
+
+  private func quizButton(_ choice: String) -> some View {
     Button {
       withAnimation(.snappy) {
-        session.submitTransferAnswer(choice)
+        journey.submitQuizAnswer(choice)
       }
     } label: {
       Text(choice)
@@ -878,12 +922,12 @@ private struct XRayLessonView: View {
         )
     }
     .buttonStyle(.plain)
-    .accessibilityHint("Aktarım cevabını seçer")
+    .accessibilityHint("Quiz cevabını seçer")
   }
 
   private var completionPanel: some View {
     VStack(spacing: 14) {
-      transferResult
+      quizResult
 
       if let debugSession, debugSession.phase != .complete {
         debugChallengePanel(debugSession)
@@ -897,41 +941,38 @@ private struct XRayLessonView: View {
     }
   }
 
-  @ViewBuilder
-  private var transferResult: some View {
-    if let challenge = lesson.transferChallenge {
-      HStack(alignment: .top, spacing: 12) {
-        Image(
-          systemName: session.isTransferAnswerCorrect == true
-            ? "checkmark.seal.fill" : "arrow.trianglehead.2.clockwise.rotate.90"
-        )
-        .adaptiveFont(size: 20, weight: .bold)
-        .foregroundStyle(
-          session.isTransferAnswerCorrect == true ? AppPalette.mint : AppPalette.amber
-        )
-
-        VStack(alignment: .leading, spacing: 6) {
-          Text(
-            session.isTransferAnswerCorrect == true
-              ? "Aktarımın doğru" : "Doğru cevap: \(challenge.correctAnswer)"
-          )
-          .adaptiveFont(size: 17, weight: .bold, design: .rounded)
-          .foregroundStyle(.white)
-
-          Text(challenge.explanation)
-            .adaptiveFont(size: 14, design: .rounded)
-            .foregroundStyle(AppPalette.secondaryText)
-            .fixedSize(horizontal: false, vertical: true)
-        }
-      }
-      .frame(maxWidth: .infinity, alignment: .leading)
-      .padding(18)
-      .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 18))
-      .overlay(
-        RoundedRectangle(cornerRadius: 18)
-          .stroke(AppPalette.border, lineWidth: 1)
+  private var quizResult: some View {
+    HStack(alignment: .top, spacing: 12) {
+      Image(
+        systemName: journey.isQuizAnswerCorrect == true
+          ? "checkmark.seal.fill" : "arrow.trianglehead.2.clockwise.rotate.90"
       )
+      .adaptiveFont(size: 20, weight: .bold)
+      .foregroundStyle(
+        journey.isQuizAnswerCorrect == true ? AppPalette.mint : AppPalette.amber
+      )
+
+      VStack(alignment: .leading, spacing: 6) {
+        Text(
+          journey.isQuizAnswerCorrect == true
+            ? "Quiz cevabın doğru" : "Doğru cevap: \(journey.quiz.correctAnswer)"
+        )
+        .adaptiveFont(size: 17, weight: .bold, design: .rounded)
+        .foregroundStyle(.white)
+
+        Text(journey.quiz.explanation)
+          .adaptiveFont(size: 14, design: .rounded)
+          .foregroundStyle(AppPalette.secondaryText)
+          .fixedSize(horizontal: false, vertical: true)
+      }
     }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .padding(18)
+    .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 18))
+    .overlay(
+      RoundedRectangle(cornerRadius: 18)
+        .stroke(AppPalette.border, lineWidth: 1)
+    )
   }
 
   private func debugChallengePanel(_ current: DebugSession) -> some View {
@@ -1176,7 +1217,7 @@ private struct XRayLessonView: View {
       .background(AppPalette.amber.opacity(0.1), in: RoundedRectangle(cornerRadius: 18))
 
       Button {
-        onComplete(run.finish(session: session, completedAt: Date()))
+        onComplete(run.finish(journey: journey, completedAt: Date()))
         dismiss()
       } label: {
         HStack {
@@ -1212,7 +1253,7 @@ private struct XRayLessonView: View {
   }
 
   private func resetLesson() {
-    session = XRaySession(lesson: lesson)
+    journey = LessonJourney(lesson: lesson)
     run = LessonRun(lessonID: lesson.id, startedAt: Date())
     selectedLanguage = .swift
     debugSession = lesson.debugChallenge.map { DebugSession(challenge: $0) }
@@ -1266,17 +1307,9 @@ private struct XRayLessonView: View {
     }
   }
 
-  private var traceProgress: String {
-    switch session.phase {
-    case .tracing(let step):
-      "ADIM \(step + 1)/\(session.lesson.trace.count)"
-    case .transfer:
-      "AKTARIM"
-    case .complete:
-      "TAMAMLANDI"
-    case .predicting:
-      ""
-    }
+  private var exampleProgress: String {
+    guard case .example(let step) = journey.phase else { return "" }
+    return "ADIM \(step + 1)/\(lesson.trace.count)"
   }
 }
 

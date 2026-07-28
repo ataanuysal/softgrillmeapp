@@ -79,6 +79,52 @@ public struct LessonRun: Equatable, Sendable {
     )
     return LessonRunResult(attempt: attempt, events: events)
   }
+
+  public func finish(
+    journey: LessonJourney,
+    completedAt: Date
+  ) -> LessonRunResult {
+    let duration = max(0, Int(completedAt.timeIntervalSince(startedAt)))
+    let quizCorrect = journey.isQuizAnswerCorrect ?? false
+    let answer = journey.selectedQuizAnswer ?? ""
+    let attempt = LessonAttempt(
+      lessonID: lessonID,
+      completedAt: completedAt,
+      durationSeconds: duration,
+      predictionCorrect: quizCorrect,
+      transferCorrect: quizCorrect
+    )
+    let events = [
+      LearningEvent(
+        name: .lessonStarted,
+        lessonID: lessonID,
+        occurredAt: startedAt
+      ),
+      LearningEvent.predictionSubmitted(
+        lessonID: lessonID,
+        answer: answer,
+        isCorrect: quizCorrect,
+        attemptNumber: attemptNumber,
+        occurredAt: completedAt
+      ),
+      LearningEvent(
+        name: .transferSubmitted,
+        lessonID: lessonID,
+        occurredAt: completedAt,
+        properties: [
+          "answer": answer,
+          "correct": String(quizCorrect),
+        ]
+      ),
+      LearningEvent.lessonCompleted(
+        lessonID: lessonID,
+        durationSeconds: duration,
+        transferCorrect: quizCorrect,
+        occurredAt: completedAt
+      ),
+    ]
+    return LessonRunResult(attempt: attempt, events: events)
+  }
 }
 
 public struct LearningDashboardSnapshot: Equatable, Sendable {

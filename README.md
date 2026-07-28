@@ -3,11 +3,12 @@
 GrillMe, sözdizimi ezberletmek yerine çalışan kodu okumayı ve programcı gibi
 düşünmeyi öğreten bir iOS uygulamasıdır.
 
-> Her gün kısa bir kodu tahmin et, bilgisayarın adımlarını görünür biçimde izle
-> ve öğrendiğin zihinsel modeli yeni bir örneğe taşı.
+> Önce konuyu öğren, çalışan bir örneği bilgisayarın adımlarıyla izle ve en son
+> öğrendiğini farklı kodlu quizde uygula.
 
-Uygulama 30 günlük doğrusal bir öğrenme yolunu; tahmin, Kod Röntgeni, aktarım,
-hata avcılığı ve Sokratik mentor döngüsüyle sunar.
+Uygulama 30 günlük doğrusal bir öğrenme yolunu; konu anlatımı, rehberli Kod
+Röntgeni örneği, ders sonu quiz, hata avcılığı ve Sokratik mentor döngüsüyle
+sunar.
 
 ![GrillMe 30 günlük öğrenme yolu](grillme-final-preview.png)
 
@@ -23,7 +24,9 @@ hata avcılığı ve Sokratik mentor döngüsüyle sunar.
 - Temelden çıkış değerlendirmesine uzanan 30 sıralı ders
 - Değişken, koşul, döngü, fonksiyon, scope, `map`, `filter`, koleksiyon,
   nesne, mimari, debugging, asenkron sıra ve uygulama akışı içerikleri
-- Çıktı tahmini, satır satır yürütme, bellek ve çıktı görünümü
+- Konu anlatımı → rehberli örnek → farklı kodlu quiz sırasını zorunlu tutan
+  ders yolculuğu
+- Satır satır yürütme, bellek ve çıktı görünümü
 - Fonksiyon çağrı yığını, mimari, hata ve dil lensleri
 - Her derste yeni bir örneğe aktarım görevi
 - Hipotez kurmadan hata satırı seçmeye izin vermeyen hata avcılığı
@@ -87,8 +90,8 @@ swift test --disable-sandbox
 Biçim ve lint:
 
 ```sh
-swift-format format --in-place --recursive GrillMe Tests
-swift-format lint --recursive GrillMe Tests
+swift-format format --in-place --recursive GrillMe Tests Scripts
+swift-format lint --recursive GrillMe Tests Scripts
 ```
 
 ## Proje yapısı
@@ -96,6 +99,7 @@ swift-format lint --recursive GrillMe Tests
 ```text
 GrillMe/
 ├── App/
+│   ├── Assets.xcassets/
 │   ├── GrillMeApp.swift
 │   ├── ContentView.swift
 │   └── OnDeviceMentor.swift
@@ -110,22 +114,27 @@ GrillMe/
     ├── AdvancedLenses.swift
     ├── LanguageBridge.swift
     ├── SocraticMentor.swift
+    ├── LessonJourney.swift
     ├── LessonRun.swift
     ├── LearningAnalytics.swift
     └── ProgressStore.swift
 Tests/
 └── GrillMeCoreTests/
+Scripts/
+└── generate-app-icon.swift
 ```
 
 `Core`, SwiftUI'dan bağımsız ders, ölçüm ve oturum davranışını taşır. `App`,
 çekirdek durumu ekrana bağlar ve yalnızca kullanılabildiğinde sistem dil
-modeline erişir.
+modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` setini;
+üretim betiği ise markayla uyumlu 1024×1024 kaynak ikonu taşır.
 
 ## Doğrulama
 
-- 47 Swift Testing testi
-- 16 test paketi
+- 51 Swift Testing testi
+- 18 test paketi
 - Genel iOS Simulator derlemesi
+- Release iOS arşivinde `CFBundleIconName = AppIcon` ve 120×120 uygulama ikonu
 - iPhone 17 Pro simülatöründe normal ve erişilebilir Dynamic Type görsel QA
 
 Erişilebilir boyut kontrolü:

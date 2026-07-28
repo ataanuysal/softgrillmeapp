@@ -23,6 +23,8 @@
 		A10000000000000000000014 /* SocraticMentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000015 /* SocraticMentor.swift */; };
 		A10000000000000000000015 /* LessonRun.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000016 /* LessonRun.swift */; };
 		A10000000000000000000016 /* OnDeviceMentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000017 /* OnDeviceMentor.swift */; };
+		A10000000000000000000017 /* LessonJourney.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000023 /* LessonJourney.swift */; };
+		A10000000000000000000018 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000024 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +50,8 @@
 		B10000000000000000000020 /* MEMORY.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = MEMORY.md; sourceTree = "<group>"; };
 		B10000000000000000000021 /* DESIGN.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DESIGN.md; sourceTree = "<group>"; };
 		B10000000000000000000022 /* ROADMAP.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ROADMAP.md; sourceTree = "<group>"; };
+		B10000000000000000000023 /* LessonJourney.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonJourney.swift; sourceTree = "<group>"; };
+		B10000000000000000000024 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +86,7 @@
 		C10000000000000000000003 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				B10000000000000000000024 /* Assets.xcassets */,
 				B10000000000000000000001 /* GrillMeApp.swift */,
 				B10000000000000000000002 /* ContentView.swift */,
 				B10000000000000000000017 /* OnDeviceMentor.swift */,
@@ -105,6 +110,7 @@
 				B10000000000000000000014 /* LanguageBridge.swift */,
 				B10000000000000000000015 /* SocraticMentor.swift */,
 				B10000000000000000000016 /* LessonRun.swift */,
+				B10000000000000000000023 /* LessonJourney.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -187,6 +193,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10000000000000000000018 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +220,7 @@
 				A10000000000000000000014 /* SocraticMentor.swift in Sources */,
 				A10000000000000000000015 /* LessonRun.swift in Sources */,
 				A10000000000000000000016 /* OnDeviceMentor.swift in Sources */,
+				A10000000000000000000017 /* LessonJourney.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,12 +346,14 @@
 		D10000000000000000000005 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = D34637J64V;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = GrillMe;
+				INFOPLIST_KEY_CFBundleIconName = AppIcon;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -365,11 +375,13 @@
 		D10000000000000000000006 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = D34637J64V;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = GrillMe;
+				INFOPLIST_KEY_CFBundleIconName = AppIcon;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

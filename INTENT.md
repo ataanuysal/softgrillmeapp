@@ -24,8 +24,8 @@ Başlangıç seviyesindeki birçok kişi:
 - Uzun video kurslarında pasif kalır ve öğrendiğini yeni bir örneğe taşıyamaz.
 - “Ben yazılımı anlayamıyorum” sonucuna varır.
 
-GrillMe bu sorunu kısa tahminler, görünür yürütme adımları ve sürekli geri
-bildirimle çözer.
+GrillMe bu sorunu kısa konu anlatımları, görünür rehberli örnekler, ders sonu
+quizleri ve sürekli geri bildirimle çözer.
 
 ## Hedef kullanıcı
 
@@ -56,10 +56,11 @@ Kullanıcı 30 günlük temel yolu tamamladığında:
 
 ## Ürün ilkeleri
 
-### Önce tahmin, sonra açıklama
+### Önce öğret, sonra bağımsız uygulat
 
-Kullanıcı cevap gösterilmeden önce bir zihinsel model kurmaya zorlanır. Yanlış
-tahmin başarısızlık değil, açıklamanın başlangıç noktasıdır.
+Her ders önce kavramı sade Türkçeyle anlatır, ardından çalışan bir örneği adım
+adım gösterir. Quiz en son gelir ve anlatımdakinden farklı kod kullanır. Yanlış
+cevap başarısızlık değil, geri bildirimin başlangıç noktasıdır.
 
 ### Kod görünür şekilde çalışmalı
 
@@ -78,8 +79,9 @@ Her konu beş soruya cevap vermelidir:
 
 ### Kısa ve aktif oturumlar
 
-Bir ders 5–10 dakika içinde tamamlanabilmeli ve kullanıcı zamanın çoğunda seçim
-yapmalı, sıralamalı, tahmin etmeli veya açıklamalıdır.
+Bir ders 5–10 dakika içinde tamamlanabilmeli; anlatım kısa tutulmalı ve kullanıcı
+örneği izledikten sonra seçim yapmalı, sıralamalı, tahmin etmeli veya
+açıklamalıdır.
 
 ### Dil, mantığın aracı olmalı
 

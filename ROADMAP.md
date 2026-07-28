@@ -167,9 +167,10 @@ eksiksiz çalışıyor.
 
 - ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
 - ✅ 30 dersin veri sözleşmesi otomatik doğrulanıyor.
-- ✅ 47 Swift Testing testi geçiyor.
+- ✅ 51 Swift Testing testi ve 18 test paketi geçiyor.
 - ✅ Swift format/lint kontrolü yapılıyor.
 - ✅ Genel iOS Simulator hedefi derleniyor.
+- ✅ Release arşivinde `AppIcon` adı ve 120×120 dağıtım ikonu doğrulanıyor.
 - ✅ iPhone 17 Pro simülatör hedefi derleniyor ve uygulama açılıyor.
 - ✅ Normal ve erişilebilir Dynamic Type ekranları görsel kontrol edildi.
 - ✅ `README.md`, `INTENT.md`, `MEMORY.md`, `DESIGN.md` güncel tutuldu.

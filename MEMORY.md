@@ -8,10 +8,9 @@ kararları ve güncel teknik durumu tutar.
 ## Ürün özeti
 
 GrillMe, kodlamaya başlayan yetişkinlere önce kod okumayı ve çalışma mantığını
-öğreten bir iOS uygulamasıdır. Merkez deneyim “Kod Röntgeni”dir: kullanıcı
-çıktıyı tahmin eder, aktif satırı, belleği, çıktıyı ve gerektiğinde çağrı,
-mimari ya da hata bağlamını adım adım izler; ardından aynı fikri yeni koda
-aktarır.
+öğreten bir iOS uygulamasıdır. Her ders önce konu anlatımı sunar, sonra “Kod
+Röntgeni” ile aktif satırı, belleği, çıktıyı ve gerektiğinde çağrı, mimari ya da
+hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açılır.
 
 ## Onaylanmış kararlar
 
@@ -51,7 +50,8 @@ aktarır.
 ### Ürün davranışı
 
 - Kilitli, açık ve tamamlanmış ders haritası
-- Tahmin → yürütme → aktarım → hata/pratik/değerlendirme → tamamlama döngüsü
+- Konu anlatımı → rehberli örnek → quiz → geri bildirim/pratik → tamamlama
+  döngüsü
 - Akış, bellek, çıktı, çağrı, mimari, hata ve dil lensleri
 - Swift/Python/JavaScript kod seçimi ve syntax/mantık ayrımı
 - Hipotez kurulmadan hata satırı seçilemeyen `DebugSession`
@@ -72,6 +72,7 @@ aktarır.
 - `PracticeChallenge`, `AssessmentTask`
 - `CodeLanguage`, `CodeVariant`, `LanguageComparison`
 - `SocraticMentorSession`, `MentorPromptBuilder`, `MentorSafetyFilter`
+- `LessonJourney`, `LessonTeachingContent`, `LessonQuiz`
 - `LessonRun`, `LessonAttempt`, `LessonProgress`, `FileProgressStore`
 - `LearningEvent`, `WeeklySummary`, `LearningGrowthReport`,
   `LearningDashboardSnapshot`
@@ -86,15 +87,20 @@ aktarır.
 - `GrillMe/Core/AdvancedLenses.swift`: Çağrı, mimari, hata ve görev modelleri
 - `GrillMe/Core/LanguageBridge.swift`: Dil karşılaştırma modeli
 - `GrillMe/Core/SocraticMentor.swift`: Yerel mentor, istem ve güvenlik
+- `GrillMe/Core/LessonJourney.swift`: Konu → örnek → quiz durum makinesi
 - `GrillMe/Core/LearningAnalytics.swift`: Olay sözleşmesi
 - `GrillMe/Core/LessonRun.swift`: Oturum sonucu ve dashboard
 - `GrillMe/Core/ProgressStore.swift`: Deneme kayıtları ve kalıcılık
-- `Tests/GrillMeCoreTests/`: 16 Swift Testing paketi
+- `GrillMe/App/Assets.xcassets/`: App Store için `AppIcon` asset kataloğu
+- `Scripts/generate-app-icon.swift`: 1024×1024 alfa kanalsız kaynak ikon üretimi
+- `Tests/GrillMeCoreTests/`: 18 Swift Testing paketi
 
 ## Doğrulama durumu
 
-- 47 Swift Testing testi geçmelidir.
+- 51 Swift Testing testi ve 18 test paketi geçmelidir.
 - Genel iOS Simulator hedefi Xcode 26.5 SDK ile derlenir.
+- Release iOS arşivinde birincil ikon adı `AppIcon` ve
+  `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.
 - iPhone 17 Pro simülatöründe normal ve erişilebilir Dynamic Type boyutları
   görsel olarak kontrol edilmiştir.
 - `grillme-final-preview.png` son normal görünümü,

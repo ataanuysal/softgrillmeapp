@@ -8,11 +8,11 @@ dönüştüren düşünme laboratuvarıdır.
 
 ```mermaid
 flowchart LR
-  A["Kodu incele"] --> B["Çıktıyı tahmin et"]
-  B --> C["Satır satır yürüt"]
+  A["Konuyu sade Türkçeyle öğren"] --> B["İlgili örneği incele"]
+  B --> C["Örneği satır satır yürüt"]
   C --> D["İlgili lensleri kullan"]
-  D --> E["Yeni örneğe aktar"]
-  E --> F["Hata veya pratik görevi"]
+  D --> E["En son farklı kodlu quiz"]
+  E --> F["Geri bildirim veya pratik"]
   F --> G["Kendi cümlenle açıkla"]
   G --> H["İlerlemeyi kaydet"]
 ```
@@ -23,11 +23,12 @@ Uygulama tek bir öğrenme yolu etrafında düzenlenir:
 
 1. **Ders haritası:** 30 ders, sekiz bölüm, kilit durumu ve tahmini süre
 2. **İlerleme özeti:** seri, tamamlanan ders, haftalık süre ve doğruluklar
-3. **Kod Röntgeni:** tahmin, aktif satır, bellek, çıktı ve bağlamsal lensler
-4. **Aktarım:** aynı zihinsel modeli yeni kodda kullanma
-5. **Hata avcılığı:** hipotez, satır seçimi ve kanıt
-6. **Pratik/değerlendirme:** isimlendirme, kavram, mimari ve capstone görevleri
-7. **Sokratik mentor:** cevabı vermeden öğrencinin açıklamasını ilerletme
+3. **Konu anlatımı:** hedefi ve kalıcı zihinsel modeli sade Türkçeyle öğretme
+4. **Kod Röntgeni örneği:** aktif satır, bellek, çıktı ve bağlamsal lensler
+5. **Ders sonu quiz:** aynı zihinsel modeli farklı kodda bağımsız kullanma
+6. **Hata avcılığı:** hipotez, satır seçimi ve kanıt
+7. **Pratik/değerlendirme:** isimlendirme, kavram, mimari ve capstone görevleri
+8. **Sokratik mentor:** cevabı vermeden öğrencinin açıklamasını ilerletme
 
 ## Müfredat yapısı
 
@@ -63,10 +64,10 @@ Her yayınlanabilir ders şunları taşır:
 
 1. Kimlik, sıra, bölüm, konu, hedef, kalıcı çıkarım ve tahmini süre
 2. Çalışabilir kaynak satırları
-3. Zorunlu ilk tahmin ve seçenekler
-4. Gerçek sıraya uygun en az iki yürütme adımı
+3. Sade konu anlatımı ve kalıcı ana fikir
+4. Gerçek sıraya uygun en az iki rehberli örnek adımı
 5. Bellek, çıktı ve varsa çağrı/mimari görüntüsü
-6. Yeni koddan oluşan aktarım görevi
+6. Örnekten farklı kod kullanan ders sonu quiz
 7. Gerekiyorsa hata, pratik veya değerlendirme görevi
 8. Varsa dil varyantları ve syntax/mantık karşılaştırması
 
@@ -78,24 +79,24 @@ reddeder.
 
 ```mermaid
 stateDiagram-v2
-  [*] --> Tahmin
-  Tahmin --> İzleme: cevap seçildi
-  İzleme --> İzleme: sonraki adım
-  İzleme --> Aktarım: son adım geçildi
-  Aktarım --> Tamamlama: cevap seçildi
+  [*] --> Konu
+  Konu --> Örnek: anlatım okundu
+  Örnek --> Örnek: sonraki adım
+  Örnek --> Quiz: son örnek adımı geçildi
+  Quiz --> Tamamlama: cevap seçildi
   Tamamlama --> HataHipotezi: hata görevi varsa
   HataHipotezi --> HataSatırı: hipotez yazıldı
   HataSatırı --> Sonuç: satır seçildi
   Tamamlama --> Sonuç: hata görevi yoksa
-  Sonuç --> Tahmin: yeniden çöz
+  Sonuç --> Konu: yeniden çöz
 ```
 
 Kurallar:
 
-- Tahmin yapılmadan yürütme açılmaz; ilk cevap sonradan değiştirilmez.
-- Yanlış cevap, yürütme mantığını görme hakkını engellemez.
-- Son adımda bellek ve çıktı görünür kalır.
-- Aktarım yapılmadan ders tamamlanmış sayılmaz.
+- Quiz, konu anlatımı ve rehberli örnek tamamlanmadan açılamaz.
+- Quiz kodu rehberli örneğin kodundan farklıdır.
+- Yanlış quiz cevabı açıklayıcı geri bildirimi engellemez.
+- Quiz yapılmadan ders tamamlanmış sayılmaz.
 - Hata görevinde hipotez yazılmadan satır seçilemez.
 - Yeniden çözme bütün geçici ders ve mentor durumunu temizler.
 - Tamamlama tek bir `LessonRunResult` üretir; deneme ve olaylar birlikte
