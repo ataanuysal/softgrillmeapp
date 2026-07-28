@@ -88,12 +88,14 @@ zihinsel model ileride Python ve JavaScript ile karşılaştırılabilmelidir.
 
 ### Mentor cevabı hemen vermemeli
 
-Gelecekteki AI mentor, çözümü üretmekten önce kullanıcının varsayımını ortaya
-çıkarmalı ve onu doğru sorularla ilerletmelidir.
+Sokratik mentor çözümü üretmekten önce kullanıcının varsayımını ortaya çıkarır
+ve onu doğru sorularla ilerletir. Desteklenen cihazlarda cihaz içi dil modeli
+kullanılsa bile doğru cevap isteme eklenmez, olası cevap sızıntısı filtrelenir
+ve ders başına tur bütçesi korunur.
 
-## MVP kapsamı
+## Tamamlanan çekirdek kapsam
 
-İlk anlamlı sürüm:
+İlk anlamlı 30 günlük sürüm:
 
 - Temel değerler ve değişkenler
 - Çalışma sırası
@@ -104,6 +106,11 @@ Gelecekteki AI mentor, çözümü üretmekten önce kullanıcının varsayımın
 - Basit koleksiyonlar
 - Class, instance, property ve method
 - Tahmin, satır izleme, bellek ve çıktı lensleri
+- Çağrı, mimari, hata ve dil lensleri
+- Hipotez tabanlı hata avcılığı
+- Swift, Python ve JavaScript dil karşılaştırması
+- Bütçeli cihaz içi/yerel Sokratik mentor
+- Başlangıç ve çıkış gelişim ölçümü
 - Ders ilerlemesinin cihazda saklanması
 - Erişilebilir ve tek elle kullanılabilir iPhone deneyimi
 

@@ -14,6 +14,15 @@
 		A10000000000000000000005 /* LessonCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000006 /* LessonCatalog.swift */; };
 		A10000000000000000000006 /* ProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000007 /* ProgressStore.swift */; };
 		A10000000000000000000007 /* LoopsLesson.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000008 /* LoopsLesson.swift */; };
+		A10000000000000000000008 /* AdvancedLenses.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000009 /* AdvancedLenses.swift */; };
+		A10000000000000000000009 /* LearningAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000010 /* LearningAnalytics.swift */; };
+		A10000000000000000000010 /* LessonValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000011 /* LessonValidator.swift */; };
+		A10000000000000000000011 /* WeekOneLessons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000012 /* WeekOneLessons.swift */; };
+		A10000000000000000000012 /* RoadmapLessons.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000013 /* RoadmapLessons.swift */; };
+		A10000000000000000000013 /* LanguageBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000014 /* LanguageBridge.swift */; };
+		A10000000000000000000014 /* SocraticMentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000015 /* SocraticMentor.swift */; };
+		A10000000000000000000015 /* LessonRun.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000016 /* LessonRun.swift */; };
+		A10000000000000000000016 /* OnDeviceMentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000017 /* OnDeviceMentor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +34,15 @@
 		B10000000000000000000006 /* LessonCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonCatalog.swift; sourceTree = "<group>"; };
 		B10000000000000000000007 /* ProgressStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressStore.swift; sourceTree = "<group>"; };
 		B10000000000000000000008 /* LoopsLesson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoopsLesson.swift; sourceTree = "<group>"; };
+		B10000000000000000000009 /* AdvancedLenses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedLenses.swift; sourceTree = "<group>"; };
+		B10000000000000000000010 /* LearningAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearningAnalytics.swift; sourceTree = "<group>"; };
+		B10000000000000000000011 /* LessonValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonValidator.swift; sourceTree = "<group>"; };
+		B10000000000000000000012 /* WeekOneLessons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekOneLessons.swift; sourceTree = "<group>"; };
+		B10000000000000000000013 /* RoadmapLessons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapLessons.swift; sourceTree = "<group>"; };
+		B10000000000000000000014 /* LanguageBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageBridge.swift; sourceTree = "<group>"; };
+		B10000000000000000000015 /* SocraticMentor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocraticMentor.swift; sourceTree = "<group>"; };
+		B10000000000000000000016 /* LessonRun.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonRun.swift; sourceTree = "<group>"; };
+		B10000000000000000000017 /* OnDeviceMentor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceMentor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +78,7 @@
 			children = (
 				B10000000000000000000001 /* GrillMeApp.swift */,
 				B10000000000000000000002 /* ContentView.swift */,
+				B10000000000000000000017 /* OnDeviceMentor.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -72,6 +91,14 @@
 				B10000000000000000000006 /* LessonCatalog.swift */,
 				B10000000000000000000007 /* ProgressStore.swift */,
 				B10000000000000000000008 /* LoopsLesson.swift */,
+				B10000000000000000000009 /* AdvancedLenses.swift */,
+				B10000000000000000000010 /* LearningAnalytics.swift */,
+				B10000000000000000000011 /* LessonValidator.swift */,
+				B10000000000000000000012 /* WeekOneLessons.swift */,
+				B10000000000000000000013 /* RoadmapLessons.swift */,
+				B10000000000000000000014 /* LanguageBridge.swift */,
+				B10000000000000000000015 /* SocraticMentor.swift */,
+				B10000000000000000000016 /* LessonRun.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -159,6 +186,15 @@
 				A10000000000000000000005 /* LessonCatalog.swift in Sources */,
 				A10000000000000000000006 /* ProgressStore.swift in Sources */,
 				A10000000000000000000007 /* LoopsLesson.swift in Sources */,
+				A10000000000000000000008 /* AdvancedLenses.swift in Sources */,
+				A10000000000000000000009 /* LearningAnalytics.swift in Sources */,
+				A10000000000000000000010 /* LessonValidator.swift in Sources */,
+				A10000000000000000000011 /* WeekOneLessons.swift in Sources */,
+				A10000000000000000000012 /* RoadmapLessons.swift in Sources */,
+				A10000000000000000000013 /* LanguageBridge.swift in Sources */,
+				A10000000000000000000014 /* SocraticMentor.swift in Sources */,
+				A10000000000000000000015 /* LessonRun.swift in Sources */,
+				A10000000000000000000016 /* OnDeviceMentor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

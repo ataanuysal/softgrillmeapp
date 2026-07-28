@@ -13,17 +13,23 @@ public struct TraceStep: Equatable, Sendable {
   public let explanation: String
   public let memory: [String: String]
   public let output: String?
+  public let callStack: [CallFrame]
+  public let architecture: ArchitectureSnapshot?
 
   public init(
     lineNumber: Int,
     explanation: String,
     memory: [String: String],
-    output: String?
+    output: String?,
+    callStack: [CallFrame] = [],
+    architecture: ArchitectureSnapshot? = nil
   ) {
     self.lineNumber = lineNumber
     self.explanation = explanation
     self.memory = memory
     self.output = output
+    self.callStack = callStack
+    self.architecture = architecture
   }
 }
 
@@ -62,6 +68,13 @@ public struct XRayLesson: Equatable, Sendable {
   public let correctAnswer: String
   public let trace: [TraceStep]
   public let transferChallenge: TransferChallenge?
+  public let estimatedMinutes: Int
+  public let debugChallenge: DebugChallenge?
+  public let section: CurriculumSection
+  public let practiceChallenges: [PracticeChallenge]
+  public let assessmentTasks: [AssessmentTask]
+  public let languageVariants: [CodeVariant]
+  public let languageComparison: LanguageComparison?
 
   public init(
     id: String = "lesson",
@@ -75,7 +88,14 @@ public struct XRayLesson: Equatable, Sendable {
     choices: [String],
     correctAnswer: String,
     trace: [TraceStep],
-    transferChallenge: TransferChallenge? = nil
+    transferChallenge: TransferChallenge? = nil,
+    estimatedMinutes: Int = 7,
+    debugChallenge: DebugChallenge? = nil,
+    section: CurriculumSection = .fundamentals,
+    practiceChallenges: [PracticeChallenge] = [],
+    assessmentTasks: [AssessmentTask] = [],
+    languageVariants: [CodeVariant] = [],
+    languageComparison: LanguageComparison? = nil
   ) {
     self.id = id
     self.order = order
@@ -89,6 +109,41 @@ public struct XRayLesson: Equatable, Sendable {
     self.correctAnswer = correctAnswer
     self.trace = trace
     self.transferChallenge = transferChallenge
+    self.estimatedMinutes = estimatedMinutes
+    self.debugChallenge = debugChallenge
+    self.section = section
+    self.practiceChallenges = practiceChallenges
+    self.assessmentTasks = assessmentTasks
+    self.languageVariants = languageVariants
+    self.languageComparison = languageComparison
+  }
+
+  public var availableLenses: [CodeLens] {
+    var lenses: [CodeLens] = [.flow, .memory, .output]
+    if trace.contains(where: { !$0.callStack.isEmpty }) {
+      lenses.append(.call)
+    }
+    if trace.contains(where: { $0.architecture != nil }) {
+      lenses.append(.architecture)
+    }
+    if debugChallenge != nil {
+      lenses.append(.error)
+    }
+    if availableLanguages.count > 1 {
+      lenses.append(.language)
+    }
+    return lenses
+  }
+
+  public var availableLanguages: [CodeLanguage] {
+    CodeLanguage.allCases.filter { language in
+      language == .swift || languageVariants.contains(where: { $0.language == language })
+    }
+  }
+
+  public func code(for language: CodeLanguage) -> [CodeLine] {
+    guard language != .swift else { return code }
+    return languageVariants.first(where: { $0.language == language })?.code ?? code
   }
 }
 

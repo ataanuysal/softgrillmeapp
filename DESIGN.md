@@ -2,218 +2,203 @@
 
 ## Deneyim hedefi
 
-GrillMe, bir video kursu veya mobil kod editörü gibi hissettirmemelidir. Deneyim
-bir düşünme laboratuvarı gibi çalışır: kullanıcı önce tahmin eder, sonra
-bilgisayarın yürüttüğü adımları görür ve en sonunda öğrendiği zihinsel modeli
-yeni bir örneğe taşır.
-
-Temel ders döngüsü:
+GrillMe bir video kursu ya da mobil kod editörü değildir. Kullanıcıyı pasif
+izleyiciden, kodun çalışması hakkında kanıt kullanan aktif bir okuyucuya
+dönüştüren düşünme laboratuvarıdır.
 
 ```mermaid
 flowchart LR
   A["Kodu incele"] --> B["Çıktıyı tahmin et"]
-  B --> C["Satır satır çalıştır"]
-  C --> D["Bellek ve çıktıyı izle"]
-  D --> E["Yeni örneğe uygula"]
-  E --> F["Geri bildirim ve özet"]
+  B --> C["Satır satır yürüt"]
+  C --> D["İlgili lensleri kullan"]
+  D --> E["Yeni örneğe aktar"]
+  E --> F["Hata veya pratik görevi"]
+  F --> G["Kendi cümlenle açıkla"]
+  G --> H["İlerlemeyi kaydet"]
 ```
 
 ## Bilgi mimarisi
 
-Planlanan ana alanlar:
+Uygulama tek bir öğrenme yolu etrafında düzenlenir:
 
-1. **Bugünün dersi:** Kullanıcının kaldığı yerden devam ettiği kısa oturum
-2. **Öğrenme yolu:** Temelden profesyonel kavramlara uzanan bölüm haritası
-3. **Kod Röntgeni:** Ders içindeki ana çalışma ve inceleme deneyimi
-4. **Hata Avcılığı:** Mantık hatası bulma ve hipotez kurma görevleri
-5. **Kavram haritası:** Fonksiyon, class, state ve benzeri yapıların ilişkileri
-6. **Profil ve ilerleme:** Seri, tamamlanan dersler ve beceri gelişimi
+1. **Ders haritası:** 30 ders, sekiz bölüm, kilit durumu ve tahmini süre
+2. **İlerleme özeti:** seri, tamamlanan ders, haftalık süre ve doğruluklar
+3. **Kod Röntgeni:** tahmin, aktif satır, bellek, çıktı ve bağlamsal lensler
+4. **Aktarım:** aynı zihinsel modeli yeni kodda kullanma
+5. **Hata avcılığı:** hipotez, satır seçimi ve kanıt
+6. **Pratik/değerlendirme:** isimlendirme, kavram, mimari ve capstone görevleri
+7. **Sokratik mentor:** cevabı vermeden öğrencinin açıklamasını ilerletme
 
-İlk MVP, Bugünün dersi, Öğrenme yolu ve Kod Röntgeni ile sınırlı tutulabilir.
+## Müfredat yapısı
+
+| Bölüm | Dersler | Ana beceri |
+| --- | ---: | --- |
+| Temeller | 1–4 | Değer, koşul, döngü ve karışık akış |
+| Fonksiyonlar | 5–11 | Çağrı, parametre, return, scope, side effect, map/filter |
+| Koleksiyonlar | 12–14 | Array, dictionary, index, key ve değişim |
+| Nesneler | 15–21 | Class, instance, davranış, yaşam döngüsü ve mimari |
+| Debugging | 22–27 | Hata türü, edge case, optional, stack trace ve hipotez |
+| Asenkron | 28 | Olayların gerçekleşme sırası |
+| Uygulama mimarisi | 29 | Gerçek uygulamadaki veri ve çağrı akışı |
+| Değerlendirme | 30 | 20 satırlık bağımsız kod okuma görevi |
 
 ## Kod Röntgeni lensleri
 
-Her lens aynı ders verisini farklı bir zihinsel modelle açıklar:
+Lensler ders verisinden otomatik açılır; bir derste veri yoksa boş bir kontrol
+gösterilmez.
 
-| Lens | Gösterdiği bilgi | MVP |
-| --- | --- | --- |
-| Türkçe | Satırın günlük dilde anlamı | Evet |
-| Akış | Şu an çalışan ve sonra çalışacak satır | Evet |
-| Hafıza | Değişkenlerin o andaki değerleri | Evet |
-| Çıktı | Ekrana veya konsola üretilen değer | Evet |
-| Çağrı | Fonksiyonların çağrı ve dönüş sırası | Sonraki |
-| Mimari | Class, instance ve bağımlılık ilişkileri | Sonraki |
-| Hata | Kırılabilecek satırlar ve edge case'ler | Sonraki |
-| Kalite | Okunabilirlik ve tasarım sorunları | Daha sonra |
-| Dil | Aynı mantığın farklı dillerdeki karşılığı | Daha sonra |
+| Lens | Gösterdiği zihinsel model |
+| --- | --- |
+| Akış | Çalışan satır ve yürütme sırası |
+| Hafıza | Değişkenlerin o andaki değerleri |
+| Çıktı | Programın dışarı ürettiği değer |
+| Çağrı | Fonksiyon çerçeveleri, yerel değerler ve dönüş sırası |
+| Mimari | Class, instance, değer ve fonksiyon ilişkileri |
+| Hata | Beklenen/gerçek değer, hata türü ve kanıt |
+| Dil | Aynı mantığın Swift, Python ve JavaScript sözdizimi |
 
-## Ders tasarım kalıbı
+## Ders veri kalıbı
 
-Her ders şu parçalardan oluşmalıdır:
+Her yayınlanabilir ders şunları taşır:
 
-1. **Kanca:** Günlük hayattan veya gerçek uygulamadan kısa bir problem
-2. **Kod:** Tek ana kavrama odaklanan küçük örnek
-3. **Tahmin:** Çıktı, sıra veya hata hakkında zorunlu seçim
-4. **Yürütme:** En anlamlı satırların adım adım gösterimi
-5. **Açıklama:** “Ne oldu?” değil, “neden oldu?” cevabı
-6. **Aktarım görevi:** Küçük bir değişiklik sonrası yeni sonucu tahmin etme
-7. **Özet:** Tek cümlelik kalıcı zihinsel model
+1. Kimlik, sıra, bölüm, konu, hedef, kalıcı çıkarım ve tahmini süre
+2. Çalışabilir kaynak satırları
+3. Zorunlu ilk tahmin ve seçenekler
+4. Gerçek sıraya uygun en az iki yürütme adımı
+5. Bellek, çıktı ve varsa çağrı/mimari görüntüsü
+6. Yeni koddan oluşan aktarım görevi
+7. Gerekiyorsa hata, pratik veya değerlendirme görevi
+8. Varsa dil varyantları ve syntax/mantık karşılaştırması
 
-Bir ders mümkünse tek ana davranış öğretmeli. Başlıkta veya kabul ölçütünde “ve”
-bağlacı çoğalıyorsa ders bölünmelidir.
+`LessonValidator`; boş kodu, seçenekler dışındaki doğru cevabı, geçersiz satır
+numarasını, yetersiz yürütme izini, geçersiz süreyi ve bozuk aktarım görevini
+reddeder.
 
 ## Etkileşim durumları
-
-Kod Röntgeni oturumunun mevcut durum makinesi:
 
 ```mermaid
 stateDiagram-v2
   [*] --> Tahmin
   Tahmin --> İzleme: cevap seçildi
-  İzleme --> İzleme: sonraki satır
+  İzleme --> İzleme: sonraki adım
   İzleme --> Aktarım: son adım geçildi
-  Aktarım --> Tamamlandı: cevap seçildi
-  Tamamlandı --> Tahmin: yeniden çöz
+  Aktarım --> Tamamlama: cevap seçildi
+  Tamamlama --> HataHipotezi: hata görevi varsa
+  HataHipotezi --> HataSatırı: hipotez yazıldı
+  HataSatırı --> Sonuç: satır seçildi
+  Tamamlama --> Sonuç: hata görevi yoksa
+  Sonuç --> Tahmin: yeniden çöz
 ```
 
 Kurallar:
 
-- Cevap seçilmeden yürütme izi açılmaz.
-- Cevap seçildikten sonra seçim değiştirilmez.
-- Yanlış cevapta kullanıcı doğrudan doğru cevaba ışınlanmaz.
+- Tahmin yapılmadan yürütme açılmaz; ilk cevap sonradan değiştirilmez.
+- Yanlış cevap, yürütme mantığını görme hakkını engellemez.
 - Son adımda bellek ve çıktı görünür kalır.
-- Aktarım görevi tamamlanmadan ders tamamlanmış sayılmaz.
-- Aktarım cevabından sonra doğru sonuç ve gerekçesi birlikte gösterilir.
-- Yeniden çözme temiz bir oturum başlatır.
+- Aktarım yapılmadan ders tamamlanmış sayılmaz.
+- Hata görevinde hipotez yazılmadan satır seçilemez.
+- Yeniden çözme bütün geçici ders ve mentor durumunu temizler.
+- Tamamlama tek bir `LessonRunResult` üretir; deneme ve olaylar birlikte
+  kaydedilir.
 
-## Görsel sistem
-
-### Karakter
-
-- Karanlık ve odaklı
-- Teknik fakat ürkütmeyen
-- Canlı vurgu renkleriyle çalışma durumunu görünür kılan
-- Oyunlaştırılmış fakat çocukça olmayan
-
-### Renk rolleri
-
-| Rol | Mevcut kullanım |
-| --- | --- |
-| Koyu zemin | Ana uygulama ve kod alanı |
-| Mint | Aktif satır, ilerleme ve birincil eylem |
-| İndigo | Kod anahtar kelimeleri ve ikincil vurgu |
-| Amber | Seri, dikkat ve öğretici sonuç |
-| Beyaz tonları | Başlık, gövde ve ikincil metin hiyerarşisi |
-
-Renk hiçbir zaman tek durum göstergesi olmamalıdır; ikon, metin veya biçimle
-desteklenmelidir.
-
-### Tipografi
-
-- Başlıklar: Rounded sistem fontu
-- Kod ve değerler: Monospaced sistem fontu
-- Yardımcı metinler: Kısa, doğrudan ve günlük Türkçe
-- Kod satırları, Dynamic Type büyüdüğünde yatay kırılmadan okunabilir kalmalıdır
-
-### Ana bileşenler
-
-- Gün ve ilerleme başlığı
-- Ders başlığı ve kısa yönlendirme
-- Kod kartı
-- Tahmin seçenekleri
-- Tahmin sonucu
-- İzleme açıklaması
-- Hafıza kartı
-- Çıktı kartı
-- Aktarım kodu ve cevap seçenekleri
-- Aktarım sonucu ve gerekçeli geri bildirim
-- Sonraki satır ve yeniden çöz eylemleri
-
-## İçerik yazım kuralları
-
-- “Bu satır değişken tanımlar” yerine neyin nerede tutulduğunu anlat.
-- Teknik terimi ilk kullanımda sade Türkçe karşılığıyla birlikte ver.
-- Kullanıcıyı küçümseyen “kolay”, “basitçe” gibi ifadelerden kaçın.
-- Yanlış cevap metni yargılayıcı olmamalı.
-- Açıklama mümkünse 1–2 kısa cümlede bitmeli.
-- Aynı kavram en az iki farklı bağlamda tekrar kullanılmalı.
-- Kod örnekleri gerçek dil kurallarına uymalı ve gerektiğinde derlenerek
-  doğrulanmalı.
-
-## Erişilebilirlik
-
-MVP kabul ölçütleri:
-
-- Tüm butonların açıklayıcı erişilebilirlik etiketi veya görünür metni vardır.
-- Salt renkle anlatılan durum yoktur.
-- Dynamic Type ile temel akış tamamlanabilir.
-- VoiceOver sırası görsel sırayla uyumludur.
-- Dokunma hedefleri en az 44×44 punto olmalıdır.
-- Metin ve zemin kontrastı okunabilirlik standardını karşılamalıdır.
-- Hareket azaltma ayarında anlam taşıyan animasyonlar sadeleşmelidir.
-
-## Teknik mimari
-
-Mevcut ayrım:
+## Mentor tasarımı
 
 ```mermaid
 flowchart TD
-  UI["SwiftUI App<br/>ContentView"] --> Session["XRaySession"]
-  UI --> Catalog["LessonCatalog"]
-  UI --> Progress["LessonProgress"]
-  Progress --> Store["FileProgressStore"]
-  Session --> Lesson["XRayLesson"]
-  Lesson --> Code["CodeLine[]"]
-  Lesson --> Trace["TraceStep[]"]
-  Lesson --> Transfer["TransferChallenge"]
-  Tests["Swift Testing"] --> Session
-  Tests --> Lesson
+  U["Kullanıcının açıklaması"] --> B["Tur bütçesi ve kavram eşleme"]
+  B -->|Kavramlar tamam| F["Yerel kişisel geri bildirim"]
+  B -->|Yönlendirme gerekli| A{"Sistem modeli kullanılabilir mi?"}
+  A -->|Evet| M["Foundation Models yanıtı"]
+  A -->|Hayır veya hata| L["Yerel Sokratik soru"]
+  M --> S["Doğru cevap güvenlik filtresi"]
+  S --> O["En fazla iki cümlelik soru"]
+  L --> O
 ```
 
-### Katman sorumlulukları
+- Tur limiti ders başına altıdır.
+- Model istemi hedefi, kodu, kullanıcı açıklamasını ve eşleşen kavramları taşır;
+  `correctAnswer` alanını taşımaz.
+- Üretilen metin doğru cevabı içerirse cevap yer tutucuyla gizlenir.
+- iOS 26/Apple Intelligence uygunluğu yoksa ağ isteği yapılmadan yerel yanıt
+  kullanılır.
+- Mentor sonucu üretmez; kanıta götüren tek bir soru sorar.
 
-**Core**
+## Ölçüm ve ilerleme
 
-- Ders veri modeli
-- Tahmin değerlendirmesi
-- Oturum durum geçişleri
-- Aktif yürütme adımı
-- UI'dan bağımsız ve Swift Package testleriyle doğrulanabilir davranış
-- Ders sırası ve kilit açma kuralları
-- JSON tabanlı kalıcı ilerleme
+`LessonAttempt`; ders kimliği, tamamlama zamanı, süre, ilk tahmin doğruluğu ve
+aktarım doğruluğunu saklar. Türetilen göstergeler:
 
-**App**
+- Günlük seri
+- Son yedi günlük ders ve pratik süresi
+- İlk tahmin doğruluğu
+- Aktarım doğruluğu
+- Aynı dersin tekrar deneme doğruluğu
+- İlk üç ders ile capstone arasındaki gelişim
 
-- SwiftUI görünüm hiyerarşisi
-- Renk, tipografi ve animasyon
-- Kullanıcı eylemlerini `XRaySession` metodlarına iletme
-- Oturum durumunu ekrana dönüştürme
+Olay sözleşmesi `lesson_started`, `prediction_submitted`,
+`transfer_submitted`, `lesson_completed` adlarını kullanır. Olaylarda kişi adı,
+e-posta veya serbest mentor metni bulunmaz. Olaylar şu an yalnızca uygulama
+oturumunda tutulur; dış servise gönderilmez.
 
-### Mevcut ve gelecek ayrımlar
+## Görsel sistem
 
-İçerik ve ekran sayısı arttığında:
+- Koyu, odaklı ve yetişkinlere yönelik görünüm
+- Mint: ilerleme, aktif satır ve birincil eylem
+- İndigo: lens, dil ve mentor
+- Amber: seri, dikkat ve öğretici sonuç
+- Rounded sistem fontu; kod ve değerlerde monospaced sistem fontu
+- Renk her zaman metin, ikon veya şekille desteklenir
 
-- `LessonCatalog`: Ders sırası ve kilit açma kuralları — mevcut
-- `FileProgressStore`: Yerel JSON ilerleme deposu — mevcut
-- `ProgressStore` protokolü: Birden fazla depo gerektiğinde
-- `LessonRepository`: Paketlenmiş JSON veya Swift verisini yükleme
-- `AppRoute`: Ders haritası ve detay ekranı navigasyonu
-- `CodeLanguage`: Swift, Python ve JavaScript gösterim seçeneği
+## Erişilebilirlik
 
-Erken aşamada gereksiz servis, ağ katmanı veya karmaşık mimari eklenmemelidir.
+- Eylemler görünür metin veya açıklayıcı erişilebilirlik etiketi taşır.
+- Ders satırları başlık, sıra ve kilit durumunu tek VoiceOver açıklamasında
+  birleştirir.
+- İlerleme ve haftalık özetler semantik gruplardır.
+- Dynamic Type, erişilebilir boyutlarda üst başlığı dikey düzene geçirir.
+- Metinler büyüyebilir ve ana içerik dikey kaydırılabilir.
+- Seçim durumları yalnızca renkle anlatılmaz; ikon ve metinle desteklenir.
+- Birincil butonlarda en az 44 punto dokunma yüksekliği korunur.
 
-## Ders veri sözleşmesi
+## Teknik mimari
 
-Bir ders yayınlanmadan önce:
+```mermaid
+flowchart TD
+  UI["SwiftUI App"] --> Catalog["LessonCatalog"]
+  UI --> Session["XRaySession / DebugSession"]
+  UI --> Run["LessonRun"]
+  UI --> Mentor["OnDeviceMentor"]
+  Mentor --> FM["Apple Foundation Models<br/>yalnızca uygunsa"]
+  Mentor --> Local["SocraticMentorSession<br/>yerel yedek"]
+  Run --> Progress["LessonProgress"]
+  Progress --> Store["FileProgressStore"]
+  Catalog --> Lesson["XRayLesson"]
+  Lesson --> Lens["Lens / Dil / Görev verileri"]
+  Tests["Swift Testing"] --> Catalog
+  Tests --> Session
+  Tests --> Run
+  Tests --> Progress
+  Tests --> Local
+```
 
-- Doğru cevap seçenekler içinde bulunur.
-- Her yürütme adımının satır numarası kaynak kodda vardır.
-- Son çıktı, doğru cevapla tutarlıdır.
-- Yürütme adımları gerçek çalışma sırasındadır.
-- Bellek görüntüsü önceki adımla çelişmez.
-- Aktarım görevinin doğru cevabı seçenekler içinde bulunur.
-- Aktarım kodu, ana dersteki zihinsel modeli yeni bir bağlamda kullanır.
-- Ders tek bir ana öğrenme hedefi taşır.
-- Açıklamalar Türkçe içerik kontrolünden geçer.
+### Core
 
-Bu koşullar mümkün olduğunca otomatik testlerle korunmalıdır.
+- Ders ve müfredat verisi
+- Durum makineleri ve değerlendirme
+- Lens, dil, debugging ve görev modelleri
+- Deneme, seri, haftalık özet, gelişim ve olay sözleşmesi
+- Yerel Sokratik mentor, güvenli istem ve cevap filtresi
+- JSON kalıcılığı
+
+### App
+
+- SwiftUI yerleşimi, tipografi, renk ve navigasyon
+- Kullanıcı eylemlerini Core davranışlarına bağlama
+- Foundation Models uygunluk kontrolü ve asenkron çağrı
+- Uygun olmayan sistemlerde yerel mentor yedeği
+
+## Kapsam sınırı
+
+Bu sürümde backend, hesap, bulut senkronizasyonu, serbest kod derleme, sosyal
+özellik veya ödeme yoktur. Karmaşık servis katmanları ancak doğrulanmış kullanıcı
+ihtiyacı ortaya çıktığında eklenmelidir.

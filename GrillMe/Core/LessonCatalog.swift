@@ -40,6 +40,14 @@ public struct LessonCatalog: Equatable, Sendable {
   }
 
   public static let standard = LessonCatalog(
-    lessons: [.introduction, .conditions, .loops]
+    lessons: [
+      .introduction,
+      .conditions,
+      .loops,
+      .compoundConditions,
+      .functionCall,
+      .parametersAndReturn,
+      .weekOneChallenge,
+    ] + XRayLesson.roadmapContinuation
   )
 }

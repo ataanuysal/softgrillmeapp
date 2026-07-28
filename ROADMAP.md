@@ -1,13 +1,13 @@
 # Ürün Yol Haritası
 
 Yol haritası tarih taahhüdü değil, risk ve öğrenme değerine göre sıralanmış
-teslim planıdır. Her aşama, bir sonrakine geçmeden önce çalışan ve test edilmiş
-bir kullanıcı değeri üretmelidir.
+teslim planıdır. 28 Temmuz 2026 itibarıyla Aşama 0–7'nin ürün ve mühendislik
+kapsamı tamamlanmıştır.
 
 ## Durum anahtarı
 
 - ✅ Tamamlandı
-- 🚧 Sırada
+- 🚧 Devam ediyor
 - ⏳ Planlandı
 - 💭 Keşif
 
@@ -32,179 +32,157 @@ Kabul sonucu: İlk uçtan uca ders akışı çalışıyor.
 
 Amaç: Tek ekran demosundan tekrar kullanılabilir ders sistemine geçmek.
 
-### Alan modeli
-
 - ✅ Ders kimliği, sıra, konu ve öğrenme hedefi
-- ✅ `LessonCatalog`
-- ✅ Ders tamamlama durumu
-- ✅ Katalog ve kilit açma testleri
-
-### İçerik
-
+- ✅ `LessonCatalog`, tamamlama durumu ve kilit açma testleri
 - ✅ Ders 01: Değişkenin izini sür
 - ✅ Ders 02: Koşul hangi yolu seçer?
 - ✅ Ders 03: Döngüde değer nasıl değişir?
-- ✅ İkinci derste yanlış koşul ve `else` yürütme izi
 - ✅ Her ders için aktarım sorusu
-
-### Arayüz
-
-- ✅ Ana ders haritası
+- ✅ Ana ders haritası ve detay navigasyonu
 - ✅ Tamamlandı, sıradaki ve kilitli durumları
-- ✅ Ders detayına navigasyon
-- ✅ Tamamlanan dersi yeniden çözme
+- ✅ Yerel `FileProgressStore` ve gerçek dosya testleri
 
-### Kalıcılık
+Kabul sonucu: Üç ders sırayla tamamlanıyor ve ilerleme yeniden açılışta korunuyor.
 
-- ✅ Yerel `FileProgressStore`
-- ✅ Uygulama kapanınca tamamlanan dersleri koruma
-- ✅ Gerçek geçici dosyayla depo testleri
-
-Kabul ölçütleri:
-
-- Kullanıcı ana ekrandan üç dersi sırayla tamamlayabilir.
-- Önceki dersler tamamlanmadan sıradaki ders açılmaz.
-- İlerleme uygulama yeniden açıldığında korunur.
-- Kritik iş kuralları otomatik testlidir.
-
-## Aşama 2 — 7 günlük temel paket 🚧
+## Aşama 2 — 7 günlük temel paket ✅
 
 Amaç: İlk haftada kod okuma alışkanlığı ve ölçülebilir gelişim oluşturmak.
-
-Önerilen ders sırası:
 
 1. ✅ Değer ve değişken
 2. ✅ Karşılaştırma ve koşul
 3. ✅ Döngüde değerin değişimi
-4. ⏳ Birden fazla koşul
-5. ⏳ Fonksiyon çağrısı
-6. ⏳ Parametre ve dönüş değeri
-7. ⏳ Karışık haftalık meydan okuma
+4. ✅ Birden fazla koşul
+5. ✅ Fonksiyon çağrısı
+6. ✅ Parametre ve dönüş değeri
+7. ✅ Karışık haftalık meydan okuma
 
 Ürün işleri:
 
-- Günlük seri
-- Ders süresi ve ilerleme göstergesi
-- İlk deneme/ikinci deneme tahmin kaydı
-- Haftalık özet
-- Dynamic Type ve VoiceOver kontrolü
-- Temel analitik olay sözleşmesi
+- ✅ Günlük seri
+- ✅ Ders süresi ve ilerleme göstergesi
+- ✅ İlk deneme ve tekrar denemesi tahmin kaydı
+- ✅ Haftalık ders, süre, tahmin ve aktarım özeti
+- ✅ Dynamic Type erişilebilir boyut kontrolü
+- ✅ VoiceOver için semantik gruplar, durum etiketleri ve metinli eylemler
+- ✅ Temel analitik olay sözleşmesi
 
-Kabul ölçütleri:
+Kabul sonucu: Yedi ders otomatik veri kontrolünden geçiyor; gelişim cihaz
+üzerinde ölçülüyor ve haftalık meydan okuma önceki kavramları birleştiriyor.
 
-- Yedi ders içerik kalite kontrolünden geçer.
-- Kullanıcı gelişimi cihaz üzerinde ölçülebilir.
-- Haftalık meydan okuma önceki altı dersin kavramlarını birleştirir.
+## Aşama 3 — Fonksiyonlar ve veri akışı ✅
 
-## Aşama 3 — Fonksiyonlar ve veri akışı ⏳
+Amaç: Birden fazla kod bloğu arasındaki akışı takip etmek.
 
-Amaç: Kullanıcının birden fazla kod bloğu arasındaki akışı takip edebilmesi.
+- ✅ Fonksiyon çağrı lensi
+- ✅ Parametre ve argüman
+- ✅ Return değeri
+- ✅ Local ve global scope
+- ✅ Pure function ve side effect
+- ✅ Fonksiyon çağrı yığını görselleştirmesi
+- ✅ Fonksiyon isimlendirme pratikleri
+- ✅ `map` ve `filter` için sezgisel giriş
 
-- Fonksiyon çağrı lensi
-- Parametre ve argüman
-- Return değeri
-- Local ve global scope
-- Pure function ve side effect
-- Fonksiyon çağrı yığını görselleştirmesi
-- “Bu fonksiyonun iyi adı ne olmalı?” görevleri
-- Map ve filter'a sezgisel giriş
+Kabul sonucu: İki veya üç fonksiyonlu kodun çağrı ve dönüş sırası çağrı
+çerçeveleriyle açıklanabiliyor.
 
-Kabul ölçütü: Kullanıcı iki veya üç fonksiyonlu basit bir kodun çağrı ve dönüş
-sırasını açıklayabilir.
+## Aşama 4 — Koleksiyonlar ve nesneler ✅
 
-## Aşama 4 — Koleksiyonlar ve nesneler ⏳
+Amaç: Verinin yapı içinde nasıl tutulduğunu ve değiştiğini anlamak.
 
-Amaç: Kullanıcının verinin yapı içinde nasıl tutulduğunu ve değiştiğini anlaması.
+- ✅ Array/list
+- ✅ Dictionary/map
+- ✅ Index ve key
+- ✅ Mutable ve immutable koleksiyon davranışı
+- ✅ Class ve instance
+- ✅ Property ve method
+- ✅ Initializer
+- ✅ Value ve reference davranışına giriş
+- ✅ Composition ve inheritance karşılaştırması
+- ✅ Mimari lens
 
-- Array/list
-- Dictionary/map
-- Index ve key
-- Mutable ve immutable koleksiyon
-- Class ve instance
-- Property ve method
-- Initializer
-- Value ve reference davranışına giriş
-- Composition ve inheritance karşılaştırması
-- Mimari lensin ilk sürümü
+Kabul sonucu: Instance, sahip olduğu veri ve method çağrısının etkisi mimari
+ilişkilerle takip edilebiliyor.
 
-Kabul ölçütü: Kullanıcı bir instance'ın hangi veriye sahip olduğunu ve bir method
-çağrısının bu veriyi nasıl değiştirdiğini takip edebilir.
-
-## Aşama 5 — Hata avcılığı ⏳
+## Aşama 5 — Hata avcılığı ✅
 
 Amaç: Kod okumayı sistematik debugging becerisine dönüştürmek.
 
-- Syntax, runtime ve logic error ayrımı
-- Hata satırını işaretleme
-- Beklenen ve gerçek değer karşılaştırması
-- Edge case
-- Optional değerler
-- Stack trace okumaya giriş
-- Hipotez kur ve kanıt ara döngüsü
-- Hata lensi
+- ✅ Syntax, runtime ve logic error ayrımı
+- ✅ Hata satırını işaretleme
+- ✅ Beklenen ve gerçek değer karşılaştırması
+- ✅ Edge case
+- ✅ Optional değerler
+- ✅ Stack trace okumaya giriş
+- ✅ Hipotez kur ve kanıt ara durum makinesi
+- ✅ Hata lensi
 
-Kabul ölçütü: Kullanıcı basit bir hatada rastgele değişiklik yapmak yerine
-test edilebilir bir hipotez kurabilir.
+Kabul sonucu: Kullanıcı satır seçmeden önce test edilebilir bir hipotez
+yazmak zorunda; seçimden sonra kanıt ve açıklama görüyor.
 
-## Aşama 6 — 30 günlük çekirdek yol ⏳
+## Aşama 6 — 30 günlük çekirdek yol ✅
 
 Amaç: Ürünün ana vaadini eksiksiz karşılamak.
 
-İçerik bölümleri:
-
-- Kodun temel mekaniği
-- Akış
-- Fonksiyonlar
-- Veri yapıları
-- Class ve nesneler
-- Debugging
-- Asenkron düşünmeye giriş
-- Gerçek uygulama yapısına giriş
+- ✅ Kodun temel mekaniği
+- ✅ Akış
+- ✅ Fonksiyonlar
+- ✅ Veri yapıları
+- ✅ Class ve nesneler
+- ✅ Debugging
+- ✅ Asenkron düşünmeye giriş
+- ✅ Gerçek uygulama yapısına giriş
+- ✅ 30 benzersiz ve sıralı ders
 
 Çıkış değerlendirmesi:
 
-- 20–30 satırlık yeni kod
-- Çıktı tahmini
-- Değer izleme
-- Fonksiyon çağrı sırası
-- Hata noktası tahmini
-- Kodu kendi cümlesiyle açıklama
+- ✅ 20 satırlık yeni kod
+- ✅ Çıktı tahmini
+- ✅ Değer izleme
+- ✅ Fonksiyon çağrı sırası
+- ✅ Hata noktası tahmini
+- ✅ Kodu kendi cümlesiyle açıklama
 
-Kabul ölçütü: Başlangıç ve çıkış değerlendirmeleri arasında kod okuma
-performansında ölçülebilir gelişim görülür.
+Kabul sonucu: İlk üç ders başlangıç ölçümü, 30. ders çıkış ölçümü olarak
+kullanılıyor; gelişim raporu iki doğruluk değerini ve farkı gösteriyor.
 
-## Aşama 7 — Dil köprüsü ve mentor 💭
+## Aşama 7 — Dil köprüsü ve mentor ✅
 
-Amaç: Öğrenilen zihinsel modeli yeni dillere ve bağımsız öğrenmeye taşımak.
+Amaç: Zihinsel modeli yeni dillere ve bağımsız öğrenmeye taşımak.
 
-- Aynı örneğin Swift, Python ve JavaScript karşılığı
-- Dil lensi
-- Syntax farkı ile mantık farkını ayırma
-- Soru sorarak ilerleten AI mentor
-- Kullanıcının açıklamasına kişiselleştirilmiş geri bildirim
-- Güvenli cevap sınırları ve maliyet kontrolü
+- ✅ Aynı örneğin Swift, Python ve JavaScript karşılığı
+- ✅ Dil lensi
+- ✅ Syntax farkı ile mantık farkını ayıran karşılaştırma
+- ✅ Soru sorarak ilerleten cihaz içi AI mentor
+- ✅ Kullanıcı açıklamasındaki kavramlara kişiselleştirilmiş geri bildirim
+- ✅ Ders başına altı turluk maliyet/işlem bütçesi
+- ✅ Doğru cevabı isteme taşıtmayan güvenli istem
+- ✅ Olası cevap sızıntısını temizleyen güvenlik filtresi
+- ✅ Model kullanılamadığında çevrimdışı yerel Sokratik yedek
 
-Bu aşama, çekirdek öğrenme döngüsünün AI olmadan değer ürettiği kanıtlandıktan
-sonra başlamalıdır.
+Kabul sonucu: iOS 26 ve uygun Apple Intelligence cihazlarında Foundation Models
+kullanılıyor; diğer tüm iOS 17+ sistemlerde ana öğrenme döngüsü yerel mentorla
+eksiksiz çalışıyor.
 
-## Sürekli kalite hattı
+## Sürekli kalite hattı ✅
 
-Her aşamada:
-
-- Yeni iş davranışı önce başarısız testle tanımlanır.
-- Tüm testler geçmeden özellik tamamlanmış sayılmaz.
-- Ders veri sözleşmesi otomatik doğrulanır.
-- Genel iOS hedefi ve en az bir simülatör hedefi derlenir.
-- Kritik ekranlar görsel olarak kontrol edilir.
-- Erişilebilirlik regresyonları gözden geçirilir.
-- `MEMORY.md` güncel durumla yenilenir.
+- ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
+- ✅ 30 dersin veri sözleşmesi otomatik doğrulanıyor.
+- ✅ 47 Swift Testing testi geçiyor.
+- ✅ Swift format/lint kontrolü yapılıyor.
+- ✅ Genel iOS Simulator hedefi derleniyor.
+- ✅ iPhone 17 Pro simülatör hedefi derleniyor ve uygulama açılıyor.
+- ✅ Normal ve erişilebilir Dynamic Type ekranları görsel kontrol edildi.
+- ✅ `README.md`, `INTENT.md`, `MEMORY.md`, `DESIGN.md` güncel tutuldu.
 
 ## MVP sonrasına bırakılanlar
+
+Bu maddeler tamamlanan roadmap'in parçası değildir; gerçek kullanıcı sinyali
+olmadan ürün kapsamına alınmayacaktır:
 
 - Hesap ve bulut senkronizasyonu
 - Sosyal profil ve liderlik tablosu
 - Kullanıcıların serbest kod çalıştırması
 - Topluluk tarafından oluşturulan dersler
 - Web veya Android istemcisi
-- Gelişmiş ödeme ve abonelik sistemi
+- Ödeme ve abonelik sistemi
 - Profesyonel konuların tamamı: CI/CD, deployment, monitoring ve güvenlik

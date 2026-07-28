@@ -52,6 +52,35 @@ extension XRayLesson {
       choices: ["3", "5", "6"],
       correctAnswer: "6",
       explanation: "can önce 3'tür; ikiyle çarpılıp 6 olur ve bu yeni değer yazdırılır."
+    ),
+    languageVariants: [
+      CodeVariant(
+        language: .python,
+        lines: [
+          "puan = 10",
+          "if puan > 5:",
+          "    puan = puan + 2",
+          "print(puan)",
+        ]
+      ),
+      CodeVariant(
+        language: .javascript,
+        lines: [
+          "let puan = 10;",
+          "if (puan > 5) {",
+          "    puan = puan + 2;",
+          "}",
+          "console.log(puan);",
+        ]
+      ),
+    ],
+    languageComparison: LanguageComparison(
+      invariant: "Üç dilde de puan 10 ile başlar, koşul doğru olur ve değer 12'ye değişir.",
+      syntaxDifferences: [
+        .swift: "Değişken `var`, bloklar süslü parantez ve çıktı `print` ile yazılır.",
+        .python: "Tür çıkarımı örtüktür; blok girinti ve iki nokta ile belirtilir.",
+        .javascript: "Değişken `let`, satırlar noktalı virgül ve çıktı `console.log` kullanır.",
+      ]
     )
   )
 

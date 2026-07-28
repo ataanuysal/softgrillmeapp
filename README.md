@@ -1,70 +1,74 @@
 # GrillMe
 
-GrillMe, kodlama eğitimlerinde sözdizimi arasında kaybolan insanların kodu
-okumasını ve programcı gibi düşünmesini öğreten bir iOS uygulamasıdır.
+GrillMe, sözdizimi ezberletmek yerine çalışan kodu okumayı ve programcı gibi
+düşünmeyi öğreten bir iOS uygulamasıdır.
 
-> Kod ezberleme. Bir problemi bilgisayarın anlayacağı hâle getirmeyi ve çalışan
-> kodun içindeki değerleri izlemeyi öğren.
+> Her gün kısa bir kodu tahmin et, bilgisayarın adımlarını görünür biçimde izle
+> ve öğrendiğin zihinsel modeli yeni bir örneğe taşı.
 
-Çalışan ilk öğrenme yolunda kullanıcı ders haritasından ilerler, kısa bir Swift
-kodunun çıktısını tahmin eder ve ardından “Kod Röntgeni” ile kodu satır satır
-çalıştırır. Aktif satır, bellekteki değerler ve program çıktısı birlikte
-gösterilir. Son olarak aynı düşünme biçimini yeni bir kod örneğine aktarır.
+Uygulama 30 günlük doğrusal bir öğrenme yolunu; tahmin, Kod Röntgeni, aktarım,
+hata avcılığı ve Sokratik mentor döngüsüyle sunar.
 
-![GrillMe üç derslik öğrenme yolu](grillme-transfer-preview.png)
+![GrillMe 30 günlük öğrenme yolu](grillme-final-preview.png)
 
 ## Belgeler
 
 - [INTENT.md](INTENT.md): Ürün vizyonu, hedef kullanıcı ve kapsam sınırları
-- [MEMORY.md](MEMORY.md): Güncel kararlar, teknik durum ve sonraki çalışma notu
-- [DESIGN.md](DESIGN.md): Öğrenme deneyimi, arayüz sistemi ve teknik tasarım
-- [ROADMAP.md](ROADMAP.md): MVP'den sonraki teslim sırası ve kabul ölçütleri
+- [MEMORY.md](MEMORY.md): Kalıcı kararlar ve güncel teknik durum
+- [DESIGN.md](DESIGN.md): Öğrenme deneyimi, arayüz sistemi ve mimari
+- [ROADMAP.md](ROADMAP.md): Tamamlanan teslim aşamaları ve kabul ölçütleri
 
-## Mevcut durum
+## Tamamlanan ürün kapsamı
 
-Çalışan ilk sürüm şunları içerir:
-
-- Kilitli, açık ve tamamlanmış durumları olan ders haritası
-- Değişkenler, koşullar ve döngüler için üç gerçek Swift dersi
-- Swift kodunun çıktısını tahmin etme
-- Çalışan satırı görsel olarak takip etme
-- Değişkenlerin bellekteki güncel değerini görme
-- Program çıktısını ayrı bir panelde izleme
-- Yanlış tahminde cevabı vermek yerine yürütme mantığını açıklama
-- Her dersin sonunda yeni kodla aktarım tahmini ve gerekçeli geri bildirim
-- Dersi tamamlayıp yeniden çözme
-- Tamamlanan dersleri cihazda JSON olarak saklama
-- Önceki ders tamamlandıkça sıradaki dersi açma
-
-Katalog, oturum akışı, üç dersin veri tutarlılığı ve kalıcı ilerleme 15 otomatik
-testle doğrulanmaktadır. Uygulama hem genel iOS hedefi hem de iPhone simülatörü
-için başarıyla derlenmiştir.
-
-![İlk Kod Röntgeni ekranı](grillme-preview.png)
+- Temelden çıkış değerlendirmesine uzanan 30 sıralı ders
+- Değişken, koşul, döngü, fonksiyon, scope, `map`, `filter`, koleksiyon,
+  nesne, mimari, debugging, asenkron sıra ve uygulama akışı içerikleri
+- Çıktı tahmini, satır satır yürütme, bellek ve çıktı görünümü
+- Fonksiyon çağrı yığını, mimari, hata ve dil lensleri
+- Her derste yeni bir örneğe aktarım görevi
+- Hipotez kurmadan hata satırı seçmeye izin vermeyen hata avcılığı
+- Swift, Python ve JavaScript karşılaştırması
+- 20 satırlık çıkış değerlendirmesi: çıktı, değer izi, çağrı sırası, hata
+  noktası ve serbest açıklama görevleri
+- Ders süresi, ilk/tekrar tahmin doğruluğu, aktarım doğruluğu, günlük seri,
+  haftalık özet ve başlangıç/çıkış gelişim raporu
+- Cihaz üzerinde JSON tabanlı, eski kayıtlarla uyumlu ilerleme
+- Kişisel verisiz temel öğrenme olayı sözleşmesi
+- Tur bütçeli Sokratik mentor; iOS 26 ve desteklenen cihazlarda Apple
+  Foundation Models, diğer durumlarda çevrimdışı yerel rehber
+- Üretilen mentor cevabının doğru sonucu açıklamasını engelleyen güvenlik
+  filtresi
+- Dynamic Type erişilebilirlik boyutlarına uyarlanan SwiftUI arayüzü ve
+  metinli erişilebilir eylemler
 
 ## Gereksinimler
 
 - macOS
 - Xcode 26 veya uyumlu güncel bir Xcode sürümü
-- iOS 17 veya üzeri hedef
+- iOS 17 veya üzeri
 - Swift 6
+
+Cihaz içi üretken mentor iOS 26, Apple Intelligence ve uygun bir cihaz modeli
+gerektirir. Bu şartlar sağlanmadığında uygulamanın bütün ders akışı yerel,
+deterministik Sokratik rehberle çalışmaya devam eder.
 
 ## Projeyi çalıştırma
 
 1. `GrillMe.xcodeproj` dosyasını Xcode ile açın.
 2. `GrillMe` şemasını seçin.
-3. Bir iPhone simülatörü seçip Run düğmesine basın.
+3. Bir iPhone simülatörü veya cihaz seçip Run düğmesine basın.
 
 Kod imzalama olmadan komut satırı derlemesi:
 
 ```sh
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
+CLANG_MODULE_CACHE_PATH=/private/tmp/grillme-xcode-module-cache \
 xcodebuild \
   -project GrillMe.xcodeproj \
   -scheme GrillMe \
-  -configuration Debug \
-  -destination 'generic/platform=iOS' \
-  -derivedDataPath /private/tmp/grillme-derived-data \
+  -sdk iphonesimulator \
+  -destination 'generic/platform=iOS Simulator' \
+  -derivedDataPath /private/tmp/grillme-derived \
   CODE_SIGNING_ALLOWED=NO \
   build
 ```
@@ -75,9 +79,16 @@ xcodebuild \
 
 ```sh
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
-CLANG_MODULE_CACHE_PATH=/private/tmp/grillme-clang-cache \
-SWIFTPM_MODULECACHE_OVERRIDE=/private/tmp/grillme-swiftpm-cache \
+CLANG_MODULE_CACHE_PATH=/private/tmp/grillme-module-cache \
+SWIFTPM_MODULECACHE_OVERRIDE=/private/tmp/grillme-module-cache \
 swift test --disable-sandbox
+```
+
+Biçim ve lint:
+
+```sh
+swift-format format --in-place --recursive GrillMe Tests
+swift-format lint --recursive GrillMe Tests
 ```
 
 ## Proje yapısı
@@ -86,23 +97,44 @@ swift test --disable-sandbox
 GrillMe/
 ├── App/
 │   ├── GrillMeApp.swift
-│   └── ContentView.swift
+│   ├── ContentView.swift
+│   └── OnDeviceMentor.swift
 └── Core/
     ├── GrillMeCore.swift
     ├── IntroLesson.swift
-    ├── LessonCatalog.swift
     ├── LoopsLesson.swift
+    ├── WeekOneLessons.swift
+    ├── RoadmapLessons.swift
+    ├── LessonCatalog.swift
+    ├── LessonValidator.swift
+    ├── AdvancedLenses.swift
+    ├── LanguageBridge.swift
+    ├── SocraticMentor.swift
+    ├── LessonRun.swift
+    ├── LearningAnalytics.swift
     └── ProgressStore.swift
 Tests/
 └── GrillMeCoreTests/
 ```
 
-`Core`, SwiftUI'dan bağımsız ders ve oturum modelini içerir. `App`, bu durumu
-ekrana yansıtır ve kullanıcı etkileşimlerini çekirdeğe iletir.
+`Core`, SwiftUI'dan bağımsız ders, ölçüm ve oturum davranışını taşır. `App`,
+çekirdek durumu ekrana bağlar ve yalnızca kullanılabildiğinde sistem dil
+modeline erişir.
+
+## Doğrulama
+
+- 47 Swift Testing testi
+- 16 test paketi
+- Genel iOS Simulator derlemesi
+- iPhone 17 Pro simülatöründe normal ve erişilebilir Dynamic Type görsel QA
+
+Erişilebilir boyut kontrolü:
+
+![GrillMe Dynamic Type görünümü](grillme-dynamic-type-preview.png)
 
 ## Repo notu
 
-Kök dizinde çalışan SwiftUI projesine ek olarak `grillmeapp/` altında daha önce
-oluşturulmuş, stage edilmiş bir UIKit iskeleti bulunmaktadır. Hangi iskeletin
-kalacağı kararlaştırılana kadar bu klasör otomatik olarak silinmemeli veya
-birleştirilmemelidir. Aktif ve doğrulanmış uygulama `GrillMe.xcodeproj` dosyasıdır.
+Kök dizindeki doğrulanmış uygulama `GrillMe.xcodeproj` dosyasıdır.
+`grillmeapp/` altında daha önce oluşturulmuş ayrı UIKit iskeleti korunmaktadır;
+kullanıcı kararı olmadan silinmemeli, taşınmamalı veya aktif projeyle
+birleştirilmemelidir.

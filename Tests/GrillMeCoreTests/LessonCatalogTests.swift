@@ -15,14 +15,24 @@ struct LessonCatalogTests {
   func unlocksOnlyFirstLessonWithoutProgress() {
     let items = LessonCatalog.standard.items(completedLessonIDs: [])
 
-    #expect(items.map(\.status) == [.available, .locked, .locked])
+    #expect(
+      Array(items.prefix(7).map(\.status)) == [
+        .available, .locked, .locked, .locked, .locked, .locked, .locked,
+      ]
+    )
+    #expect(items.dropFirst(7).allSatisfy { $0.status == .locked })
   }
 
   @Test("İlk ders tamamlandığında ikinci dersi açar")
   func completingFirstLessonUnlocksSecond() {
     let items = LessonCatalog.standard.items(completedLessonIDs: ["variables"])
 
-    #expect(items.map(\.status) == [.completed, .available, .locked])
+    #expect(
+      Array(items.prefix(7).map(\.status)) == [
+        .completed, .available, .locked, .locked, .locked, .locked, .locked,
+      ]
+    )
+    #expect(items.dropFirst(7).allSatisfy { $0.status == .locked })
   }
 
   @Test("İlk iki ders tamamlandığında döngüler dersini açar")
@@ -31,7 +41,26 @@ struct LessonCatalogTests {
       completedLessonIDs: ["variables", "conditions"]
     )
 
-    #expect(items.map(\.status) == [.completed, .completed, .available])
+    #expect(
+      Array(items.prefix(7).map(\.status)) == [
+        .completed, .completed, .available, .locked, .locked, .locked, .locked,
+      ]
+    )
+    #expect(items.dropFirst(7).allSatisfy { $0.status == .locked })
+  }
+
+  @Test("İlk üç ders tamamlandığında birleşik koşullar dersini açar")
+  func completingFirstThreeLessonsUnlocksCompoundConditions() {
+    let items = LessonCatalog.standard.items(
+      completedLessonIDs: ["variables", "conditions", "loops"]
+    )
+
+    #expect(
+      Array(items.prefix(7).map(\.status)) == [
+        .completed, .completed, .completed, .available, .locked, .locked, .locked,
+      ]
+    )
+    #expect(items.dropFirst(7).allSatisfy { $0.status == .locked })
   }
 
   @Test("Standart derslerin aktarım görevleri geçerli cevap içerir")
