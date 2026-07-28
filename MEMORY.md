@@ -21,7 +21,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
   erişilebilirdir ve tamamlanma yalnızca durum işareti olarak kullanılır.
 - İçindekiler kataloğunda 40 dersin tümü açıktır; bölüm filtresi ve Türkçe
   karakterlerden bağımsız arama serbest gezinme sağlar.
-- Swift ilk dildir. Dil lensi aynı zihinsel modeli Python ve JavaScript ile
+- Swift ilk dildir. Dil lensi aynı zihinsel modeli Python, JavaScript ve Java ile
   karşılaştırır.
 - Yanlış cevap ceza değil, görünür yürütme ve açıklama için başlangıçtır.
 - İş mantığı SwiftUI'dan bağımsız `GrillMeCore` hedefinde tutulur.
@@ -64,7 +64,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - Konu anlatımı → rehberli örnek → quiz → geri bildirim/pratik → tamamlama
   döngüsü
 - Akış, bellek, çıktı, çağrı, mimari, hata ve dil lensleri
-- Swift/Python/JavaScript kod seçimi ve syntax/mantık ayrımı
+- Swift/Python/JavaScript/Java kod seçimi ve syntax/mantık ayrımı
 - Hipotez kurulmadan hata satırı seçilemeyen `DebugSession`
 - İsimlendirme, kavram ve mimari pratik görevleri
 - Ders süresi ve tahmin/aktarım doğruluk kayıtları

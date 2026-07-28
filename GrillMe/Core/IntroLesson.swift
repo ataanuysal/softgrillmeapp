@@ -73,13 +73,24 @@ extension XRayLesson {
           "console.log(puan);",
         ]
       ),
+      CodeVariant(
+        language: .java,
+        lines: [
+          "int puan = 10;",
+          "if (puan > 5) {",
+          "    puan = puan + 2;",
+          "}",
+          "System.out.println(puan);",
+        ]
+      ),
     ],
     languageComparison: LanguageComparison(
-      invariant: "Üç dilde de puan 10 ile başlar, koşul doğru olur ve değer 12'ye değişir.",
+      invariant: "Dört dilde de puan 10 ile başlar, koşul doğru olur ve değer 12'ye değişir.",
       syntaxDifferences: [
         .swift: "Değişken `var`, bloklar süslü parantez ve çıktı `print` ile yazılır.",
         .python: "Tür çıkarımı örtüktür; blok girinti ve iki nokta ile belirtilir.",
         .javascript: "Değişken `let`, satırlar noktalı virgül ve çıktı `console.log` kullanır.",
+        .java: "Değişken türü `int` ile belirtilir; çıktı `System.out.println` kullanır.",
       ]
     )
   )

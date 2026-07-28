@@ -2,6 +2,7 @@ public enum CodeLanguage: String, Codable, CaseIterable, Equatable, Sendable {
   case swift
   case python
   case javascript
+  case java
 }
 
 public struct CodeVariant: Equatable, Sendable {

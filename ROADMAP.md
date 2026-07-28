@@ -152,7 +152,7 @@ kullanılıyor; gelişim raporu iki doğruluk değerini ve farkı gösteriyor.
 
 Amaç: Zihinsel modeli yeni dillere ve bağımsız öğrenmeye taşımak.
 
-- ✅ Aynı örneğin Swift, Python ve JavaScript karşılığı
+- ✅ Aynı örneğin Swift, Python, JavaScript ve Java karşılığı
 - ✅ Dil lensi
 - ✅ Syntax farkı ile mantık farkını ayıran karşılaştırma
 - ✅ Soru sorarak ilerleten cihaz içi AI mentor

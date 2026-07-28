@@ -1821,6 +1821,7 @@ extension CodeLanguage {
     case .swift: "Swift"
     case .python: "Python"
     case .javascript: "JavaScript"
+    case .java: "Java"
     }
   }
 }

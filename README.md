@@ -35,7 +35,7 @@ baştan erişilebilir tutar; Yol Haritası yeni başlayanlara önerilen sırayı
 - Fonksiyon çağrı yığını, mimari, hata ve dil lensleri
 - Her derste yeni bir örneğe aktarım görevi
 - Hipotez kurmadan hata satırı seçmeye izin vermeyen hata avcılığı
-- Swift, Python ve JavaScript karşılaştırması
+- Swift, Python, JavaScript ve Java karşılaştırması
 - 20 satırlık çıkış değerlendirmesi: çıktı, değer izi, çağrı sırası, hata
   noktası ve serbest açıklama görevleri
 - Yazılım testi: Arrange–Act–Assert, unit test, sınır değer, test double,

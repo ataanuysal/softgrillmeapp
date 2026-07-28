@@ -60,7 +60,7 @@ gösterilmez.
 | Çağrı | Fonksiyon çerçeveleri, yerel değerler ve dönüş sırası |
 | Mimari | Class, instance, değer ve fonksiyon ilişkileri |
 | Hata | Beklenen/gerçek değer, hata türü ve kanıt |
-| Dil | Aynı mantığın Swift, Python ve JavaScript sözdizimi |
+| Dil | Aynı mantığın Swift, Python, JavaScript ve Java sözdizimi |
 
 ## Ders veri kalıbı
 

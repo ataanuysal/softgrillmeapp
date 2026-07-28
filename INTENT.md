@@ -50,7 +50,7 @@ Kullanıcı 30 günlük temel yolu tamamladığında:
 2. Değişkenlerin değerlerini çalışma sırasına göre takip edebilir.
 3. Koşul, döngü ve fonksiyon çağrılarının akışı nasıl değiştirdiğini gösterebilir.
 4. Basit bir mantık hatasının oluşabileceği satırı tahmin edebilir.
-5. Aynı mantığın Swift, Python veya JavaScript karşılığını tanıyabilir.
+5. Aynı mantığın Swift, Python, JavaScript veya Java karşılığını tanıyabilir.
 6. Bilmediği kod karşısında “nereden başlamalıyım?” yerine doğru soruları
    sorabilir.
 
@@ -93,7 +93,7 @@ açıklamalıdır.
 ### Dil, mantığın aracı olmalı
 
 İlk gerçek örnekler Swift ile başlar. Ürün tek bir dil kursuna dönüşmemeli; aynı
-zihinsel model ileride Python ve JavaScript ile karşılaştırılabilmelidir.
+zihinsel model ileride Python, JavaScript ve Java ile karşılaştırılabilmelidir.
 
 ### Mentor cevabı hemen vermemeli
 
@@ -117,7 +117,7 @@ ve ders başına tur bütçesi korunur.
 - Tahmin, satır izleme, bellek ve çıktı lensleri
 - Çağrı, mimari, hata ve dil lensleri
 - Hipotez tabanlı hata avcılığı
-- Swift, Python ve JavaScript dil karşılaştırması
+- Swift, Python, JavaScript ve Java dil karşılaştırması
 - Bütçeli cihaz içi/yerel Sokratik mentor
 - Başlangıç ve çıkış gelişim ölçümü
 - Ders ilerlemesinin cihazda saklanması
