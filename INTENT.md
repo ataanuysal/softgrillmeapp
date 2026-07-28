@@ -62,6 +62,13 @@ Her ders önce kavramı sade Türkçeyle anlatır, ardından çalışan bir örn
 adım gösterir. Quiz en son gelir ve anlatımdakinden farklı kod kullanır. Yanlış
 cevap başarısızlık değil, geri bildirimin başlangıç noktasıdır.
 
+### Önerilen sıra, serbest erişim
+
+Yol haritası yeni başlayanlara güvenli bir öğrenme sırası önerir. İçindekiler
+kataloğu ise bütün dersleri bölüm ve arama üzerinden açık tutar; kullanıcı
+bildiği konuyu tekrar etmek veya merak ettiği içeriğe doğrudan gitmek için
+ilerleme kilidini beklemek zorunda değildir.
+
 ### Kod görünür şekilde çalışmalı
 
 Aktif satır, bellek, çıktı ve çağrı akışı aynı anda izlenebilir olmalıdır.

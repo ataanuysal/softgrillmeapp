@@ -63,6 +63,42 @@ struct LessonCatalogTests {
     #expect(items.dropFirst(7).allSatisfy { $0.status == .locked })
   }
 
+  @Test("İçindekiler bütün derslere ilerlemeden bağımsız erişim verir")
+  func contentsMakesEveryLessonAvailable() {
+    let sections = LessonCatalog.standard.contents(
+      query: "",
+      completedLessonIDs: []
+    )
+    let items = sections.flatMap(\.items)
+
+    #expect(items.count == LessonCatalog.standard.lessons.count)
+    #expect(items.allSatisfy { $0.status == .available })
+  }
+
+  @Test("İçindekiler dersleri müfredat bölümlerinde sırayla gruplar")
+  func contentsGroupsLessonsByCurriculumSection() {
+    let sections = LessonCatalog.standard.contents(
+      query: "",
+      completedLessonIDs: []
+    )
+
+    #expect(sections.map(\.section) == CurriculumSection.allCases)
+    #expect(
+      sections.allSatisfy { group in
+        group.items.allSatisfy { $0.lesson.section == group.section }
+      })
+  }
+
+  @Test("İçindekiler araması Türkçe karakterlerden bağımsız çalışır")
+  func contentsSearchIgnoresTurkishDiacritics() {
+    let sections = LessonCatalog.standard.contents(
+      query: "bos liste",
+      completedLessonIDs: []
+    )
+
+    #expect(sections.flatMap(\.items).map(\.lesson.id) == ["edge-cases"])
+  }
+
   @Test("Standart derslerin aktarım görevleri geçerli cevap içerir")
   func standardLessonsHaveValidTransferChallenges() {
     let lessons = LessonCatalog.standard.lessons

@@ -40,9 +40,11 @@ Amaç: Tek ekran demosundan tekrar kullanılabilir ders sistemine geçmek.
 - ✅ Her ders için aktarım sorusu
 - ✅ Ana ders haritası ve detay navigasyonu
 - ✅ Tamamlandı, sıradaki ve kilitli durumları
+- ✅ Tüm derslere açık, aranabilir ve bölüm filtreli İçindekiler kataloğu
 - ✅ Yerel `FileProgressStore` ve gerçek dosya testleri
 
-Kabul sonucu: Üç ders sırayla tamamlanıyor ve ilerleme yeniden açılışta korunuyor.
+Kabul sonucu: Önerilen yol sırayla ilerliyor; kullanıcı İçindekiler üzerinden
+istediği derse doğrudan girebiliyor ve ilerleme yeniden açılışta korunuyor.
 
 ## Aşama 2 — 7 günlük temel paket ✅
 
@@ -167,7 +169,7 @@ eksiksiz çalışıyor.
 
 - ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
 - ✅ 30 dersin veri sözleşmesi otomatik doğrulanıyor.
-- ✅ 51 Swift Testing testi ve 18 test paketi geçiyor.
+- ✅ 54 Swift Testing testi ve 18 test paketi geçiyor.
 - ✅ Swift format/lint kontrolü yapılıyor.
 - ✅ Genel iOS Simulator hedefi derleniyor.
 - ✅ Release arşivinde `AppIcon` adı ve 120×120 dağıtım ikonu doğrulanıyor.

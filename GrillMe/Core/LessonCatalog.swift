@@ -1,3 +1,5 @@
+import Foundation
+
 public enum LessonStatus: Equatable, Sendable {
   case completed
   case available
@@ -11,6 +13,16 @@ public struct LessonCatalogItem: Equatable, Sendable {
   public init(lesson: XRayLesson, status: LessonStatus) {
     self.lesson = lesson
     self.status = status
+  }
+}
+
+public struct LessonContentsSection: Equatable, Sendable {
+  public let section: CurriculumSection
+  public let items: [LessonCatalogItem]
+
+  public init(section: CurriculumSection, items: [LessonCatalogItem]) {
+    self.section = section
+    self.items = items
   }
 }
 
@@ -39,6 +51,36 @@ public struct LessonCatalog: Equatable, Sendable {
     }
   }
 
+  public func contents(
+    query: String,
+    completedLessonIDs: Set<String>
+  ) -> [LessonContentsSection] {
+    let normalizedQuery = normalizedSearchText(query)
+    let matchingLessons = lessons.filter { lesson in
+      guard !normalizedQuery.isEmpty else { return true }
+      return [
+        lesson.topic,
+        lesson.title,
+        lesson.objective,
+        lesson.takeaway,
+      ].contains { normalizedSearchText($0).contains(normalizedQuery) }
+    }
+
+    return CurriculumSection.allCases.compactMap { section in
+      let items =
+        matchingLessons
+        .filter { $0.section == section }
+        .map { lesson in
+          LessonCatalogItem(
+            lesson: lesson,
+            status: completedLessonIDs.contains(lesson.id) ? .completed : .available
+          )
+        }
+
+      return items.isEmpty ? nil : LessonContentsSection(section: section, items: items)
+    }
+  }
+
   public static let standard = LessonCatalog(
     lessons: [
       .introduction,
@@ -50,4 +92,13 @@ public struct LessonCatalog: Equatable, Sendable {
       .weekOneChallenge,
     ] + XRayLesson.roadmapContinuation
   )
+
+  private func normalizedSearchText(_ text: String) -> String {
+    text
+      .folding(
+        options: [.caseInsensitive, .diacriticInsensitive],
+        locale: Locale(identifier: "tr_TR")
+      )
+      .trimmingCharacters(in: .whitespacesAndNewlines)
+  }
 }

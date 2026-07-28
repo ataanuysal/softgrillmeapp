@@ -8,7 +8,8 @@ düşünmeyi öğreten bir iOS uygulamasıdır.
 
 Uygulama 30 günlük doğrusal bir öğrenme yolunu; konu anlatımı, rehberli Kod
 Röntgeni örneği, ders sonu quiz, hata avcılığı ve Sokratik mentor döngüsüyle
-sunar.
+sunar. İçindekiler sekmesi bütün dersleri bölüm veya arama üzerinden serbestçe
+açarken Yol Haritası yeni başlayanlar için önerilen sırayı korur.
 
 ![GrillMe 30 günlük öğrenme yolu](grillme-final-preview.png)
 
@@ -22,6 +23,8 @@ sunar.
 ## Tamamlanan ürün kapsamı
 
 - Temelden çıkış değerlendirmesine uzanan 30 sıralı ders
+- Yol Haritası ile önerilen sıra; İçindekiler ile 30 dersin tamamına serbest
+  erişim, bölüm filtresi ve Türkçe karakterlerden bağımsız arama
 - Değişken, koşul, döngü, fonksiyon, scope, `map`, `filter`, koleksiyon,
   nesne, mimari, debugging, asenkron sıra ve uygulama akışı içerikleri
 - Konu anlatımı → rehberli örnek → farklı kodlu quiz sırasını zorunlu tutan
@@ -131,7 +134,7 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 ## Doğrulama
 
-- 51 Swift Testing testi
+- 54 Swift Testing testi
 - 18 test paketi
 - Genel iOS Simulator derlemesi
 - Release iOS arşivinde `CFBundleIconName = AppIcon` ve 120×120 uygulama ikonu

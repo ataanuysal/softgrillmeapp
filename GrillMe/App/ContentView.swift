@@ -16,18 +16,37 @@ struct ContentView: View {
   }
 
   var body: some View {
-    NavigationStack {
-      LessonMapView(
-        items: catalog.items(completedLessonIDs: progress.completedLessonIDs),
-        dashboard: LearningDashboardSnapshot(
-          progress: progress,
-          totalLessonCount: catalog.lessons.count,
-          asOf: Date()
-        ),
-        onLessonCompleted: complete
-      )
+    TabView {
+      NavigationStack {
+        LessonMapView(
+          items: catalog.items(completedLessonIDs: progress.completedLessonIDs),
+          dashboard: LearningDashboardSnapshot(
+            progress: progress,
+            totalLessonCount: catalog.lessons.count,
+            asOf: Date()
+          ),
+          onLessonCompleted: complete
+        )
+      }
+      .tabItem {
+        Label("Yol Haritası", systemImage: "map.fill")
+      }
+
+      NavigationStack {
+        LessonContentsView(
+          catalog: catalog,
+          completedLessonIDs: progress.completedLessonIDs,
+          onLessonCompleted: complete
+        )
+      }
+      .tabItem {
+        Label("İçindekiler", systemImage: "list.bullet.rectangle.portrait.fill")
+      }
     }
     .tint(AppPalette.mint)
+    .toolbarBackground(AppPalette.panel, for: .tabBar)
+    .toolbarBackground(.visible, for: .tabBar)
+    .toolbarColorScheme(.dark, for: .tabBar)
   }
 
   private func complete(_ result: LessonRunResult) {
@@ -359,6 +378,200 @@ private struct LessonMapView: View {
     .overlay(
       RoundedRectangle(cornerRadius: 20)
         .stroke(AppPalette.indigo.opacity(0.18), style: StrokeStyle(lineWidth: 1, dash: [5]))
+    )
+  }
+}
+
+private struct LessonContentsView: View {
+  let catalog: LessonCatalog
+  let completedLessonIDs: Set<String>
+  let onLessonCompleted: (LessonRunResult) -> Void
+  @State private var searchQuery = ""
+  @State private var selectedSection: CurriculumSection?
+
+  private var sections: [LessonContentsSection] {
+    let matches = catalog.contents(
+      query: searchQuery,
+      completedLessonIDs: completedLessonIDs
+    )
+    guard let selectedSection else { return matches }
+    return matches.filter { $0.section == selectedSection }
+  }
+
+  private var resultCount: Int {
+    sections.reduce(0) { $0 + $1.items.count }
+  }
+
+  var body: some View {
+    ZStack {
+      AppPalette.background
+        .ignoresSafeArea()
+
+      RadialGradient(
+        colors: [AppPalette.indigo.opacity(0.2), .clear],
+        center: .topTrailing,
+        startRadius: 10,
+        endRadius: 420
+      )
+      .ignoresSafeArea()
+
+      ScrollView {
+        VStack(alignment: .leading, spacing: 24) {
+          contentsIntro
+          sectionPicker
+
+          if sections.isEmpty {
+            emptyResults
+          } else {
+            ForEach(sections, id: \.section) { group in
+              lessonSection(group)
+            }
+          }
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 12)
+        .padding(.bottom, 40)
+      }
+      .scrollIndicators(.hidden)
+    }
+    .navigationTitle("İçindekiler")
+    .navigationBarTitleDisplayMode(.large)
+    .toolbarBackground(AppPalette.background, for: .navigationBar)
+    .toolbarBackground(.visible, for: .navigationBar)
+    .toolbarColorScheme(.dark, for: .navigationBar)
+    .searchable(
+      text: $searchQuery,
+      placement: .navigationBarDrawer(displayMode: .always),
+      prompt: "Ders, konu veya kavram ara"
+    )
+  }
+
+  private var contentsIntro: some View {
+    VStack(alignment: .leading, spacing: 12) {
+      Label("SERBEST DERS KATALOĞU", systemImage: "books.vertical.fill")
+        .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+        .tracking(1)
+        .foregroundStyle(AppPalette.mint)
+
+      Text("İstediğin konudan başla")
+        .adaptiveFont(size: 27, weight: .bold, design: .rounded)
+        .foregroundStyle(.white)
+
+      Text(
+        "Tüm 30 ders açık. Konuya göre filtrele, aradığın kavramı bul ve doğrudan derse gir."
+      )
+      .adaptiveFont(size: 15, design: .rounded)
+      .foregroundStyle(AppPalette.secondaryText)
+      .fixedSize(horizontal: false, vertical: true)
+
+      HStack(spacing: 14) {
+        Label("\(resultCount) ders", systemImage: "book.pages")
+        Label("\(CurriculumSection.allCases.count) bölüm", systemImage: "square.grid.2x2")
+      }
+      .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+      .foregroundStyle(AppPalette.amber)
+    }
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .padding(20)
+    .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 24))
+    .overlay(
+      RoundedRectangle(cornerRadius: 24)
+        .stroke(AppPalette.border, lineWidth: 1)
+    )
+  }
+
+  private var sectionPicker: some View {
+    ScrollView(.horizontal) {
+      HStack(spacing: 9) {
+        sectionButton(title: "TÜMÜ", section: nil)
+
+        ForEach(CurriculumSection.allCases, id: \.self) { section in
+          sectionButton(title: section.displayName, section: section)
+        }
+      }
+      .padding(.vertical, 1)
+    }
+    .scrollIndicators(.hidden)
+    .accessibilityLabel("İçindekiler bölüm filtresi")
+  }
+
+  private func sectionButton(
+    title: String,
+    section: CurriculumSection?
+  ) -> some View {
+    let isSelected = selectedSection == section
+    return Button {
+      withAnimation(.snappy) {
+        selectedSection = section
+      }
+    } label: {
+      Text(title)
+        .adaptiveFont(size: 11, weight: .bold, design: .rounded)
+        .padding(.horizontal, 13)
+        .padding(.vertical, 10)
+        .foregroundStyle(isSelected ? AppPalette.background : AppPalette.secondaryText)
+        .background(isSelected ? AppPalette.mint : AppPalette.card, in: Capsule())
+        .overlay(
+          Capsule()
+            .stroke(isSelected ? AppPalette.mint : AppPalette.border, lineWidth: 1)
+        )
+    }
+    .buttonStyle(.plain)
+  }
+
+  private func lessonSection(_ group: LessonContentsSection) -> some View {
+    VStack(alignment: .leading, spacing: 15) {
+      HStack {
+        Text(group.section.displayName)
+          .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+          .tracking(1.1)
+          .foregroundStyle(group.section.accentColor)
+
+        Spacer()
+
+        Text("\(group.items.count) ders")
+          .adaptiveFont(size: 11, weight: .semibold, design: .rounded)
+          .foregroundStyle(AppPalette.tertiaryText)
+      }
+
+      ForEach(group.items, id: \.lesson.id) { item in
+        NavigationLink {
+          XRayLessonView(lesson: item.lesson, onComplete: onLessonCompleted)
+        } label: {
+          LessonRow(item: item)
+        }
+        .buttonStyle(.plain)
+      }
+    }
+  }
+
+  private var emptyResults: some View {
+    VStack(spacing: 12) {
+      Image(systemName: "magnifyingglass")
+        .adaptiveFont(size: 28, weight: .semibold)
+        .foregroundStyle(AppPalette.indigo)
+
+      Text("Bu aramayla eşleşen ders yok")
+        .adaptiveFont(size: 18, weight: .bold, design: .rounded)
+        .foregroundStyle(.white)
+
+      Text("Başka bir konu veya kavram deneyebilirsin.")
+        .adaptiveFont(size: 14, design: .rounded)
+        .foregroundStyle(AppPalette.secondaryText)
+
+      Button("Filtreleri temizle") {
+        searchQuery = ""
+        selectedSection = nil
+      }
+      .adaptiveFont(size: 14, weight: .bold, design: .rounded)
+      .foregroundStyle(AppPalette.mint)
+    }
+    .frame(maxWidth: .infinity)
+    .padding(28)
+    .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 22))
+    .overlay(
+      RoundedRectangle(cornerRadius: 22)
+        .stroke(AppPalette.border, lineWidth: 1)
     )
   }
 }

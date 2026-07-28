@@ -17,7 +17,9 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - Platform iOS, aktif arayüz SwiftUI ve minimum hedef iOS 17'dir.
 - Aktif proje `GrillMe.xcodeproj`, şema `GrillMe`, bundle kimliği
   `com.grillme.learn` değeridir.
-- 30 günlük yol doğrusal ilerler; önceki ders tamamlanmadan sıradaki açılmaz.
+- Yol Haritası doğrusal ilerler; önceki ders tamamlanmadan sıradaki açılmaz.
+- İçindekiler kataloğunda 30 dersin tümü açıktır; bölüm filtresi ve Türkçe
+  karakterlerden bağımsız arama serbest gezinme sağlar.
 - Swift ilk dildir. Dil lensi aynı zihinsel modeli Python ve JavaScript ile
   karşılaştırır.
 - Yanlış cevap ceza değil, görünür yürütme ve açıklama için başlangıçtır.
@@ -50,6 +52,8 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 ### Ürün davranışı
 
 - Kilitli, açık ve tamamlanmış ders haritası
+- Yol Haritası ve İçindekiler arasında kalıcı alt sekme navigasyonu
+- Bütün derslere doğrudan erişim, sekiz bölüm filtresi ve kavram araması
 - Konu anlatımı → rehberli örnek → quiz → geri bildirim/pratik → tamamlama
   döngüsü
 - Akış, bellek, çıktı, çağrı, mimari, hata ve dil lensleri
@@ -66,7 +70,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 
 - `XRayLesson`, `CodeLine`, `TraceStep`, `TransferChallenge`
 - `XRaySession` ve `XRaySessionPhase`
-- `LessonCatalog`, `LessonCatalogItem`, `LessonValidator`
+- `LessonCatalog`, `LessonCatalogItem`, `LessonContentsSection`, `LessonValidator`
 - `CodeLens`, `CallFrame`, `ArchitectureSnapshot`
 - `DebugChallenge`, `DebugSession`
 - `PracticeChallenge`, `AssessmentTask`
@@ -79,7 +83,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 
 ## Önemli dosyalar
 
-- `GrillMe/App/ContentView.swift`: Harita ve bütün ders deneyimi
+- `GrillMe/App/ContentView.swift`: Harita, İçindekiler ve bütün ders deneyimi
 - `GrillMe/App/OnDeviceMentor.swift`: Foundation Models adaptörü ve uygunluk
 - `GrillMe/Core/GrillMeCore.swift`: Ana ders ve oturum modeli
 - `GrillMe/Core/WeekOneLessons.swift`: İlk hafta içeriği
@@ -97,7 +101,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 
 ## Doğrulama durumu
 
-- 51 Swift Testing testi ve 18 test paketi geçmelidir.
+- 54 Swift Testing testi ve 18 test paketi geçmelidir.
 - Genel iOS Simulator hedefi Xcode 26.5 SDK ile derlenir.
 - Release iOS arşivinde birincil ikon adı `AppIcon` ve
   `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.

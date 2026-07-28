@@ -19,16 +19,18 @@ flowchart LR
 
 ## Bilgi mimarisi
 
-Uygulama tek bir öğrenme yolu etrafında düzenlenir:
+Uygulama iki tamamlayıcı giriş biçimi sunar:
 
-1. **Ders haritası:** 30 ders, sekiz bölüm, kilit durumu ve tahmini süre
-2. **İlerleme özeti:** seri, tamamlanan ders, haftalık süre ve doğruluklar
-3. **Konu anlatımı:** hedefi ve kalıcı zihinsel modeli sade Türkçeyle öğretme
-4. **Kod Röntgeni örneği:** aktif satır, bellek, çıktı ve bağlamsal lensler
-5. **Ders sonu quiz:** aynı zihinsel modeli farklı kodda bağımsız kullanma
-6. **Hata avcılığı:** hipotez, satır seçimi ve kanıt
-7. **Pratik/değerlendirme:** isimlendirme, kavram, mimari ve capstone görevleri
-8. **Sokratik mentor:** cevabı vermeden öğrencinin açıklamasını ilerletme
+1. **Yol Haritası:** 30 ders, sekiz bölüm, önerilen sıra, kilit durumu ve süre
+2. **İçindekiler:** tüm derslere serbest erişim, bölüm filtresi ve Türkçe
+   karakterlerden bağımsız kavram araması
+3. **İlerleme özeti:** seri, tamamlanan ders, haftalık süre ve doğruluklar
+4. **Konu anlatımı:** hedefi ve kalıcı zihinsel modeli sade Türkçeyle öğretme
+5. **Kod Röntgeni örneği:** aktif satır, bellek, çıktı ve bağlamsal lensler
+6. **Ders sonu quiz:** aynı zihinsel modeli farklı kodda bağımsız kullanma
+7. **Hata avcılığı:** hipotez, satır seçimi ve kanıt
+8. **Pratik/değerlendirme:** isimlendirme, kavram, mimari ve capstone görevleri
+9. **Sokratik mentor:** cevabı vermeden öğrencinin açıklamasını ilerletme
 
 ## Müfredat yapısı
 
@@ -93,6 +95,8 @@ stateDiagram-v2
 
 Kurallar:
 
+- Yol Haritası sırayı önerir ve kilitleri korur; İçindekiler bütün dersleri açar.
+- Her iki giriş biçimi de aynı ders ekranını ve aynı ilerleme kaydını kullanır.
 - Quiz, konu anlatımı ve rehberli örnek tamamlanmadan açılamaz.
 - Quiz kodu rehberli örneğin kodundan farklıdır.
 - Yanlış quiz cevabı açıklayıcı geri bildirimi engellemez.
