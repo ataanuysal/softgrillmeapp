@@ -2,15 +2,15 @@ import Testing
 
 @testable import GrillMeCore
 
-@Suite("30 günlük çekirdek yol")
+@Suite("40 derslik öğrenme yolu")
 struct RoadmapCurriculumTests {
-  @Test("Otuz dersi benzersiz kimlik ve kesintisiz sırayla sunar")
-  func containsThirtyUniqueOrderedLessons() {
+  @Test("Kırk dersi benzersiz kimlik ve kesintisiz sırayla sunar")
+  func containsFortyUniqueOrderedLessons() {
     let lessons = LessonCatalog.standard.lessons
 
-    #expect(lessons.count == 30)
-    #expect(Set(lessons.map(\.id)).count == 30)
-    #expect(lessons.map(\.order) == Array(1...30))
+    #expect(lessons.count == 40)
+    #expect(Set(lessons.map(\.id)).count == 40)
+    #expect(lessons.map(\.order) == Array(1...40))
   }
 
   @Test("Yayınlanan bütün dersler veri sözleşmesini karşılar")
@@ -38,8 +38,65 @@ struct RoadmapCurriculumTests {
         .asynchronous,
         .appArchitecture,
         .assessment,
+        .softwareTesting,
+        .technicalAnalysis,
       ]
     )
+  }
+
+  @Test("Yazılım testi ünitesi temel test stratejilerini kapsar")
+  func softwareTestingUnitCoversCoreStrategies() {
+    let lessons = LessonCatalog.standard.lessons.filter {
+      $0.section == .softwareTesting
+    }
+
+    #expect(lessons.map(\.order) == Array(31...35))
+    #expect(
+      lessons.map(\.id) == [
+        "test-anatomy",
+        "unit-testing",
+        "boundary-testing",
+        "test-doubles",
+        "integration-regression",
+      ]
+    )
+  }
+
+  @Test("Teknik analiz ünitesi isteği uygulanabilir plana dönüştürür")
+  func technicalAnalysisUnitCoversPlanningSkills() {
+    let lessons = LessonCatalog.standard.lessons.filter {
+      $0.section == .technicalAnalysis
+    }
+
+    #expect(lessons.map(\.order) == Array(36...40))
+    #expect(
+      lessons.map(\.id) == [
+        "acceptance-criteria",
+        "system-flow",
+        "data-contracts",
+        "impact-risk",
+        "technical-analysis-capstone",
+      ]
+    )
+  }
+
+  @Test("Uzmanlaşma üniteleri her derste yeni durumla ölçülür")
+  func specializationLessonsHaveTransferChallenges() {
+    let specializationLessons = LessonCatalog.standard.lessons.filter {
+      $0.section == .softwareTesting || $0.section == .technicalAnalysis
+    }
+
+    #expect(specializationLessons.count == 10)
+    #expect(specializationLessons.allSatisfy { $0.transferChallenge != nil })
+  }
+
+  @Test("Bağımlılık odaklı uzmanlaşma dersleri mimari lensini açar")
+  func specializationDependencyLessonsExposeArchitectureLens() {
+    let lessons = lessonsByID
+
+    for id in ["test-doubles", "impact-risk"] {
+      #expect(lessons[id]?.availableLenses.contains(.architecture) == true)
+    }
   }
 
   @Test("Fonksiyon ve veri akışı dersleri çağrı lensiyle izlenebilir")

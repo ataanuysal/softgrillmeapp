@@ -20,6 +20,7 @@ struct ContentView: View {
       NavigationStack {
         LessonMapView(
           items: catalog.items(completedLessonIDs: progress.completedLessonIDs),
+          totalLessonCount: catalog.lessons.count,
           dashboard: LearningDashboardSnapshot(
             progress: progress,
             totalLessonCount: catalog.lessons.count,
@@ -58,6 +59,7 @@ struct ContentView: View {
 
 private struct LessonMapView: View {
   let items: [LessonCatalogItem]
+  let totalLessonCount: Int
   let dashboard: LearningDashboardSnapshot
   let onLessonCompleted: (LessonRunResult) -> Void
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -347,7 +349,11 @@ private struct LessonMapView: View {
       LessonRow(item: item)
     } else {
       NavigationLink {
-        XRayLessonView(lesson: item.lesson, onComplete: onLessonCompleted)
+        XRayLessonView(
+          lesson: item.lesson,
+          totalLessonCount: totalLessonCount,
+          onComplete: onLessonCompleted
+        )
       } label: {
         LessonRow(item: item)
       }
@@ -367,7 +373,7 @@ private struct LessonMapView: View {
         Text("Yolculuk devam edecek")
           .adaptiveFont(size: 15, weight: .bold, design: .rounded)
           .foregroundStyle(.white)
-        Text("Temelden uygulama mimarisine uzanan 30 ders hazır.")
+        Text("Temelden teknik analize uzanan \(totalLessonCount) ders hazır.")
           .adaptiveFont(size: 13, design: .rounded)
           .foregroundStyle(AppPalette.secondaryText)
       }
@@ -458,7 +464,7 @@ private struct LessonContentsView: View {
         .foregroundStyle(.white)
 
       Text(
-        "Tüm 30 ders açık. Konuya göre filtrele, aradığın kavramı bul ve doğrudan derse gir."
+        "Tüm \(catalog.lessons.count) ders açık. Konuya göre filtrele, aradığın kavramı bul ve doğrudan derse gir."
       )
       .adaptiveFont(size: 15, design: .rounded)
       .foregroundStyle(AppPalette.secondaryText)
@@ -536,7 +542,11 @@ private struct LessonContentsView: View {
 
       ForEach(group.items, id: \.lesson.id) { item in
         NavigationLink {
-          XRayLessonView(lesson: item.lesson, onComplete: onLessonCompleted)
+          XRayLessonView(
+            lesson: item.lesson,
+            totalLessonCount: catalog.lessons.count,
+            onComplete: onLessonCompleted
+          )
         } label: {
           LessonRow(item: item)
         }
@@ -680,6 +690,7 @@ private struct LessonRow: View {
 
 private struct XRayLessonView: View {
   let lesson: XRayLesson
+  let totalLessonCount: Int
   let onComplete: (LessonRunResult) -> Void
   @Environment(\.dismiss) private var dismiss
   @State private var journey: LessonJourney
@@ -694,8 +705,13 @@ private struct XRayLessonView: View {
   @State private var isMentorResponding = false
   @State private var assessmentExplanation = ""
 
-  init(lesson: XRayLesson, onComplete: @escaping (LessonRunResult) -> Void) {
+  init(
+    lesson: XRayLesson,
+    totalLessonCount: Int,
+    onComplete: @escaping (LessonRunResult) -> Void
+  ) {
     self.lesson = lesson
+    self.totalLessonCount = totalLessonCount
     self.onComplete = onComplete
     _journey = State(initialValue: LessonJourney(lesson: lesson))
     _run = State(initialValue: LessonRun(lessonID: lesson.id, startedAt: Date()))
@@ -759,7 +775,7 @@ private struct XRayLessonView: View {
 
         Spacer()
 
-        Label("\(lesson.order) / 30", systemImage: "flame.fill")
+        Label("\(lesson.order) / \(totalLessonCount)", systemImage: "flame.fill")
           .adaptiveFont(size: 13, weight: .semibold, design: .rounded)
           .foregroundStyle(AppPalette.amber)
           .padding(.horizontal, 12)
@@ -780,11 +796,16 @@ private struct XRayLessonView: View {
                 endPoint: .trailing
               )
             )
-            .frame(width: max(18, geometry.size.width * Double(lesson.order) / 30))
+            .frame(
+              width: max(
+                18,
+                geometry.size.width * Double(lesson.order) / Double(totalLessonCount)
+              )
+            )
         }
       }
       .frame(height: 5)
-      .accessibilityLabel("30 günlük yolculuğun \(lesson.order). günü")
+      .accessibilityLabel("\(totalLessonCount) derslik yolculuğun \(lesson.order). dersi")
     }
   }
 
@@ -1786,6 +1807,8 @@ extension CurriculumSection {
     case .asynchronous: "ASENKRON DÜŞÜNME"
     case .appArchitecture: "GERÇEK UYGULAMA AKIŞI"
     case .assessment: "ÇIKIŞ DEĞERLENDİRMESİ"
+    case .softwareTesting: "YAZILIM TESTİ"
+    case .technicalAnalysis: "TEKNİK ANALİZ"
     }
   }
 
@@ -1797,6 +1820,10 @@ extension CurriculumSection {
       AppPalette.indigo
     case .debugging, .assessment:
       AppPalette.amber
+    case .softwareTesting:
+      AppPalette.mint
+    case .technicalAnalysis:
+      AppPalette.indigo
     }
   }
 }

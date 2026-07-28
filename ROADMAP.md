@@ -1,7 +1,7 @@
 # Ürün Yol Haritası
 
 Yol haritası tarih taahhüdü değil, risk ve öğrenme değerine göre sıralanmış
-teslim planıdır. 28 Temmuz 2026 itibarıyla Aşama 0–7'nin ürün ve mühendislik
+teslim planıdır. 28 Temmuz 2026 itibarıyla Aşama 0–8'in ürün ve mühendislik
 kapsamı tamamlanmıştır.
 
 ## Durum anahtarı
@@ -165,11 +165,35 @@ Kabul sonucu: iOS 26 ve uygun Apple Intelligence cihazlarında Foundation Models
 kullanılıyor; diğer tüm iOS 17+ sistemlerde ana öğrenme döngüsü yerel mentorla
 eksiksiz çalışıyor.
 
+## Aşama 8 — Yazılım testi ve teknik analiz ✅
+
+Amaç: Temel kod okuma becerisini yazılım kalitesi ve uygulanabilir teknik
+planlama becerisine taşımak.
+
+Yazılım testi ünitesi:
+
+- ✅ Arrange–Act–Assert ile testin anatomisi
+- ✅ Davranışı izole eden unit test
+- ✅ Sınır değer testi
+- ✅ Test double ile kontrol edilemeyen bağımlılığı değiştirme
+- ✅ Integration ve regression ayrımı
+
+Teknik analiz ünitesi:
+
+- ✅ Ölçülebilir kabul kriterleri
+- ✅ Uçtan uca sistem akışı
+- ✅ Veri sözleşmeleri ve garantiler
+- ✅ Değişiklik etki ve risk analizi
+- ✅ İstekten uygulanabilir plana teknik analiz capstone'u
+
+Kabul sonucu: 30 derslik temel yol korunuyor; 31–40. dersler Yol Haritası'nda
+sırayla, İçindekiler'de ise doğrudan erişilebilir biçimde sunuluyor.
+
 ## Sürekli kalite hattı ✅
 
 - ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
-- ✅ 30 dersin veri sözleşmesi otomatik doğrulanıyor.
-- ✅ 54 Swift Testing testi ve 18 test paketi geçiyor.
+- ✅ 40 dersin veri sözleşmesi otomatik doğrulanıyor.
+- ✅ 58 Swift Testing testi ve 18 test paketi geçiyor.
 - ✅ Swift format/lint kontrolü yapılıyor.
 - ✅ Genel iOS Simulator hedefi derleniyor.
 - ✅ Release arşivinde `AppIcon` adı ve 120×120 dağıtım ikonu doğrulanıyor.

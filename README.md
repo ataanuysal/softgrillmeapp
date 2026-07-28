@@ -6,10 +6,11 @@ düşünmeyi öğreten bir iOS uygulamasıdır.
 > Önce konuyu öğren, çalışan bir örneği bilgisayarın adımlarıyla izle ve en son
 > öğrendiğini farklı kodlu quizde uygula.
 
-Uygulama 30 günlük doğrusal bir öğrenme yolunu; konu anlatımı, rehberli Kod
-Röntgeni örneği, ders sonu quiz, hata avcılığı ve Sokratik mentor döngüsüyle
-sunar. İçindekiler sekmesi bütün dersleri bölüm veya arama üzerinden serbestçe
-açarken Yol Haritası yeni başlayanlar için önerilen sırayı korur.
+Uygulama 30 derslik temel yolu ve ardından gelen 10 derslik uzmanlaşma yolunu;
+konu anlatımı, rehberli Kod Röntgeni örneği, ders sonu quiz, hata avcılığı ve
+Sokratik mentor döngüsüyle sunar. İçindekiler sekmesi bütün dersleri bölüm veya
+arama üzerinden serbestçe açarken Yol Haritası yeni başlayanlar için önerilen
+sırayı korur.
 
 ![GrillMe 30 günlük öğrenme yolu](grillme-final-preview.png)
 
@@ -22,8 +23,9 @@ açarken Yol Haritası yeni başlayanlar için önerilen sırayı korur.
 
 ## Tamamlanan ürün kapsamı
 
-- Temelden çıkış değerlendirmesine uzanan 30 sıralı ders
-- Yol Haritası ile önerilen sıra; İçindekiler ile 30 dersin tamamına serbest
+- Temelden çıkış değerlendirmesine uzanan 30 ders ve iki uzmanlaşma ünitesindeki
+  10 ders
+- Yol Haritası ile önerilen sıra; İçindekiler ile 40 dersin tamamına serbest
   erişim, bölüm filtresi ve Türkçe karakterlerden bağımsız arama
 - Değişken, koşul, döngü, fonksiyon, scope, `map`, `filter`, koleksiyon,
   nesne, mimari, debugging, asenkron sıra ve uygulama akışı içerikleri
@@ -36,6 +38,10 @@ açarken Yol Haritası yeni başlayanlar için önerilen sırayı korur.
 - Swift, Python ve JavaScript karşılaştırması
 - 20 satırlık çıkış değerlendirmesi: çıktı, değer izi, çağrı sırası, hata
   noktası ve serbest açıklama görevleri
+- Yazılım testi: Arrange–Act–Assert, unit test, sınır değer, test double,
+  integration ve regression
+- Teknik analiz: kabul kriteri, sistem akışı, veri sözleşmesi, etki/risk analizi
+  ve uygulanabilir teknik plan
 - Ders süresi, ilk/tekrar tahmin doğruluğu, aktarım doğruluğu, günlük seri,
   haftalık özet ve başlangıç/çıkış gelişim raporu
 - Cihaz üzerinde JSON tabanlı, eski kayıtlarla uyumlu ilerleme
@@ -134,7 +140,7 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 ## Doğrulama
 
-- 54 Swift Testing testi
+- 58 Swift Testing testi
 - 18 test paketi
 - Genel iOS Simulator derlemesi
 - Release iOS arşivinde `CFBundleIconName = AppIcon` ve 120×120 uygulama ikonu

@@ -21,7 +21,7 @@ flowchart LR
 
 Uygulama iki tamamlayıcı giriş biçimi sunar:
 
-1. **Yol Haritası:** 30 ders, sekiz bölüm, önerilen sıra, kilit durumu ve süre
+1. **Yol Haritası:** 40 ders, on bölüm, önerilen sıra, kilit durumu ve süre
 2. **İçindekiler:** tüm derslere serbest erişim, bölüm filtresi ve Türkçe
    karakterlerden bağımsız kavram araması
 3. **İlerleme özeti:** seri, tamamlanan ders, haftalık süre ve doğruluklar
@@ -44,6 +44,8 @@ Uygulama iki tamamlayıcı giriş biçimi sunar:
 | Asenkron | 28 | Olayların gerçekleşme sırası |
 | Uygulama mimarisi | 29 | Gerçek uygulamadaki veri ve çağrı akışı |
 | Değerlendirme | 30 | 20 satırlık bağımsız kod okuma görevi |
+| Yazılım testi | 31–35 | Davranışı izole etme, sınırları ve gerilemeyi doğrulama |
+| Teknik analiz | 36–40 | İsteği ölçülebilir, riskleri görünür bir uygulama planına çevirme |
 
 ## Kod Röntgeni lensleri
 

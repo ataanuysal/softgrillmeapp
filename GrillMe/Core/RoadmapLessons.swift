@@ -870,6 +870,343 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     transferAnswer: "Uygun",
     estimatedMinutes: 10
   ),
+  RoadmapBlueprint(
+    id: "test-anatomy",
+    order: 31,
+    section: .softwareTesting,
+    topic: "TESTİN ANATOMİSİ",
+    title: "Arrange, Act, Assert",
+    objective: "Bir testi hazırlık, çalıştırma ve doğrulama adımlarına ayır.",
+    takeaway:
+      "Okunabilir bir test önce girdiyi hazırlar, davranışı çalıştırır ve tek bir beklentiyi doğrular.",
+    code: [
+      "func topla(_ a: Int, _ b: Int) -> Int { a + b }",
+      "let beklenen = 5",
+      "let gercek = topla(2, 3)",
+      "print(gercek == beklenen)",
+    ],
+    choices: ["true", "false", "5"],
+    answer: "true",
+    memory: ["beklenen": "5", "gerçek": "5"],
+    transferCode: [
+      "let beklenen = 9",
+      "let gercek = topla(4, 5)",
+      "print(gercek == beklenen)",
+    ],
+    transferChoices: ["true", "false", "9"],
+    transferAnswer: "true",
+    estimatedMinutes: 7
+  ),
+  RoadmapBlueprint(
+    id: "unit-testing",
+    order: 32,
+    section: .softwareTesting,
+    topic: "UNIT TEST",
+    title: "Bir davranışı izole et",
+    objective: "Tek bir fonksiyonun davranışını dış sistemlere ihtiyaç duymadan doğrula.",
+    takeaway:
+      "Unit test küçük ve izole bir davranışı ölçer; başarısız olduğunda sorunun yerini daraltır.",
+    code: [
+      "func indirimliFiyat(_ fiyat: Int) -> Int {",
+      "    fiyat - 20",
+      "}",
+      "let sonuc = indirimliFiyat(100)",
+      "print(sonuc == 80)",
+    ],
+    choices: ["true", "false", "80"],
+    answer: "true",
+    memory: ["girdi": "100", "sonuç": "80"],
+    transferCode: [
+      "let sonuc = indirimliFiyat(70)",
+      "print(sonuc == 50)",
+    ],
+    transferChoices: ["true", "false", "50"],
+    transferAnswer: "true",
+    estimatedMinutes: 7
+  ),
+  RoadmapBlueprint(
+    id: "boundary-testing",
+    order: 33,
+    section: .softwareTesting,
+    topic: "SINIR DEĞER TESTİ",
+    title: "Tam sınırda ne olur?",
+    objective: "Bir kuralın değiştiği sınırın hemen altını, kendisini ve üstünü test et.",
+    takeaway:
+      "Hatalar çoğunlukla karar sınırlarında saklanır; 17, 18 ve 19 gibi komşu değerler birlikte düşünülür.",
+    code: [
+      "func kayitOlabilir(yas: Int) -> Bool {",
+      "    yas >= 18",
+      "}",
+      "print(kayitOlabilir(yas: 18))",
+    ],
+    choices: ["true", "false", "18"],
+    answer: "true",
+    memory: ["yaş": "18", "alt sınır": "18"],
+    practices: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "18 alt sınırı için en değerli komşu test hangisidir?",
+        choices: ["17", "30", "100"],
+        correctAnswer: "17",
+        explanation: "Sınırın hemen altındaki 17, karşılaştırmanın iki tarafını ayırır."
+      )
+    ],
+    transferCode: [
+      "print(kayitOlabilir(yas: 17))"
+    ],
+    transferChoices: ["true", "false", "17"],
+    transferAnswer: "false",
+    estimatedMinutes: 8
+  ),
+  RoadmapBlueprint(
+    id: "test-doubles",
+    order: 34,
+    section: .softwareTesting,
+    topic: "TEST DOUBLE",
+    title: "Kontrol edemediğini değiştir",
+    objective: "Zaman gibi dış bir bağımlılığı sabit bir test double ile kontrol et.",
+    takeaway:
+      "Test double, dış bağımlılığın kontrollü bir temsilidir; testin hızlı ve tekrarlanabilir kalmasını sağlar.",
+    code: [
+      "protocol SaatSaglayan { var saat: Int { get } }",
+      "struct SabitSaat: SaatSaglayan { let saat: Int }",
+      "func mesaj(saat: SaatSaglayan) -> String {",
+      "    saat.saat < 12 ? \"Günaydın\" : \"Merhaba\"",
+      "}",
+      "print(mesaj(saat: SabitSaat(saat: 9)))",
+    ],
+    choices: ["Günaydın", "Merhaba", "9"],
+    answer: "Günaydın",
+    memory: ["saat": "9", "mesaj": "Günaydın"],
+    architecture: dependencySnapshot(
+      owner: "mesaj",
+      contract: "SaatSaglayan",
+      implementation: "SabitSaat"
+    ),
+    transferCode: [
+      "print(mesaj(saat: SabitSaat(saat: 15)))"
+    ],
+    transferChoices: ["Günaydın", "Merhaba", "15"],
+    transferAnswer: "Merhaba",
+    estimatedMinutes: 9
+  ),
+  RoadmapBlueprint(
+    id: "integration-regression",
+    order: 35,
+    section: .softwareTesting,
+    topic: "INTEGRATION VE REGRESSION",
+    title: "Parçalar birlikte çalışıyor mu?",
+    objective: "Birden fazla parçanın anlaşmasını ve eski davranışın korunmasını doğrula.",
+    takeaway:
+      "Integration testi parçaların birlikte çalışmasını, regression testi daha önce çalışan davranışın bozulmamasını korur.",
+    code: [
+      "struct Depo {",
+      "    func sayilar() -> [Int] { [2, 3] }",
+      "}",
+      "func toplam(depo: Depo) -> Int {",
+      "    depo.sayilar().reduce(0, +)",
+      "}",
+      "print(toplam(depo: Depo()) == 5)",
+    ],
+    choices: ["true", "false", "5"],
+    answer: "true",
+    memory: ["depo": "[2, 3]", "toplam": "5"],
+    callStack: [
+      CallFrame(functionName: "program", locals: [:]),
+      CallFrame(functionName: "toplam", locals: ["depo": "Depo"]),
+      CallFrame(functionName: "Depo.sayilar", locals: [:]),
+    ],
+    transferCode: [
+      "struct BosDepo { func sayilar() -> [Int] { [] } }",
+      "print(BosDepo().sayilar().reduce(0, +) == 0)",
+    ],
+    transferChoices: ["true", "false", "Hata"],
+    transferAnswer: "true",
+    estimatedMinutes: 9
+  ),
+  RoadmapBlueprint(
+    id: "acceptance-criteria",
+    order: 36,
+    section: .technicalAnalysis,
+    topic: "KABUL KRİTERİ",
+    title: "İsteği ölçülebilir hale getir",
+    objective: "Belirsiz bir ürün isteğini örneklerle doğrulanabilir kurala dönüştür.",
+    takeaway:
+      "İyi kabul kriteri belirli bir girdi, gözlenebilir davranış ve net bir beklenen sonuç taşır.",
+    code: [
+      "func kargoUcreti(sepet: Int) -> Int {",
+      "    sepet >= 500 ? 0 : 50",
+      "}",
+      "let kriterSaglandi = kargoUcreti(sepet: 500) == 0",
+      "print(kriterSaglandi)",
+    ],
+    choices: ["true", "false", "500"],
+    answer: "true",
+    memory: ["sepet": "500", "kargo": "0"],
+    transferCode: [
+      "print(kargoUcreti(sepet: 499) == 50)"
+    ],
+    transferChoices: ["true", "false", "50"],
+    transferAnswer: "true",
+    estimatedMinutes: 8
+  ),
+  RoadmapBlueprint(
+    id: "system-flow",
+    order: 37,
+    section: .technicalAnalysis,
+    topic: "SİSTEM AKIŞI",
+    title: "Eylem hangi adımlardan geçer?",
+    objective: "Kullanıcı eylemini arayüzden iş kuralına ve sonuca kadar sırala.",
+    takeaway:
+      "Teknik analiz, mutlu yol kadar hata yolunu da girişten son kullanıcı sonucuna kadar görünür kılar.",
+    code: [
+      "func kimlikDogrula(token: String) -> Bool { !token.isEmpty }",
+      "func profilYukle(girisVar: Bool) -> String {",
+      "    girisVar ? \"Profil\" : \"Giriş gerekli\"",
+      "}",
+      "let girisVar = kimlikDogrula(token: \"abc\")",
+      "print(profilYukle(girisVar: girisVar))",
+    ],
+    choices: ["Profil", "Giriş gerekli", "abc"],
+    answer: "Profil",
+    memory: ["token": "abc", "giriş": "true"],
+    callStack: [
+      CallFrame(functionName: "ekran", locals: ["token": "abc"]),
+      CallFrame(functionName: "kimlikDogrula", locals: ["token": "abc"]),
+      CallFrame(functionName: "profilYukle", locals: ["girisVar": "true"]),
+    ],
+    transferCode: [
+      "let girisVar = kimlikDogrula(token: \"\")",
+      "print(profilYukle(girisVar: girisVar))",
+    ],
+    transferChoices: ["Profil", "Giriş gerekli", "Boş"],
+    transferAnswer: "Giriş gerekli",
+    estimatedMinutes: 8
+  ),
+  RoadmapBlueprint(
+    id: "data-contracts",
+    order: 38,
+    section: .technicalAnalysis,
+    topic: "VERİ SÖZLEŞMESİ",
+    title: "Hangi veri garanti ediliyor?",
+    objective: "Alanların türünü, zorunluluğunu ve eksik veri davranışını analiz et.",
+    takeaway:
+      "Veri sözleşmesi alanların anlamını ve yokluk davranışını açıklar; istemci varsayım yapmak zorunda kalmaz.",
+    code: [
+      "struct KullaniciDTO { let ad: String? }",
+      "func baslik(_ kullanici: KullaniciDTO) -> String {",
+      "    kullanici.ad ?? \"Misafir\"",
+      "}",
+      "print(baslik(KullaniciDTO(ad: nil)))",
+    ],
+    choices: ["Misafir", "nil", "Hata"],
+    answer: "Misafir",
+    memory: ["ad": "nil", "başlık": "Misafir"],
+    transferCode: [
+      "print(baslik(KullaniciDTO(ad: \"Ada\")))"
+    ],
+    transferChoices: ["Ada", "Misafir", "nil"],
+    transferAnswer: "Ada",
+    estimatedMinutes: 8
+  ),
+  RoadmapBlueprint(
+    id: "impact-risk",
+    order: 39,
+    section: .technicalAnalysis,
+    topic: "ETKİ VE RİSK ANALİZİ",
+    title: "Bu değişiklik nereyi etkiler?",
+    objective: "Bir davranış değişikliğinin bağımlı sözleşme ve çağrılara etkisini çıkar.",
+    takeaway:
+      "Etki analizi değişen sözleşmeyi, onu kullanan bileşenleri, veri geçişini ve geri dönüş riskini birlikte inceler.",
+    code: [
+      "protocol Vergi { func hesapla(fiyat: Int) -> Int }",
+      "struct SabitVergi: Vergi {",
+      "    func hesapla(fiyat: Int) -> Int { 20 }",
+      "}",
+      "func toplam(fiyat: Int, vergi: Vergi) -> Int {",
+      "    fiyat + vergi.hesapla(fiyat: fiyat)",
+      "}",
+      "print(toplam(fiyat: 100, vergi: SabitVergi()))",
+    ],
+    choices: ["100", "120", "20"],
+    answer: "120",
+    memory: ["fiyat": "100", "vergi": "20", "toplam": "120"],
+    architecture: dependencySnapshot(
+      owner: "toplam",
+      contract: "Vergi",
+      implementation: "SabitVergi"
+    ),
+    transferCode: [
+      "print(toplam(fiyat: 80, vergi: SabitVergi()))"
+    ],
+    transferChoices: ["80", "100", "20"],
+    transferAnswer: "100",
+    estimatedMinutes: 9
+  ),
+  RoadmapBlueprint(
+    id: "technical-analysis-capstone",
+    order: 40,
+    section: .technicalAnalysis,
+    topic: "TEKNİK ANALİZ MEYDAN OKUMASI",
+    title: "İstekten uygulanabilir plana",
+    objective:
+      "Kabul kriteri, sistem akışı, veri, bağımlılık, test ve riskleri tek analizde birleştir.",
+    takeaway:
+      "Uygulanabilir teknik plan; kapsamı, akışı, veri sözleşmesini, bağımlılıkları, riskleri ve doğrulama stratejisini birlikte taşır.",
+    code: [
+      "struct Siparis { let adet: Int }",
+      "protocol Stok { func varMi(adet: Int) -> Bool }",
+      "struct SabitStok: Stok {",
+      "    let mevcut: Bool",
+      "    func varMi(adet: Int) -> Bool { mevcut }",
+      "}",
+      "func tamamla(_ siparis: Siparis, stok: Stok) -> String {",
+      "    guard siparis.adet > 0 else { return \"Geçersiz adet\" }",
+      "    guard stok.varMi(adet: siparis.adet) else { return \"Stok yok\" }",
+      "    return \"Onay\"",
+      "}",
+      "let siparis = Siparis(adet: 2)",
+      "print(tamamla(siparis, stok: SabitStok(mevcut: true)))",
+    ],
+    choices: ["Onay", "Stok yok", "Geçersiz adet"],
+    answer: "Onay",
+    memory: ["adet": "2", "stok": "true", "sonuç": "Onay"],
+    callStack: [
+      CallFrame(functionName: "program", locals: ["adet": "2"]),
+      CallFrame(functionName: "tamamla", locals: ["siparis.adet": "2"]),
+      CallFrame(functionName: "Stok.varMi", locals: ["adet": "2"]),
+    ],
+    architecture: dependencySnapshot(
+      owner: "tamamla",
+      contract: "Stok",
+      implementation: "SabitStok"
+    ),
+    assessmentTasks: [
+      AssessmentTask(
+        kind: .outputPrediction,
+        prompt: "Mutlu yol ve iki hata yolunun sonuçlarını yaz."
+      ),
+      AssessmentTask(
+        kind: .callOrder,
+        prompt: "Siparişten stok kontrolüne uzanan çağrı sırasını açıkla."
+      ),
+      AssessmentTask(
+        kind: .errorLocation,
+        prompt: "Sıfır adet ve stok yok risklerini hangi satırların karşıladığını göster."
+      ),
+      AssessmentTask(
+        kind: .freeExplanation,
+        prompt: "Bu özellik için kabul kriteri ve test planını kendi cümlenle yaz."
+      ),
+    ],
+    transferCode: [
+      "let siparis = Siparis(adet: 1)",
+      "print(tamamla(siparis, stok: SabitStok(mevcut: false)))",
+    ],
+    transferChoices: ["Onay", "Stok yok", "Geçersiz adet"],
+    transferAnswer: "Stok yok",
+    estimatedMinutes: 10
+  ),
 ]
 
 private func objectSnapshot(
@@ -970,6 +1307,28 @@ private func capstoneSnapshot() -> ArchitectureSnapshot {
     relationships: [
       ArchitectureRelationship(sourceID: "plan", targetID: "gorev1", label: "tutar"),
       ArchitectureRelationship(sourceID: "plan", targetID: "gorev2", label: "tutar"),
+    ]
+  )
+}
+
+private func dependencySnapshot(
+  owner: String,
+  contract: String,
+  implementation: String
+) -> ArchitectureSnapshot {
+  ArchitectureSnapshot(
+    entities: [
+      ArchitectureEntity(id: "owner", label: owner, kind: .function),
+      ArchitectureEntity(id: "contract", label: contract, kind: .class),
+      ArchitectureEntity(id: "implementation", label: implementation, kind: .instance),
+    ],
+    relationships: [
+      ArchitectureRelationship(sourceID: "owner", targetID: "contract", label: "kullanır"),
+      ArchitectureRelationship(
+        sourceID: "implementation",
+        targetID: "contract",
+        label: "uygular"
+      ),
     ]
   )
 }

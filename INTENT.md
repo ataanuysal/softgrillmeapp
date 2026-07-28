@@ -123,6 +123,16 @@ ve ders başına tur bütçesi korunur.
 - Ders ilerlemesinin cihazda saklanması
 - Erişilebilir ve tek elle kullanılabilir iPhone deneyimi
 
+Temel yolun ardından gelen uzmanlaşma kapsamı:
+
+- Yazılım testinin Arrange–Act–Assert zihinsel modeli
+- Unit test, sınır değer ve test double kullanımı
+- Integration ve regression ayrımı
+- İsteği ölçülebilir kabul kriterlerine dönüştürme
+- Sistem akışı ve veri sözleşmesi çıkarma
+- Değişikliğin etki ve risklerini belirleme
+- Teknik analiz bulgularını uygulanabilir plana dönüştürme
+
 ## Şimdilik kapsam dışı
 
 - Tam özellikli kod editörü veya derleyici

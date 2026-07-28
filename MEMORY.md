@@ -18,7 +18,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - Aktif proje `GrillMe.xcodeproj`, şema `GrillMe`, bundle kimliği
   `com.grillme.learn` değeridir.
 - Yol Haritası doğrusal ilerler; önceki ders tamamlanmadan sıradaki açılmaz.
-- İçindekiler kataloğunda 30 dersin tümü açıktır; bölüm filtresi ve Türkçe
+- İçindekiler kataloğunda 40 dersin tümü açıktır; bölüm filtresi ve Türkçe
   karakterlerden bağımsız arama serbest gezinme sağlar.
 - Swift ilk dildir. Dil lensi aynı zihinsel modeli Python ve JavaScript ile
   karşılaştırır.
@@ -37,9 +37,11 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 
 ### Müfredat
 
-- 30 benzersiz, sıralı ders
+- 30 derslik temel yol ve 10 derslik uzmanlaşma yolu; toplam 40 benzersiz,
+  sıralı ders
 - Bölümler: temeller, fonksiyonlar, koleksiyonlar, nesneler, hata ayıklama,
-  asenkron düşünme, uygulama mimarisi ve çıkış değerlendirmesi
+  asenkron düşünme, uygulama mimarisi, çıkış değerlendirmesi, yazılım testi ve
+  teknik analiz
 - İlk hafta için yedi ayrıntılı ders ve karışık meydan okuma
 - Fonksiyon çağrı sırası, scope, pure/side effect, `map` ve `filter`
 - Array, dictionary, index, key ve koleksiyon meydan okuması
@@ -48,12 +50,16 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - Syntax/runtime/logic/edge case/optional/stack trace ve hipotezli debugging
 - Asenkron sıra ve gerçek uygulama akışı
 - 20 satırlık capstone ve beş parçalı çıkış değerlendirmesi
+- Arrange–Act–Assert, unit test, sınır değer, test double, integration ve
+  regression
+- Kabul kriteri, sistem akışı, veri sözleşmesi, etki/risk analizi ve teknik
+  analiz capstone'u
 
 ### Ürün davranışı
 
 - Kilitli, açık ve tamamlanmış ders haritası
 - Yol Haritası ve İçindekiler arasında kalıcı alt sekme navigasyonu
-- Bütün derslere doğrudan erişim, sekiz bölüm filtresi ve kavram araması
+- Bütün derslere doğrudan erişim, on bölüm filtresi ve kavram araması
 - Konu anlatımı → rehberli örnek → quiz → geri bildirim/pratik → tamamlama
   döngüsü
 - Akış, bellek, çıktı, çağrı, mimari, hata ve dil lensleri
@@ -87,7 +93,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - `GrillMe/App/OnDeviceMentor.swift`: Foundation Models adaptörü ve uygunluk
 - `GrillMe/Core/GrillMeCore.swift`: Ana ders ve oturum modeli
 - `GrillMe/Core/WeekOneLessons.swift`: İlk hafta içeriği
-- `GrillMe/Core/RoadmapLessons.swift`: 8–30. derslerin veri tabanlı tanımı
+- `GrillMe/Core/RoadmapLessons.swift`: 8–40. derslerin veri tabanlı tanımı
 - `GrillMe/Core/AdvancedLenses.swift`: Çağrı, mimari, hata ve görev modelleri
 - `GrillMe/Core/LanguageBridge.swift`: Dil karşılaştırma modeli
 - `GrillMe/Core/SocraticMentor.swift`: Yerel mentor, istem ve güvenlik
@@ -101,7 +107,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 
 ## Doğrulama durumu
 
-- 54 Swift Testing testi ve 18 test paketi geçmelidir.
+- 58 Swift Testing testi ve 18 test paketi geçmelidir.
 - Genel iOS Simulator hedefi Xcode 26.5 SDK ile derlenir.
 - Release iOS arşivinde birincil ikon adı `AppIcon` ve
   `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.
@@ -148,7 +154,7 @@ eklemek değil, gerçek kullanıcılarla öğrenme etkisini doğrulamaktır:
 1. 5–10 hedef kullanıcıyla ilk hafta kullanılabilirlik testi yap.
 2. Yerel olayları bir gizlilik kararı sonrası analitik servisine bağlayıp
    başlangıç/çıkış gelişimini ölç.
-3. İçerik editörlüğüyle 8–30. derslerin açıklama derinliğini iyileştir.
+3. İçerik editörlüğüyle 8–40. derslerin açıklama derinliğini iyileştir.
 4. UIKit `grillmeapp/` iskeletinin silinip silinmeyeceğine karar ver.
 
 ## Açık ürün kararları
@@ -156,5 +162,5 @@ eklemek değil, gerçek kullanıcılarla öğrenme etkisini doğrulamaktır:
 - Ürün adı GrillMe olarak mı kalacak?
 - Ücretsiz/premium sınırı nerede olacak?
 - Yerel analitik olayları herhangi bir backend'e gönderilecek mi?
-- 30 günlük içerik için editoryal yayın süreci nasıl işleyecek?
+- 40 derslik içerik için editoryal yayın süreci nasıl işleyecek?
 - UIKit `grillmeapp/` iskeleti korunacak mı?

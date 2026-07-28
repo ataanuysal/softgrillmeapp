@@ -9,6 +9,8 @@ public enum CurriculumSection: String, Codable, CaseIterable, Equatable, Hashabl
   case asynchronous
   case appArchitecture
   case assessment
+  case softwareTesting
+  case technicalAnalysis
 }
 
 public enum CodeLens: String, Codable, Equatable, Sendable {
