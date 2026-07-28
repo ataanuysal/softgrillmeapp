@@ -11,6 +11,9 @@
 		A10000000000000000000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000002 /* ContentView.swift */; };
 		A10000000000000000000003 /* GrillMeCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000003 /* GrillMeCore.swift */; };
 		A10000000000000000000004 /* IntroLesson.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000004 /* IntroLesson.swift */; };
+		A10000000000000000000005 /* LessonCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000006 /* LessonCatalog.swift */; };
+		A10000000000000000000006 /* ProgressStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000007 /* ProgressStore.swift */; };
+		A10000000000000000000007 /* LoopsLesson.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000008 /* LoopsLesson.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +22,9 @@
 		B10000000000000000000003 /* GrillMeCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrillMeCore.swift; sourceTree = "<group>"; };
 		B10000000000000000000004 /* IntroLesson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroLesson.swift; sourceTree = "<group>"; };
 		B10000000000000000000005 /* GrillMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrillMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B10000000000000000000006 /* LessonCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonCatalog.swift; sourceTree = "<group>"; };
+		B10000000000000000000007 /* ProgressStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressStore.swift; sourceTree = "<group>"; };
+		B10000000000000000000008 /* LoopsLesson.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoopsLesson.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +69,9 @@
 			children = (
 				B10000000000000000000003 /* GrillMeCore.swift */,
 				B10000000000000000000004 /* IntroLesson.swift */,
+				B10000000000000000000006 /* LessonCatalog.swift */,
+				B10000000000000000000007 /* ProgressStore.swift */,
+				B10000000000000000000008 /* LoopsLesson.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -147,6 +156,9 @@
 				A10000000000000000000002 /* ContentView.swift in Sources */,
 				A10000000000000000000003 /* GrillMeCore.swift in Sources */,
 				A10000000000000000000004 /* IntroLesson.swift in Sources */,
+				A10000000000000000000005 /* LessonCatalog.swift in Sources */,
+				A10000000000000000000006 /* ProgressStore.swift in Sources */,
+				A10000000000000000000007 /* LoopsLesson.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

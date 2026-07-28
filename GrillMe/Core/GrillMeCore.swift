@@ -27,34 +27,75 @@ public struct TraceStep: Equatable, Sendable {
   }
 }
 
+public struct TransferChallenge: Equatable, Sendable {
+  public let prompt: String
+  public let code: [CodeLine]
+  public let choices: [String]
+  public let correctAnswer: String
+  public let explanation: String
+
+  public init(
+    prompt: String,
+    code: [CodeLine],
+    choices: [String],
+    correctAnswer: String,
+    explanation: String
+  ) {
+    self.prompt = prompt
+    self.code = code
+    self.choices = choices
+    self.correctAnswer = correctAnswer
+    self.explanation = explanation
+  }
+}
+
 public struct XRayLesson: Equatable, Sendable {
+  public let id: String
+  public let order: Int
+  public let topic: String
+  public let objective: String
+  public let takeaway: String
   public let title: String
   public let question: String
   public let code: [CodeLine]
   public let choices: [String]
   public let correctAnswer: String
   public let trace: [TraceStep]
+  public let transferChallenge: TransferChallenge?
 
   public init(
+    id: String = "lesson",
+    order: Int = 0,
+    topic: String = "",
+    objective: String = "",
+    takeaway: String = "",
     title: String,
     question: String,
     code: [CodeLine],
     choices: [String],
     correctAnswer: String,
-    trace: [TraceStep]
+    trace: [TraceStep],
+    transferChallenge: TransferChallenge? = nil
   ) {
+    self.id = id
+    self.order = order
+    self.topic = topic
+    self.objective = objective
+    self.takeaway = takeaway
     self.title = title
     self.question = question
     self.code = code
     self.choices = choices
     self.correctAnswer = correctAnswer
     self.trace = trace
+    self.transferChallenge = transferChallenge
   }
 }
 
 public enum XRaySessionPhase: Equatable, Sendable {
   case predicting
   case tracing(step: Int)
+  case transfer
   case complete
 }
 
@@ -62,6 +103,8 @@ public struct XRaySession: Equatable, Sendable {
   public let lesson: XRayLesson
   public private(set) var selectedAnswer: String?
   public private(set) var isPredictionCorrect: Bool?
+  public private(set) var selectedTransferAnswer: String?
+  public private(set) var isTransferAnswerCorrect: Bool?
   public private(set) var phase: XRaySessionPhase = .predicting
 
   public init(lesson: XRayLesson) {
@@ -74,7 +117,7 @@ public struct XRaySession: Equatable, Sendable {
       nil
     case .tracing(let step):
       lesson.trace.indices.contains(step) ? lesson.trace[step] : nil
-    case .complete:
+    case .transfer, .complete:
       lesson.trace.last
     }
   }
@@ -94,6 +137,16 @@ public struct XRaySession: Equatable, Sendable {
     phase =
       lesson.trace.indices.contains(nextStep)
       ? .tracing(step: nextStep)
-      : .complete
+      : lesson.transferChallenge == nil ? .complete : .transfer
+  }
+
+  public mutating func submitTransferAnswer(_ answer: String) {
+    guard case .transfer = phase, let challenge = lesson.transferChallenge else {
+      return
+    }
+
+    selectedTransferAnswer = answer
+    isTransferAnswerCorrect = answer == challenge.correctAnswer
+    phase = .complete
   }
 }

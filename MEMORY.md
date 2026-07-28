@@ -38,38 +38,53 @@ Aktif proje:
 
 Çalışan ilk dikey dilim:
 
-- “Değerin izini sür” başlangıç dersi
-- `var`, `if` ve `print` içeren gerçek Swift örneği
-- Üç çıktı seçeneği
+- “Değerin izini sür”, “Hangi yol çalışır?” ve “Her turda ne değişir?” dersleri
+- `var`, `let`, `if`, `else`, `for`, `in` ve `print` içeren gerçek Swift
+  örnekleri
+- Sıralı `LessonCatalog`
+- Tamamlandı, açık ve kilitli ders durumları
+- Önceki dersler tamamlandıkça sıradaki dersi açma
+- Ders haritası ve ders detay navigasyonu
+- Cihazda JSON tabanlı kalıcı ilerleme
 - Doğru/yanlış tahmin değerlendirmesi
-- Dört adımlı yürütme izi
+- Üç derse özel yürütme izleri
 - Aktif kaynak satırı vurgusu
 - Bellek ve çıktı panelleri
+- Her ders sonunda yeni kodla aktarım tahmini
+- Aktarım cevabı için gerekçeli geri bildirim
 - Tamamlama ve yeniden çözme akışı
 
 Doğrulama durumu:
 
-- Üç Swift Testing testi geçiyor.
-- Genel iOS cihaz hedefi derleniyor.
+- 15 Swift Testing testi geçiyor.
+- Genel iOS simülatör hedefi derleniyor.
 - iPhone simülatör hedefi derleniyor.
 - Uygulama iOS 26.5 iPhone 17 Pro simülatöründe açıldı.
-- İlk ekran `grillme-preview.png` olarak görsel kontrol edildi.
+- Üç derslik harita `grillme-transfer-preview.png` olarak görsel kontrol edildi.
 
 ## Çekirdek model
 
 - `CodeLine`: Kaynak satır numarası ve metni
 - `TraceStep`: Çalışan satır, Türkçe açıklama, bellek görüntüsü ve isteğe bağlı
   çıktı
-- `XRayLesson`: Kod, soru, seçenekler, doğru cevap ve yürütme izi
-- `XRaySessionPhase`: `predicting`, `tracing(step:)`, `complete`
-- `XRaySession`: Kullanıcının seçimi ve mevcut yürütme durumu
+- `TransferChallenge`: Yeni kod, seçenekler, doğru cevap ve gerekçeli açıklama
+- `XRayLesson`: Kod, soru, seçenekler, doğru cevap, yürütme izi ve aktarım görevi
+- `XRaySessionPhase`: `predicting`, `tracing(step:)`, `transfer`, `complete`
+- `XRaySession`: İlk tahmin, aktarım cevabı ve mevcut yürütme durumu
+- `LessonCatalog`: Ders sırası ve kilit açma kuralları
+- `LessonCatalogItem`: Ders ile mevcut erişim durumunu birleştiren görünüm modeli
+- `LessonProgress`: Tamamlanan ders kimlikleri
+- `FileProgressStore`: İlerlemeyi JSON dosyasına yazan gerçek depo
 
 ## Önemli dosyalar
 
 - `GrillMe/App/GrillMeApp.swift`: Uygulama giriş noktası
-- `GrillMe/App/ContentView.swift`: İlk Kod Röntgeni arayüzü
+- `GrillMe/App/ContentView.swift`: Ders haritası ve Kod Röntgeni arayüzü
 - `GrillMe/Core/GrillMeCore.swift`: Alan modeli ve oturum durumu
-- `GrillMe/Core/IntroLesson.swift`: İlk ders içeriği
+- `GrillMe/Core/IntroLesson.swift`: Değişkenler ve koşullar dersleri
+- `GrillMe/Core/LoopsLesson.swift`: Döngüler dersi
+- `GrillMe/Core/LessonCatalog.swift`: Ders sırası ve erişim durumları
+- `GrillMe/Core/ProgressStore.swift`: Kalıcı ilerleme
 - `Tests/GrillMeCoreTests/`: Çekirdek davranış testleri
 - `INTENT.md`: Ürün amacı ve kapsamı
 - `DESIGN.md`: Deneyim ve teknik tasarım
@@ -102,7 +117,7 @@ xcodebuild \
 
 ## Repo uyarısı
 
-`grillmeapp/` altında ayrıca UIKit ve storyboard tabanlı, stage edilmiş ikinci bir
+`grillmeapp/` altında ayrıca UIKit ve storyboard tabanlı ikinci bir
 Xcode iskeleti vardır. Bu iskelet aktif SwiftUI uygulaması değildir. Kullanıcı
 hangi projenin kalacağına karar vermeden:
 
@@ -117,10 +132,10 @@ Aktif geliştirme şu anda `GrillMe.xcodeproj` üzerinden ilerlemelidir.
 
 Bir sonraki dikey dilim:
 
-1. Ders kataloğu modelini testle tanımla.
-2. Koşullar için ikinci dersi ekle.
-3. Ana ders haritasını oluştur.
-4. İlk ve ikinci ders arasında ilerlemeyi cihazda sakla.
+1. Fonksiyon çağrısı için dördüncü dersi testle tanımla.
+2. İlk üç ders tamamlanınca dördüncü dersi aç.
+3. İlk tahmin ve aktarım doğruluğunu ilerleme verisine kaydet.
+4. Dynamic Type ve VoiceOver ile temel akışı doğrula.
 
 ## Açık ürün kararları
 

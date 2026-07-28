@@ -14,8 +14,8 @@ flowchart LR
   A["Kodu incele"] --> B["Çıktıyı tahmin et"]
   B --> C["Satır satır çalıştır"]
   C --> D["Bellek ve çıktıyı izle"]
-  D --> E["Gerçek dersi özetle"]
-  E --> F["Yeni örneğe uygula"]
+  D --> E["Yeni örneğe uygula"]
+  E --> F["Geri bildirim ve özet"]
 ```
 
 ## Bilgi mimarisi
@@ -71,7 +71,8 @@ stateDiagram-v2
   [*] --> Tahmin
   Tahmin --> İzleme: cevap seçildi
   İzleme --> İzleme: sonraki satır
-  İzleme --> Tamamlandı: son adım geçildi
+  İzleme --> Aktarım: son adım geçildi
+  Aktarım --> Tamamlandı: cevap seçildi
   Tamamlandı --> Tahmin: yeniden çöz
 ```
 
@@ -81,6 +82,8 @@ Kurallar:
 - Cevap seçildikten sonra seçim değiştirilmez.
 - Yanlış cevapta kullanıcı doğrudan doğru cevaba ışınlanmaz.
 - Son adımda bellek ve çıktı görünür kalır.
+- Aktarım görevi tamamlanmadan ders tamamlanmış sayılmaz.
+- Aktarım cevabından sonra doğru sonuç ve gerekçesi birlikte gösterilir.
 - Yeniden çözme temiz bir oturum başlatır.
 
 ## Görsel sistem
@@ -122,6 +125,8 @@ desteklenmelidir.
 - İzleme açıklaması
 - Hafıza kartı
 - Çıktı kartı
+- Aktarım kodu ve cevap seçenekleri
+- Aktarım sonucu ve gerekçeli geri bildirim
 - Sonraki satır ve yeniden çöz eylemleri
 
 ## İçerik yazım kuralları
@@ -154,9 +159,13 @@ Mevcut ayrım:
 ```mermaid
 flowchart TD
   UI["SwiftUI App<br/>ContentView"] --> Session["XRaySession"]
+  UI --> Catalog["LessonCatalog"]
+  UI --> Progress["LessonProgress"]
+  Progress --> Store["FileProgressStore"]
   Session --> Lesson["XRayLesson"]
   Lesson --> Code["CodeLine[]"]
   Lesson --> Trace["TraceStep[]"]
+  Lesson --> Transfer["TransferChallenge"]
   Tests["Swift Testing"] --> Session
   Tests --> Lesson
 ```
@@ -170,6 +179,8 @@ flowchart TD
 - Oturum durum geçişleri
 - Aktif yürütme adımı
 - UI'dan bağımsız ve Swift Package testleriyle doğrulanabilir davranış
+- Ders sırası ve kilit açma kuralları
+- JSON tabanlı kalıcı ilerleme
 
 **App**
 
@@ -178,12 +189,13 @@ flowchart TD
 - Kullanıcı eylemlerini `XRaySession` metodlarına iletme
 - Oturum durumunu ekrana dönüştürme
 
-### Gelecek ayrımlar
+### Mevcut ve gelecek ayrımlar
 
 İçerik ve ekran sayısı arttığında:
 
-- `LessonCatalog`: Ders sırası ve kilit açma kuralları
-- `ProgressStore`: Yerel ilerleme saklama protokolü
+- `LessonCatalog`: Ders sırası ve kilit açma kuralları — mevcut
+- `FileProgressStore`: Yerel JSON ilerleme deposu — mevcut
+- `ProgressStore` protokolü: Birden fazla depo gerektiğinde
 - `LessonRepository`: Paketlenmiş JSON veya Swift verisini yükleme
 - `AppRoute`: Ders haritası ve detay ekranı navigasyonu
 - `CodeLanguage`: Swift, Python ve JavaScript gösterim seçeneği
@@ -199,6 +211,8 @@ Bir ders yayınlanmadan önce:
 - Son çıktı, doğru cevapla tutarlıdır.
 - Yürütme adımları gerçek çalışma sırasındadır.
 - Bellek görüntüsü önceki adımla çelişmez.
+- Aktarım görevinin doğru cevabı seçenekler içinde bulunur.
+- Aktarım kodu, ana dersteki zihinsel modeli yeni bir bağlamda kullanır.
 - Ders tek bir ana öğrenme hedefi taşır.
 - Açıklamalar Türkçe içerik kontrolünden geçer.
 

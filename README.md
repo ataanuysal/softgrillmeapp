@@ -6,11 +6,12 @@ okumasını ve programcı gibi düşünmesini öğreten bir iOS uygulamasıdır.
 > Kod ezberleme. Bir problemi bilgisayarın anlayacağı hâle getirmeyi ve çalışan
 > kodun içindeki değerleri izlemeyi öğren.
 
-İlk çalışan dikey dilimde kullanıcı kısa bir Swift kodunun çıktısını tahmin eder,
-ardından “Kod Röntgeni” ile kodu satır satır çalıştırır. Aktif satır, bellekteki
-değerler ve program çıktısı birlikte gösterilir.
+Çalışan ilk öğrenme yolunda kullanıcı ders haritasından ilerler, kısa bir Swift
+kodunun çıktısını tahmin eder ve ardından “Kod Röntgeni” ile kodu satır satır
+çalıştırır. Aktif satır, bellekteki değerler ve program çıktısı birlikte
+gösterilir. Son olarak aynı düşünme biçimini yeni bir kod örneğine aktarır.
 
-![İlk Kod Röntgeni ekranı](grillme-preview.png)
+![GrillMe üç derslik öğrenme yolu](grillme-transfer-preview.png)
 
 ## Belgeler
 
@@ -21,18 +22,25 @@ değerler ve program çıktısı birlikte gösterilir.
 
 ## Mevcut durum
 
-Çalışan ilk ders şunları içerir:
+Çalışan ilk sürüm şunları içerir:
 
+- Kilitli, açık ve tamamlanmış durumları olan ders haritası
+- Değişkenler, koşullar ve döngüler için üç gerçek Swift dersi
 - Swift kodunun çıktısını tahmin etme
 - Çalışan satırı görsel olarak takip etme
 - Değişkenlerin bellekteki güncel değerini görme
 - Program çıktısını ayrı bir panelde izleme
 - Yanlış tahminde cevabı vermek yerine yürütme mantığını açıklama
+- Her dersin sonunda yeni kodla aktarım tahmini ve gerekçeli geri bildirim
 - Dersi tamamlayıp yeniden çözme
+- Tamamlanan dersleri cihazda JSON olarak saklama
+- Önceki ders tamamlandıkça sıradaki dersi açma
 
-Oturum akışı ve başlangıç dersinin veri tutarlılığı üç otomatik testle
-doğrulanmaktadır. Uygulama hem genel iOS hedefi hem de iPhone simülatörü için
-başarıyla derlenmiştir.
+Katalog, oturum akışı, üç dersin veri tutarlılığı ve kalıcı ilerleme 15 otomatik
+testle doğrulanmaktadır. Uygulama hem genel iOS hedefi hem de iPhone simülatörü
+için başarıyla derlenmiştir.
+
+![İlk Kod Röntgeni ekranı](grillme-preview.png)
 
 ## Gereksinimler
 
@@ -81,7 +89,10 @@ GrillMe/
 │   └── ContentView.swift
 └── Core/
     ├── GrillMeCore.swift
-    └── IntroLesson.swift
+    ├── IntroLesson.swift
+    ├── LessonCatalog.swift
+    ├── LoopsLesson.swift
+    └── ProgressStore.swift
 Tests/
 └── GrillMeCoreTests/
 ```

@@ -32,6 +32,35 @@ struct XRaySessionTests {
     #expect(session.currentStep == lesson.trace.last)
   }
 
+  @Test("Yürütme izinden sonra aktarım görevini açar")
+  func finishingTraceStartsTransferChallenge() {
+    let lesson = makeLessonWithTransferChallenge()
+    var session = XRaySession(lesson: lesson)
+    session.submitPrediction("12")
+
+    for _ in lesson.trace {
+      session.advance()
+    }
+
+    #expect(session.phase == .transfer)
+  }
+
+  @Test("Aktarım cevabını değerlendirip oturumu tamamlar")
+  func answeringTransferChallengeCompletesSession() {
+    let lesson = makeLessonWithTransferChallenge()
+    var session = XRaySession(lesson: lesson)
+    session.submitPrediction("12")
+    for _ in lesson.trace {
+      session.advance()
+    }
+
+    session.submitTransferAnswer("6")
+
+    #expect(session.selectedTransferAnswer == "6")
+    #expect(session.isTransferAnswerCorrect == true)
+    #expect(session.phase == .complete)
+  }
+
   private func makeLesson() -> XRayLesson {
     XRayLesson(
       title: "Değerin izini sür",
@@ -71,6 +100,35 @@ struct XRaySessionTests {
           output: "12"
         ),
       ]
+    )
+  }
+
+  private func makeLessonWithTransferChallenge() -> XRayLesson {
+    XRayLesson(
+      title: "Değerin izini sür",
+      question: "Çıktı ne olur?",
+      code: [CodeLine(number: 1, text: "print(12)")],
+      choices: ["10", "12"],
+      correctAnswer: "12",
+      trace: [
+        TraceStep(
+          lineNumber: 1,
+          explanation: "12 ekrana yazılır.",
+          memory: [:],
+          output: "12"
+        )
+      ],
+      transferChallenge: TransferChallenge(
+        prompt: "Yeni kodun çıktısı ne olur?",
+        code: [
+          CodeLine(number: 1, text: "var can = 3"),
+          CodeLine(number: 2, text: "can = can * 2"),
+          CodeLine(number: 3, text: "print(can)"),
+        ],
+        choices: ["3", "5", "6"],
+        correctAnswer: "6",
+        explanation: "3 ikiyle çarpılır ve can'ın yeni değeri 6 olur."
+      )
     )
   }
 }

@@ -28,57 +28,58 @@ Amaç: Kod Röntgeni fikrini gerçek bir iOS ekranında doğrulamak.
 
 Kabul sonucu: İlk uçtan uca ders akışı çalışıyor.
 
-## Aşama 1 — İki derslik gerçek öğrenme yolu 🚧
+## Aşama 1 — Üç derslik gerçek öğrenme yolu ✅
 
 Amaç: Tek ekran demosundan tekrar kullanılabilir ders sistemine geçmek.
 
 ### Alan modeli
 
-- Ders kimliği, sıra, konu ve öğrenme hedefi ekle
-- `LessonCatalog` oluştur
-- Ders tamamlama durumunu modelle
-- Katalog ve kilit açma davranışlarını test et
+- ✅ Ders kimliği, sıra, konu ve öğrenme hedefi
+- ✅ `LessonCatalog`
+- ✅ Ders tamamlama durumu
+- ✅ Katalog ve kilit açma testleri
 
 ### İçerik
 
-- Ders 01: Değişkenin izini sür
-- Ders 02: Koşul hangi yolu seçer?
-- İkinci derste doğru ve yanlış branch yürütme izi
-- Her ders için aktarım sorusu
+- ✅ Ders 01: Değişkenin izini sür
+- ✅ Ders 02: Koşul hangi yolu seçer?
+- ✅ Ders 03: Döngüde değer nasıl değişir?
+- ✅ İkinci derste yanlış koşul ve `else` yürütme izi
+- ✅ Her ders için aktarım sorusu
 
 ### Arayüz
 
-- Ana ders haritası
-- Tamamlandı, sıradaki ve kilitli durumları
-- Ders detayına navigasyon
-- Son tamamlanan derse geri dönme
+- ✅ Ana ders haritası
+- ✅ Tamamlandı, sıradaki ve kilitli durumları
+- ✅ Ders detayına navigasyon
+- ✅ Tamamlanan dersi yeniden çözme
 
 ### Kalıcılık
 
-- Yerel `ProgressStore`
-- Uygulama kapanınca tamamlanan dersleri koruma
-- Store davranışlarını gerçek bir geçici depoyla test etme
+- ✅ Yerel `FileProgressStore`
+- ✅ Uygulama kapanınca tamamlanan dersleri koruma
+- ✅ Gerçek geçici dosyayla depo testleri
 
 Kabul ölçütleri:
 
-- Kullanıcı ana ekrandan iki dersi sırayla tamamlayabilir.
-- Birinci ders tamamlanmadan ikinci ders açılmaz.
+- Kullanıcı ana ekrandan üç dersi sırayla tamamlayabilir.
+- Önceki dersler tamamlanmadan sıradaki ders açılmaz.
 - İlerleme uygulama yeniden açıldığında korunur.
 - Kritik iş kuralları otomatik testlidir.
 
-## Aşama 2 — 7 günlük temel paket ⏳
+## Aşama 2 — 7 günlük temel paket 🚧
 
 Amaç: İlk haftada kod okuma alışkanlığı ve ölçülebilir gelişim oluşturmak.
 
 Önerilen ders sırası:
 
-1. Değer ve değişken
-2. Karşılaştırma ve koşul
-3. Birden fazla koşul
-4. Döngüde değerin değişimi
-5. Fonksiyon çağrısı
-6. Parametre ve dönüş değeri
-7. Karışık haftalık meydan okuma
+1. ✅ Değer ve değişken
+2. ✅ Karşılaştırma ve koşul
+3. ✅ Döngüde değerin değişimi
+4. ⏳ Birden fazla koşul
+5. ⏳ Fonksiyon çağrısı
+6. ⏳ Parametre ve dönüş değeri
+7. ⏳ Karışık haftalık meydan okuma
 
 Ürün işleri:
 
