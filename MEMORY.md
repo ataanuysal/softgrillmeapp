@@ -17,7 +17,8 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - Platform iOS, aktif arayüz SwiftUI ve minimum hedef iOS 17'dir.
 - Aktif proje `GrillMe.xcodeproj`, şema `GrillMe`, bundle kimliği
   `com.grillme.learn` değeridir.
-- Yol Haritası doğrusal ilerler; önceki ders tamamlanmadan sıradaki açılmaz.
+- Yol Haritası önerilen doğrusal sırayı gösterir; bütün dersler baştan
+  erişilebilirdir ve tamamlanma yalnızca durum işareti olarak kullanılır.
 - İçindekiler kataloğunda 40 dersin tümü açıktır; bölüm filtresi ve Türkçe
   karakterlerden bağımsız arama serbest gezinme sağlar.
 - Swift ilk dildir. Dil lensi aynı zihinsel modeli Python ve JavaScript ile
@@ -57,7 +58,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 
 ### Ürün davranışı
 
-- Kilitli, açık ve tamamlanmış ders haritası
+- Baştan açık ders haritası ve tamamlanmış ders işaretleri
 - Yol Haritası ve İçindekiler arasında kalıcı alt sekme navigasyonu
 - Bütün derslere doğrudan erişim, on bölüm filtresi ve kavram araması
 - Konu anlatımı → rehberli örnek → quiz → geri bildirim/pratik → tamamlama
@@ -75,7 +76,6 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 ## Çekirdek model
 
 - `XRayLesson`, `CodeLine`, `TraceStep`, `TransferChallenge`
-- `XRaySession` ve `XRaySessionPhase`
 - `LessonCatalog`, `LessonCatalogItem`, `LessonContentsSection`, `LessonValidator`
 - `CodeLens`, `CallFrame`, `ArchitectureSnapshot`
 - `DebugChallenge`, `DebugSession`
@@ -103,11 +103,11 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - `GrillMe/Core/ProgressStore.swift`: Deneme kayıtları ve kalıcılık
 - `GrillMe/App/Assets.xcassets/`: App Store için `AppIcon` asset kataloğu
 - `Scripts/generate-app-icon.swift`: 1024×1024 alfa kanalsız kaynak ikon üretimi
-- `Tests/GrillMeCoreTests/`: 18 Swift Testing paketi
+- `Tests/GrillMeCoreTests/`: 17 Swift Testing paketi
 
 ## Doğrulama durumu
 
-- 58 Swift Testing testi ve 18 test paketi geçmelidir.
+- 54 Swift Testing testi ve 17 test paketi geçmelidir.
 - Genel iOS Simulator hedefi Xcode 26.5 SDK ile derlenir.
 - Release iOS arşivinde birincil ikon adı `AppIcon` ve
   `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.
@@ -140,11 +140,10 @@ xcodebuild \
   build
 ```
 
-## Repo uyarısı
+## Repo yapısı
 
-`grillmeapp/` altında UIKit ve storyboard tabanlı ikinci bir Xcode iskeleti
-vardır. Aktif SwiftUI uygulaması değildir. Kullanıcı karar vermeden klasörü
-silme, stage durumunu geri alma veya iki projeyi birleştirme.
+Depoda tek uygulama projesi vardır: kök dizindeki SwiftUI tabanlı
+`GrillMe.xcodeproj`.
 
 ## Sıradaki önerilen çalışma
 
@@ -155,7 +154,6 @@ eklemek değil, gerçek kullanıcılarla öğrenme etkisini doğrulamaktır:
 2. Yerel olayları bir gizlilik kararı sonrası analitik servisine bağlayıp
    başlangıç/çıkış gelişimini ölç.
 3. İçerik editörlüğüyle 8–40. derslerin açıklama derinliğini iyileştir.
-4. UIKit `grillmeapp/` iskeletinin silinip silinmeyeceğine karar ver.
 
 ## Açık ürün kararları
 
@@ -163,4 +161,3 @@ eklemek değil, gerçek kullanıcılarla öğrenme etkisini doğrulamaktır:
 - Ücretsiz/premium sınırı nerede olacak?
 - Yerel analitik olayları herhangi bir backend'e gönderilecek mi?
 - 40 derslik içerik için editoryal yayın süreci nasıl işleyecek?
-- UIKit `grillmeapp/` iskeleti korunacak mı?

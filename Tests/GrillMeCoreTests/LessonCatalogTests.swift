@@ -11,56 +11,20 @@ struct LessonCatalogTests {
     #expect(catalog.lessons.map(\.id) == ["variables", "conditions", "loops"])
   }
 
-  @Test("İlerleme yokken yalnızca ilk dersi açar")
-  func unlocksOnlyFirstLessonWithoutProgress() {
+  @Test("Yol Haritası bütün dersleri ilerlemeden bağımsız açar")
+  func roadmapMakesEveryLessonAvailable() {
     let items = LessonCatalog.standard.items(completedLessonIDs: [])
 
-    #expect(
-      Array(items.prefix(7).map(\.status)) == [
-        .available, .locked, .locked, .locked, .locked, .locked, .locked,
-      ]
-    )
-    #expect(items.dropFirst(7).allSatisfy { $0.status == .locked })
+    #expect(items.count == LessonCatalog.standard.lessons.count)
+    #expect(items.allSatisfy { $0.status == .available })
   }
 
-  @Test("İlk ders tamamlandığında ikinci dersi açar")
-  func completingFirstLessonUnlocksSecond() {
+  @Test("Tamamlanan ders işaretlenirken diğer dersler açık kalır")
+  func completionDoesNotLockOtherLessons() {
     let items = LessonCatalog.standard.items(completedLessonIDs: ["variables"])
 
-    #expect(
-      Array(items.prefix(7).map(\.status)) == [
-        .completed, .available, .locked, .locked, .locked, .locked, .locked,
-      ]
-    )
-    #expect(items.dropFirst(7).allSatisfy { $0.status == .locked })
-  }
-
-  @Test("İlk iki ders tamamlandığında döngüler dersini açar")
-  func completingFirstTwoLessonsUnlocksLoops() {
-    let items = LessonCatalog.standard.items(
-      completedLessonIDs: ["variables", "conditions"]
-    )
-
-    #expect(
-      Array(items.prefix(7).map(\.status)) == [
-        .completed, .completed, .available, .locked, .locked, .locked, .locked,
-      ]
-    )
-    #expect(items.dropFirst(7).allSatisfy { $0.status == .locked })
-  }
-
-  @Test("İlk üç ders tamamlandığında birleşik koşullar dersini açar")
-  func completingFirstThreeLessonsUnlocksCompoundConditions() {
-    let items = LessonCatalog.standard.items(
-      completedLessonIDs: ["variables", "conditions", "loops"]
-    )
-
-    #expect(
-      Array(items.prefix(7).map(\.status)) == [
-        .completed, .completed, .completed, .available, .locked, .locked, .locked,
-      ]
-    )
-    #expect(items.dropFirst(7).allSatisfy { $0.status == .locked })
+    #expect(items.first?.status == .completed)
+    #expect(items.dropFirst().allSatisfy { $0.status == .available })
   }
 
   @Test("İçindekiler bütün derslere ilerlemeden bağımsız erişim verir")

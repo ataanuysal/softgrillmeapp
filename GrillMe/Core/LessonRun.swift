@@ -26,61 +26,6 @@ public struct LessonRun: Equatable, Sendable {
   }
 
   public func finish(
-    session: XRaySession,
-    completedAt: Date
-  ) -> LessonRunResult {
-    let duration = max(0, Int(completedAt.timeIntervalSince(startedAt)))
-    let predictionCorrect = session.isPredictionCorrect ?? false
-    let transferCorrect = session.isTransferAnswerCorrect
-    let attempt = LessonAttempt(
-      lessonID: lessonID,
-      completedAt: completedAt,
-      durationSeconds: duration,
-      predictionCorrect: predictionCorrect,
-      transferCorrect: transferCorrect
-    )
-
-    var events = [
-      LearningEvent(
-        name: .lessonStarted,
-        lessonID: lessonID,
-        occurredAt: startedAt
-      ),
-      LearningEvent.predictionSubmitted(
-        lessonID: lessonID,
-        answer: session.selectedAnswer ?? "",
-        isCorrect: predictionCorrect,
-        attemptNumber: attemptNumber,
-        occurredAt: completedAt
-      ),
-    ]
-
-    if let transferCorrect {
-      events.append(
-        LearningEvent(
-          name: .transferSubmitted,
-          lessonID: lessonID,
-          occurredAt: completedAt,
-          properties: [
-            "answer": session.selectedTransferAnswer ?? "",
-            "correct": String(transferCorrect),
-          ]
-        )
-      )
-    }
-
-    events.append(
-      LearningEvent.lessonCompleted(
-        lessonID: lessonID,
-        durationSeconds: duration,
-        transferCorrect: transferCorrect ?? false,
-        occurredAt: completedAt
-      )
-    )
-    return LessonRunResult(attempt: attempt, events: events)
-  }
-
-  public func finish(
     journey: LessonJourney,
     completedAt: Date
   ) -> LessonRunResult {

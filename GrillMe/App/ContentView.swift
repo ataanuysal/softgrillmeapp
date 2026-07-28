@@ -343,22 +343,17 @@ private struct LessonMapView: View {
     "\(Int((value * 100).rounded()))%"
   }
 
-  @ViewBuilder
   private func lessonDestination(for item: LessonCatalogItem) -> some View {
-    if item.status == .locked {
+    NavigationLink {
+      XRayLessonView(
+        lesson: item.lesson,
+        totalLessonCount: totalLessonCount,
+        onComplete: onLessonCompleted
+      )
+    } label: {
       LessonRow(item: item)
-    } else {
-      NavigationLink {
-        XRayLessonView(
-          lesson: item.lesson,
-          totalLessonCount: totalLessonCount,
-          onComplete: onLessonCompleted
-        )
-      } label: {
-        LessonRow(item: item)
-      }
-      .buttonStyle(.plain)
     }
+    .buttonStyle(.plain)
   }
 
   private var upcomingCard: some View {
@@ -593,16 +588,13 @@ private struct LessonRow: View {
     HStack(spacing: 15) {
       ZStack {
         Circle()
-          .fill(badgeColor.opacity(item.status == .locked ? 0.08 : 0.16))
+          .fill(badgeColor.opacity(0.16))
         Circle()
-          .stroke(badgeColor.opacity(item.status == .locked ? 0.16 : 0.45), lineWidth: 1)
+          .stroke(badgeColor.opacity(0.45), lineWidth: 1)
 
         if item.status == .completed {
           Image(systemName: "checkmark")
             .adaptiveFont(size: 15, weight: .bold)
-        } else if item.status == .locked {
-          Image(systemName: "lock.fill")
-            .adaptiveFont(size: 13, weight: .semibold)
         } else {
           Text("\(item.lesson.order)")
             .adaptiveFont(size: 16, weight: .bold, design: .rounded)
@@ -623,7 +615,7 @@ private struct LessonRow: View {
 
         Text(item.lesson.title)
           .adaptiveFont(size: 18, weight: .bold, design: .rounded)
-          .foregroundStyle(item.status == .locked ? AppPalette.secondaryText : .white)
+          .foregroundStyle(.white)
 
         Text(item.lesson.objective)
           .adaptiveFont(size: 12, design: .rounded)
@@ -640,15 +632,15 @@ private struct LessonRow: View {
 
       Spacer(minLength: 6)
 
-      Image(systemName: item.status == .locked ? "lock" : "chevron.right")
+      Image(systemName: "chevron.right")
         .adaptiveFont(size: 12, weight: .bold)
-        .foregroundStyle(item.status == .locked ? AppPalette.tertiaryText : badgeColor)
+        .foregroundStyle(badgeColor)
     }
     .padding(18)
     .background(
       item.status == .available
         ? AppPalette.card
-        : AppPalette.panel.opacity(item.status == .locked ? 0.68 : 1),
+        : AppPalette.panel,
       in: RoundedRectangle(cornerRadius: 22)
     )
     .overlay(
@@ -658,7 +650,6 @@ private struct LessonRow: View {
           lineWidth: 1
         )
     )
-    .opacity(item.status == .locked ? 0.7 : 1)
     .accessibilityElement(children: .combine)
     .accessibilityLabel(accessibilityDescription)
   }
@@ -669,8 +660,6 @@ private struct LessonRow: View {
       AppPalette.mint
     case .available:
       AppPalette.amber
-    case .locked:
-      AppPalette.tertiaryText
     }
   }
 
@@ -681,8 +670,6 @@ private struct LessonRow: View {
       status = "tamamlandı"
     case .available:
       status = "açık"
-    case .locked:
-      status = "kilitli"
     }
     return "\(item.lesson.order). ders, \(item.lesson.title), \(status)"
   }

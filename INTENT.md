@@ -64,10 +64,10 @@ cevap başarısızlık değil, geri bildirimin başlangıç noktasıdır.
 
 ### Önerilen sıra, serbest erişim
 
-Yol haritası yeni başlayanlara güvenli bir öğrenme sırası önerir. İçindekiler
-kataloğu ise bütün dersleri bölüm ve arama üzerinden açık tutar; kullanıcı
-bildiği konuyu tekrar etmek veya merak ettiği içeriğe doğrudan gitmek için
-ilerleme kilidini beklemek zorunda değildir.
+Yol haritası yeni başlayanlara güvenli bir öğrenme sırası önerir. Her iki
+görünüm de bütün dersleri baştan açık tutar; kullanıcı bildiği konuyu tekrar
+etmek veya merak ettiği içeriğe doğrudan gitmek için Yol Haritası ya da
+İçindekiler üzerinden derse gidebilir.
 
 ### Kod görünür şekilde çalışmalı
 

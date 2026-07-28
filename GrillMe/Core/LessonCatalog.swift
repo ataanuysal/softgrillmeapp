@@ -3,7 +3,6 @@ import Foundation
 public enum LessonStatus: Equatable, Sendable {
   case completed
   case available
-  case locked
 }
 
 public struct LessonCatalogItem: Equatable, Sendable {
@@ -36,18 +35,11 @@ public struct LessonCatalog: Equatable, Sendable {
   }
 
   public func items(completedLessonIDs: Set<String>) -> [LessonCatalogItem] {
-    lessons.enumerated().map { index, lesson in
-      let status: LessonStatus
-
-      if completedLessonIDs.contains(lesson.id) {
-        status = .completed
-      } else if lessons[..<index].allSatisfy({ completedLessonIDs.contains($0.id) }) {
-        status = .available
-      } else {
-        status = .locked
-      }
-
-      return LessonCatalogItem(lesson: lesson, status: status)
+    lessons.map { lesson in
+      LessonCatalogItem(
+        lesson: lesson,
+        status: completedLessonIDs.contains(lesson.id) ? .completed : .available
+      )
     }
   }
 

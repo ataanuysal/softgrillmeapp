@@ -33,18 +33,19 @@ Kabul sonucu: İlk uçtan uca ders akışı çalışıyor.
 Amaç: Tek ekran demosundan tekrar kullanılabilir ders sistemine geçmek.
 
 - ✅ Ders kimliği, sıra, konu ve öğrenme hedefi
-- ✅ `LessonCatalog`, tamamlama durumu ve kilit açma testleri
+- ✅ `LessonCatalog`, tamamlama durumu ve açık erişim testleri
 - ✅ Ders 01: Değişkenin izini sür
 - ✅ Ders 02: Koşul hangi yolu seçer?
 - ✅ Ders 03: Döngüde değer nasıl değişir?
 - ✅ Her ders için aktarım sorusu
 - ✅ Ana ders haritası ve detay navigasyonu
-- ✅ Tamamlandı, sıradaki ve kilitli durumları
+- ✅ Tamamlandı ve açık ders durumları
 - ✅ Tüm derslere açık, aranabilir ve bölüm filtreli İçindekiler kataloğu
 - ✅ Yerel `FileProgressStore` ve gerçek dosya testleri
 
-Kabul sonucu: Önerilen yol sırayla ilerliyor; kullanıcı İçindekiler üzerinden
-istediği derse doğrudan girebiliyor ve ilerleme yeniden açılışta korunuyor.
+Kabul sonucu: Yol Haritası önerilen sırayı gösteriyor; kullanıcı her iki
+görünümden istediği derse doğrudan girebiliyor ve ilerleme yeniden açılışta
+korunuyor.
 
 ## Aşama 2 — 7 günlük temel paket ✅
 
@@ -187,13 +188,13 @@ Teknik analiz ünitesi:
 - ✅ İstekten uygulanabilir plana teknik analiz capstone'u
 
 Kabul sonucu: 30 derslik temel yol korunuyor; 31–40. dersler Yol Haritası'nda
-sırayla, İçindekiler'de ise doğrudan erişilebilir biçimde sunuluyor.
+önerilen sırada, her iki görünümde de doğrudan erişilebilir biçimde sunuluyor.
 
 ## Sürekli kalite hattı ✅
 
 - ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
 - ✅ 40 dersin veri sözleşmesi otomatik doğrulanıyor.
-- ✅ 58 Swift Testing testi ve 18 test paketi geçiyor.
+- ✅ 54 Swift Testing testi ve 17 test paketi geçiyor.
 - ✅ Swift format/lint kontrolü yapılıyor.
 - ✅ Genel iOS Simulator hedefi derleniyor.
 - ✅ Release arşivinde `AppIcon` adı ve 120×120 dağıtım ikonu doğrulanıyor.

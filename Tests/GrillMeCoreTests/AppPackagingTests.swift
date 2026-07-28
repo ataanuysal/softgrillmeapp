@@ -4,6 +4,41 @@ import Testing
 
 @Suite("App Store paketleme")
 struct AppPackagingTests {
+  @Test("Depoda yalnızca aktif GrillMe uygulama projesi bulunur")
+  func containsOnlyActiveApplicationProject() throws {
+    let enumerator = try #require(
+      FileManager.default.enumerator(
+        at: repositoryRoot,
+        includingPropertiesForKeys: nil,
+        options: [.skipsHiddenFiles]
+      )
+    )
+    var projectPaths: [String] = []
+
+    for case let url as URL in enumerator where url.pathExtension == "xcodeproj" {
+      projectPaths.append(url.path.replacingOccurrences(of: repositoryRoot.path + "/", with: ""))
+      enumerator.skipDescendants()
+    }
+
+    #expect(projectPaths.sorted() == ["GrillMe.xcodeproj"])
+  }
+
+  @Test("Ders deneyimi tek durum makinesi kullanır")
+  func usesSingleLessonStateMachine() throws {
+    let sourcePaths = [
+      "GrillMe/Core/GrillMeCore.swift",
+      "GrillMe/Core/LessonRun.swift",
+    ]
+    let sources = try sourcePaths.map {
+      try String(
+        contentsOf: repositoryRoot.appendingPathComponent($0),
+        encoding: .utf8
+      )
+    }
+
+    #expect(sources.allSatisfy { !$0.contains("XRaySession") })
+  }
+
   @Test("AppIcon asseti ve Info.plist ikon adı dağıtım için yapılandırılmıştır")
   func configuresAppIconForDistribution() throws {
     let appIconDirectory =

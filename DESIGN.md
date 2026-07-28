@@ -21,7 +21,7 @@ flowchart LR
 
 Uygulama iki tamamlayıcı giriş biçimi sunar:
 
-1. **Yol Haritası:** 40 ders, on bölüm, önerilen sıra, kilit durumu ve süre
+1. **Yol Haritası:** 40 açık ders, on bölüm, önerilen sıra ve süre
 2. **İçindekiler:** tüm derslere serbest erişim, bölüm filtresi ve Türkçe
    karakterlerden bağımsız kavram araması
 3. **İlerleme özeti:** seri, tamamlanan ders, haftalık süre ve doğruluklar
@@ -97,7 +97,7 @@ stateDiagram-v2
 
 Kurallar:
 
-- Yol Haritası sırayı önerir ve kilitleri korur; İçindekiler bütün dersleri açar.
+- Yol Haritası sırayı önerir; Yol Haritası ve İçindekiler bütün dersleri açar.
 - Her iki giriş biçimi de aynı ders ekranını ve aynı ilerleme kaydını kullanır.
 - Quiz, konu anlatımı ve rehberli örnek tamamlanmadan açılamaz.
 - Quiz kodu rehberli örneğin kodundan farklıdır.
@@ -159,7 +159,7 @@ oturumunda tutulur; dış servise gönderilmez.
 ## Erişilebilirlik
 
 - Eylemler görünür metin veya açıklayıcı erişilebilirlik etiketi taşır.
-- Ders satırları başlık, sıra ve kilit durumunu tek VoiceOver açıklamasında
+- Ders satırları başlık, sıra ve tamamlanma durumunu tek VoiceOver açıklamasında
   birleştirir.
 - İlerleme ve haftalık özetler semantik gruplardır.
 - Dynamic Type, erişilebilir boyutlarda üst başlığı dikey düzene geçirir.
@@ -172,7 +172,7 @@ oturumunda tutulur; dış servise gönderilmez.
 ```mermaid
 flowchart TD
   UI["SwiftUI App"] --> Catalog["LessonCatalog"]
-  UI --> Session["XRaySession / DebugSession"]
+  UI --> Journey["LessonJourney / DebugSession"]
   UI --> Run["LessonRun"]
   UI --> Mentor["OnDeviceMentor"]
   Mentor --> FM["Apple Foundation Models<br/>yalnızca uygunsa"]
@@ -182,7 +182,7 @@ flowchart TD
   Catalog --> Lesson["XRayLesson"]
   Lesson --> Lens["Lens / Dil / Görev verileri"]
   Tests["Swift Testing"] --> Catalog
-  Tests --> Session
+  Tests --> Journey
   Tests --> Run
   Tests --> Progress
   Tests --> Local

@@ -5,23 +5,23 @@ import Testing
 
 @Suite("Ders çalışma kaydı")
 struct LessonRunTests {
-  @Test("Oturum sonucunu süre, doğruluk ve analitik olaylarla tamamlar")
-  func finishesRunWithAttemptAndEvents() {
+  @Test("Yanlış quiz sonucunu süre ve analitik olaylarla kaydeder")
+  func finishesRunWithIncorrectQuizResult() {
     let startedAt = Date(timeIntervalSince1970: 100)
     let completedAt = Date(timeIntervalSince1970: 412)
-    var session = XRaySession(lesson: .introduction)
-    session.submitPrediction("10")
-    for _ in session.lesson.trace {
-      session.advance()
+    var journey = LessonJourney(lesson: .introduction)
+    journey.startExample()
+    for _ in journey.lesson.trace {
+      journey.advanceExample()
     }
-    session.submitTransferAnswer("6")
+    journey.submitQuizAnswer("5")
     let run = LessonRun(lessonID: "variables", startedAt: startedAt)
 
-    let result = run.finish(session: session, completedAt: completedAt)
+    let result = run.finish(journey: journey, completedAt: completedAt)
 
     #expect(result.attempt.durationSeconds == 312)
     #expect(result.attempt.predictionCorrect == false)
-    #expect(result.attempt.transferCorrect == true)
+    #expect(result.attempt.transferCorrect == false)
     #expect(
       result.events.map(\.name) == [
         .lessonStarted,
@@ -72,9 +72,17 @@ struct LessonRunTests {
 
     let result = run.finish(journey: journey, completedAt: completedAt)
 
+    #expect(result.attempt.durationSeconds == 120)
     #expect(result.attempt.predictionCorrect == true)
     #expect(result.attempt.transferCorrect == true)
-    #expect(result.events.map(\.name).last == .lessonCompleted)
+    #expect(
+      result.events.map(\.name) == [
+        .lessonStarted,
+        .predictionSubmitted,
+        .transferSubmitted,
+        .lessonCompleted,
+      ]
+    )
   }
 
   private var utcCalendar: Calendar {

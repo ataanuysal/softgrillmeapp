@@ -8,9 +8,9 @@ düşünmeyi öğreten bir iOS uygulamasıdır.
 
 Uygulama 30 derslik temel yolu ve ardından gelen 10 derslik uzmanlaşma yolunu;
 konu anlatımı, rehberli Kod Röntgeni örneği, ders sonu quiz, hata avcılığı ve
-Sokratik mentor döngüsüyle sunar. İçindekiler sekmesi bütün dersleri bölüm veya
-arama üzerinden serbestçe açarken Yol Haritası yeni başlayanlar için önerilen
-sırayı korur.
+Sokratik mentor döngüsüyle sunar. Yol Haritası ve İçindekiler bütün dersleri
+baştan erişilebilir tutar; Yol Haritası yeni başlayanlara önerilen sırayı,
+İçindekiler ise bölüm ve arama üzerinden serbest gezinmeyi sunar.
 
 ![GrillMe 30 günlük öğrenme yolu](grillme-final-preview.png)
 
@@ -25,8 +25,8 @@ sırayı korur.
 
 - Temelden çıkış değerlendirmesine uzanan 30 ders ve iki uzmanlaşma ünitesindeki
   10 ders
-- Yol Haritası ile önerilen sıra; İçindekiler ile 40 dersin tamamına serbest
-  erişim, bölüm filtresi ve Türkçe karakterlerden bağımsız arama
+- Yol Haritası ve İçindekiler üzerinden 40 dersin tamamına serbest erişim;
+  önerilen sıra, bölüm filtresi ve Türkçe karakterlerden bağımsız arama
 - Değişken, koşul, döngü, fonksiyon, scope, `map`, `filter`, koleksiyon,
   nesne, mimari, debugging, asenkron sıra ve uygulama akışı içerikleri
 - Konu anlatımı → rehberli örnek → farklı kodlu quiz sırasını zorunlu tutan
@@ -140,8 +140,8 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 ## Doğrulama
 
-- 58 Swift Testing testi
-- 18 test paketi
+- 54 Swift Testing testi
+- 17 test paketi
 - Genel iOS Simulator derlemesi
 - Release iOS arşivinde `CFBundleIconName = AppIcon` ve 120×120 uygulama ikonu
 - iPhone 17 Pro simülatöründe normal ve erişilebilir Dynamic Type görsel QA
@@ -152,7 +152,4 @@ Erişilebilir boyut kontrolü:
 
 ## Repo notu
 
-Kök dizindeki doğrulanmış uygulama `GrillMe.xcodeproj` dosyasıdır.
-`grillmeapp/` altında daha önce oluşturulmuş ayrı UIKit iskeleti korunmaktadır;
-kullanıcı kararı olmadan silinmemeli, taşınmamalı veya aktif projeyle
-birleştirilmemelidir.
+Depodaki tek uygulama projesi kök dizindeki `GrillMe.xcodeproj` dosyasıdır.
