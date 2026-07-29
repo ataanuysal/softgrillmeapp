@@ -1,7 +1,12 @@
-# GrillMe
+# GrillMe:Code
 
-GrillMe, sözdizimi ezberletmek yerine çalışan kodu okumayı ve programcı gibi
-düşünmeyi öğreten bir iOS uygulamasıdır.
+**GrillMe** bir öğrenme kavramıdır: önce konuyu öğret, sonra çalışan bir örneği
+adım adım ve iç durumu görünür biçimde izlet, en son öğrenileni farklı bir
+örnekte sınat; kanıt gösterilmeden ders tamamlanmasın, mentor cevabı vermesin ve
+biten konular aralıklı tekrarla geri gelsin.
+
+**GrillMe:Code** bu kavramın kod okuma alanındaki uygulamasıdır: sözdizimi
+ezberletmek yerine çalışan kodu okumayı ve programcı gibi düşünmeyi öğretir.
 
 > Önce konuyu öğren, çalışan bir örneği bilgisayarın adımlarıyla izle ve en son
 > öğrendiğini farklı kodlu quizde uygula.
@@ -12,7 +17,7 @@ Sokratik mentor döngüsüyle sunar. Yol Haritası ve İçindekiler bütün ders
 baştan erişilebilir tutar; Yol Haritası yeni başlayanlara önerilen sırayı,
 İçindekiler ise bölüm ve arama üzerinden serbest gezinmeyi sunar.
 
-![GrillMe 30 günlük öğrenme yolu](grillme-final-preview.png)
+![GrillMe:Code 30 günlük öğrenme yolu](grillme-final-preview.png)
 
 ## Belgeler
 
@@ -191,7 +196,7 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 Önceki erişilebilir boyut kontrolü:
 
-![GrillMe Dynamic Type görünümü](grillme-dynamic-type-preview.png)
+![GrillMe:Code Dynamic Type görünümü](grillme-dynamic-type-preview.png)
 
 ## Repo notu
 

@@ -2,8 +2,13 @@
 
 ## Vizyon
 
-GrillMe'nin amacı insanlara tek bir programlama dilini ezberletmek değil, kodu
-okuyabilen ve çalışan bir programın zihinsel modelini kurabilen bir düşünme
+GrillMe bir öğrenme kavramının adıdır; bu belge onun kod okuma alanındaki
+uygulaması olan **GrillMe:Code**'u tanımlar. Kavramın diğer alanlardaki
+uygulamaları (örneğin GrillMe:Music) ayrı ürünlerdir ve bu belgenin kapsamı
+dışındadır.
+
+GrillMe:Code'un amacı insanlara tek bir programlama dilini ezberletmek değil,
+kodu okuyabilen ve çalışan bir programın zihinsel modelini kurabilen bir düşünme
 biçimi kazandırmaktır.
 
 Uygulamanın temel vaadi:
@@ -24,7 +29,7 @@ Başlangıç seviyesindeki birçok kişi:
 - Uzun video kurslarında pasif kalır ve öğrendiğini yeni bir örneğe taşıyamaz.
 - “Ben yazılımı anlayamıyorum” sonucuna varır.
 
-GrillMe bu sorunu kısa konu anlatımları, görünür rehberli örnekler, ders sonu
+GrillMe:Code bu sorunu kısa konu anlatımları, görünür rehberli örnekler, ders sonu
 quizleri ve sürekli geri bildirimle çözer.
 
 ## Hedef kullanıcı

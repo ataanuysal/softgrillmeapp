@@ -24,7 +24,7 @@ enum OnDeviceMentor {
       if #available(iOS 26.0, *), SystemLanguageModel.default.isAvailable {
         let session = LanguageModelSession(
           instructions: """
-            Sen GrillMe uygulamasındaki Türkçe Sokratik kod okuma mentorüsün.
+            Sen GrillMe:Code uygulamasındaki Türkçe Sokratik kod okuma mentorüsün.
             Kısa, sıcak ve merak uyandıran sorularla öğrencinin kendisinin düşünmesini sağla.
             """
         )

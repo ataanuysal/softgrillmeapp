@@ -1,7 +1,14 @@
 # CLAUDE.md
 
-GrillMe: sözdizimi ezberletmeden kod okumayı öğreten iOS uygulaması. Türkçe
-arayüz, İngilizce kod kimlikleri. Bağımlılık yok, ağ yok, backend yok, hesap yok.
+GrillMe:Code — sözdizimi ezberletmeden kod okumayı öğreten iOS uygulaması.
+Türkçe arayüz, İngilizce kod kimlikleri. Bağımlılık yok, ağ yok, backend yok,
+hesap yok.
+
+`GrillMe` markanın/kavramın adıdır, `GrillMe:Code` bu uygulamanın adıdır. Xcode
+hedefi, şema, bundle kimliği ve `GrillMeCore` modülü teknik kimliktir ve
+`GrillMe` olarak kalır; ürün adı yalnızca `CFBundleDisplayName` üzerinden gelir.
+Kavramın başka alanlardaki uygulamaları ayrı depolarda yaşar — bu depoya
+eklenmez.
 
 Ürün bağlamı için `INTENT.md`, deneyim/mimari için `DESIGN.md`, güncel karar
 kaydı için `MEMORY.md`, teslim durumu için `ROADMAP.md`.

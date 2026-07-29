@@ -7,16 +7,21 @@ kararları ve güncel teknik durumu tutar.
 
 ## Ürün özeti
 
-GrillMe, kodlamaya başlayan yetişkinlere önce kod okumayı ve çalışma mantığını
-öğreten bir iOS uygulamasıdır. Her ders önce konu anlatımı sunar, sonra “Kod
+GrillMe bir öğrenme kavramı, GrillMe:Code ise onun kod okuma alanındaki
+uygulamasıdır. Bu depo yalnızca GrillMe:Code'u içerir; kavramın diğer
+uygulamaları ayrı depolarda yaşayacaktır.
+
+GrillMe:Code, kodlamaya başlayan yetişkinlere önce kod okumayı ve çalışma
+mantığını öğreten bir iOS uygulamasıdır. Her ders önce konu anlatımı sunar, sonra “Kod
 Röntgeni” ile aktif satırı, belleği, çıktıyı ve gerektiğinde çağrı, mimari ya da
 hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açılır.
 
 ## Onaylanmış kararlar
 
 - Platform iOS, aktif arayüz SwiftUI ve minimum hedef iOS 17'dir.
-- Aktif proje `GrillMe.xcodeproj`, şema `GrillMe`, bundle kimliği
-  `com.grillme.learn` değeridir.
+- Aktif proje `GrillMe.xcodeproj`, şema `GrillMe`, görünen ad `GrillMe:Code`,
+  bundle kimliği `com.grillme.learn` değeridir. Hedef ve şema adları teknik
+  kimliktir; ürün adı yalnızca `CFBundleDisplayName` üzerinden gelir.
 - Yol Haritası önerilen doğrusal sırayı gösterir; bütün dersler baştan
   erişilebilirdir ve tamamlanma yalnızca durum işareti olarak kullanılır.
 - İçindekiler kataloğunda 40 dersin tümü açıktır; bölüm filtresi ve Türkçe

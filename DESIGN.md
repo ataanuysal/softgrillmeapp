@@ -222,6 +222,38 @@ flowchart TD
 - Foundation Models uygunluk kontrolü ve asenkron çağrı
 - Uygun olmayan sistemlerde yerel mentor yedeği
 
+## Kavramın taşınabilir çekirdeği
+
+GrillMe bir kavram, GrillMe:Code onun kod okuma alanındaki uygulamasıdır. Başka
+bir alan (örneğin GrillMe:Music) aynı kavramı kullanacaksa taşınacak şey ders
+içeriği değil, **öğrenme motorudur**.
+
+Bugünkü `Core` bu ayrımı zaten büyük ölçüde taşıyor:
+
+| Dosya | Ne yapar | Alana bağlı mı |
+| --- | --- | --- |
+| `ProgressStore.swift` | Deneme kaydı, seri, haftalık özet, gelişim raporu, kalıcılık | Hayır |
+| `ReviewQueue.swift` | Aralıklı tekrar sırası | Hayır |
+| `LearningAnalytics.swift` | Olay sözleşmesi | Hayır |
+| `LessonRun.swift` | Oturum sonucu ve dashboard | Hayır |
+| `MentorCoordinator.swift` | Modele gidilecek mi kararı, cevap sızıntısı filtresi | Hayır |
+| `ConceptMatcher.swift` | Ek toleranslı kavram eşleştirme | Hayır (dile bağlı) |
+| `LessonEvidence.swift` | Kanıt toplama ve tamamlama kapısı | Neredeyse hayır |
+| `LessonJourney.swift` | Konu → örnek → quiz durum makinesi | Adım tipine bağlı |
+| `GrillMeCore.swift`, `AdvancedLenses.swift`, `LanguageBridge.swift` | `XRayLesson`, lensler, diller | **Evet** |
+| `IntroLesson`, `WeekOneLessons`, `RoadmapLessons` | Ders içeriği | **Evet** |
+
+Yeni bir alanın değiştirmesi gereken tek şey "bir adım nedir ve o adımda hangi
+iç durum görünür" sorusunun cevabıdır. GrillMe:Code'da adım bir kod satırı,
+görünen durum bellek/çıktı/çağrı yığınıdır. GrillMe:Music'te adım bir ölçü ya da
+akor geçişi, görünen durum ton/derece/parmak konumu olabilir; motor aynı kalır.
+
+**Ne zaman ayıklanmalı:** şimdi değil. Tek örnekten çıkarılan soyutlama
+genellikle yanlış yerden bölünür. Doğru sıra ikinci uygulamayı yazarken motoru
+kopyalamak, üçüncüde ortak paketi çıkarmaktır. `Core`'un SwiftUI'dan bağımsız,
+değer tipli ve ağsız olması bu ayıklamayı ileride ucuz tutar; bugün yapılacak
+tek şey bu ayrımı bozmamaktır.
+
 ## Kapsam sınırı
 
 Bu sürümde backend, hesap, bulut senkronizasyonu, serbest kod derleme, sosyal
