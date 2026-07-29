@@ -345,7 +345,9 @@ private struct LessonMapView: View {
             .adaptiveFont(size: 15, weight: .bold, design: .rounded)
             .foregroundStyle(.white)
           Text(
-            "Başlangıç quizi \(percentage(report.baselineQuizAccuracy)) · Çıkış quizi \(percentage(report.exitQuizAccuracy))"
+            report.hasEnoughEvidence
+              ? "Başlangıç quizi \(percentage(report.baselineQuizAccuracy)) · Çıkış quizi \(percentage(report.exitQuizAccuracy))"
+              : "\(report.baselineSampleSize) başlangıç, \(report.exitSampleSize) çıkış quizi çözüldü. Yüzde göstermek için en az \(LearningGrowthReport.minimumSampleSize) çıkış quizi gerekiyor."
           )
           .adaptiveFont(size: 12, design: .rounded)
           .foregroundStyle(AppPalette.secondaryText)
@@ -353,11 +355,17 @@ private struct LessonMapView: View {
 
         Spacer()
 
-        Text(
-          "\(report.improvement >= 0 ? "+" : "")\(Int((report.improvement * 100).rounded())) puan"
-        )
-        .adaptiveFont(size: 13, weight: .bold, design: .rounded)
-        .foregroundStyle(report.improvement >= 0 ? AppPalette.mint : AppPalette.amber)
+        if report.hasEnoughEvidence {
+          Text(
+            "\(report.improvement >= 0 ? "+" : "")\(Int((report.improvement * 100).rounded())) puan"
+          )
+          .adaptiveFont(size: 13, weight: .bold, design: .rounded)
+          .foregroundStyle(report.improvement >= 0 ? AppPalette.mint : AppPalette.amber)
+        } else {
+          Text("Ölçüm sürüyor")
+            .adaptiveFont(size: 13, weight: .bold, design: .rounded)
+            .foregroundStyle(AppPalette.secondaryText)
+        }
       }
       .padding(16)
       .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 20))

@@ -214,7 +214,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "goster()",
       "print(puan)",
     ],
-    choices: ["20 → 10", "10 → 20", "20 → 20"],
+    choices: ["20 → 10", "10 → 20", "20 → 20", "10 → 10"],
     answer: "20 → 10",
     steps: [
       Step(
@@ -270,7 +270,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "yaz()",
       "print(ad)",
     ],
-    transferChoices: ["İç → Dış", "Dış → İç", "İç → İç"],
+    transferChoices: ["İç → Dış", "Dış → İç", "İç → İç", "Dış → Dış"],
     transferAnswer: "İç → Dış",
     estimatedMinutes: 8
   ),
@@ -299,7 +299,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "arttir()",
       "print(sayac)",
     ],
-    choices: ["6 → 1", "3 → 0", "6 → 0"],
+    choices: ["6 → 1", "3 → 0", "6 → 0", "3 → 1"],
     answer: "6 → 1",
     steps: [
       Step(
@@ -357,7 +357,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "func kare(_ x: Int) -> Int { x * x }",
       "print(kare(4))",
     ],
-    transferChoices: ["4", "8", "16"],
+    transferChoices: ["4", "8", "16", "2"],
     transferAnswer: "16",
     estimatedMinutes: 8
   ),
@@ -382,7 +382,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let ikiler = sayilar.map { $0 * 2 }",
       "print(ikiler)",
     ],
-    choices: ["[1, 2, 3]", "[2, 4, 6]", "[2, 3]"],
+    choices: ["[1, 2, 3]", "[2, 4, 6]", "[2, 3]", "6"],
     answer: "[2, 4, 6]",
     steps: [
       Step(
@@ -426,7 +426,9 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let buyuk = adlar.map { $0.uppercased() }",
       "print(buyuk)",
     ],
-    transferChoices: ["[\"ada\", \"can\"]", "[\"ADA\", \"CAN\"]", "[\"ADA\"]"],
+    transferChoices: [
+      "[\"ada\", \"can\"]", "[\"ADA\", \"CAN\"]", "[\"ADA\"]", "[\"Ada\", \"Can\"]",
+    ],
     transferAnswer: "[\"ADA\", \"CAN\"]"
   ),
   RoadmapBlueprint(
@@ -450,7 +452,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let buyukler = sayilar.filter { $0 > 2 }",
       "print(buyukler)",
     ],
-    choices: ["[1, 2]", "[3, 4]", "[2, 3, 4]"],
+    choices: ["[1, 2]", "[3, 4]", "[2, 3, 4]", "[false, false, true, true]"],
     answer: "[3, 4]",
     steps: [
       Step(
@@ -502,7 +504,9 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let kisa = adlar.filter { $0.count == 3 }",
       "print(kisa)",
     ],
-    transferChoices: ["[\"Ada\", \"Can\", \"Ece\"]", "[\"Ada\", \"Can\"]", "[\"Ece\"]"],
+    transferChoices: [
+      "[\"Ada\", \"Can\", \"Ece\"]", "[\"Ada\", \"Can\"]", "[\"Ece\"]", "[]",
+    ],
     transferAnswer: "[\"Ada\", \"Can\", \"Ece\"]"
   ),
   RoadmapBlueprint(
@@ -528,7 +532,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(renkler[1])",
       "print(renkler[sonIndex])",
     ],
-    choices: ["Mavi → Yeşil", "Kırmızı → Yeşil", "Mavi → Mavi"],
+    choices: ["Mavi → Yeşil", "Kırmızı → Yeşil", "Mavi → Mavi", "Kırmızı → Mavi"],
     answer: "Mavi → Yeşil",
     steps: [
       Step(
@@ -561,7 +565,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(harfler[0])",
       "print(harfler[harfler.count - 1])",
     ],
-    transferChoices: ["A → D", "A → C", "B → D"],
+    transferChoices: ["A → D", "A → C", "B → D", "B → C"],
     transferAnswer: "A → D"
   ),
   RoadmapBlueprint(
@@ -587,7 +591,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let bilinmeyen = baskentler[\"DE\"]",
       "print(bilinmeyen == nil)",
     ],
-    choices: ["Ankara → true", "Ankara → false", "Paris → true"],
+    choices: ["Ankara → true", "Ankara → false", "Paris → true", "Ankara → Hata"],
     answer: "Ankara → true",
     steps: [
       Step(
@@ -614,7 +618,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(puanlar[\"Can\"]!)",
       "print(puanlar[\"Ece\"] == nil)",
     ],
-    transferChoices: ["7 → true", "9 → true", "7 → false"],
+    transferChoices: ["7 → true", "9 → true", "7 → false", "7 → Hata"],
     transferAnswer: "7 → true"
   ),
   RoadmapBlueprint(
@@ -639,7 +643,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let toplam = ciftler.reduce(0, +)",
       "print(toplam)",
     ],
-    choices: ["4", "6", "10"],
+    choices: ["4", "6", "10", "2"],
     answer: "6",
     steps: [
       Step(
@@ -690,7 +694,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let toplam = sayilar.reduce(0, +)",
       "print(toplam)",
     ],
-    transferChoices: ["5", "8", "10"],
+    transferChoices: ["5", "8", "10", "0"],
     transferAnswer: "10",
     estimatedMinutes: 9
   ),
@@ -715,7 +719,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let kutu = Kutu()",
       "print(kutu.deger)",
     ],
-    choices: ["Kutu", "0", "5"],
+    choices: ["Kutu", "0", "5", "nil"],
     answer: "5",
     steps: [
       Step(
@@ -748,7 +752,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let lamba = Lamba()",
       "print(lamba.acik)",
     ],
-    transferChoices: ["true", "false", "Lamba"],
+    transferChoices: ["true", "false", "Lamba", "nil"],
     transferAnswer: "true"
   ),
   RoadmapBlueprint(
@@ -776,7 +780,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "sayac.arttir()",
       "print(sayac.deger)",
     ],
-    choices: ["0", "1", "2"],
+    choices: ["0", "1", "2", "Hata"],
     answer: "1",
     steps: [
       Step(
@@ -829,7 +833,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "sayac.arttir()",
       "print(sayac.deger)",
     ],
-    transferChoices: ["0", "1", "2"],
+    transferChoices: ["0", "1", "2", "3"],
     transferAnswer: "2"
   ),
   RoadmapBlueprint(
@@ -856,7 +860,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let kisi = Kullanici(ad: \"Ada\")",
       "print(kisi.ad)",
     ],
-    choices: ["Kullanici", "ad", "Ada"],
+    choices: ["Kullanici", "ad", "Ada", "Boş metin"],
     answer: "Ada",
     steps: [
       Step(
@@ -902,7 +906,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let kisi = Kullanici(ad: \"Can\")",
       "print(kisi.ad)",
     ],
-    transferChoices: ["Ada", "Can", "Kullanici"],
+    transferChoices: ["Ada", "Can", "Kullanici", "Boş metin"],
     transferAnswer: "Can"
   ),
   RoadmapBlueprint(
@@ -928,7 +932,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "b.x = 9",
       "print(a.x)",
     ],
-    choices: ["1", "9", "Hata"],
+    choices: ["1", "9", "Hata", "10"],
     answer: "1",
     steps: [
       Step(
@@ -959,7 +963,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "ikinci.x = 7",
       "print(ilk.x)",
     ],
-    transferChoices: ["2", "7", "Hata"],
+    transferChoices: ["2", "7", "Hata", "9"],
     transferAnswer: "2",
     estimatedMinutes: 8
   ),
@@ -985,7 +989,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let araba = Araba(motor: Motor())",
       "print(araba.motor.tur)",
     ],
-    choices: ["Araba", "Motor", "Elektrik"],
+    choices: ["Araba", "Motor", "Elektrik", "Benzin"],
     answer: "Elektrik",
     steps: [
       Step(
@@ -1020,7 +1024,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "struct Telefon { let pil: Pil }",
       "print(Telefon(pil: Pil()).pil.seviye)",
     ],
-    transferChoices: ["Pil", "Telefon", "80"],
+    transferChoices: ["Pil", "Telefon", "80", "100"],
     transferAnswer: "80"
   ),
   RoadmapBlueprint(
@@ -1047,7 +1051,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let hayvan: Hayvan = Kedi()",
       "print(hayvan.ses())",
     ],
-    choices: ["?", "Miyav", "Kedi"],
+    choices: ["?", "Miyav", "Kedi", "Hayvan"],
     answer: "Miyav",
     steps: [
       Step(
@@ -1086,7 +1090,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "}",
       "print(Kopek().ses())",
     ],
-    transferChoices: ["?", "Miyav", "Hav"],
+    transferChoices: ["?", "Miyav", "Hav", "Kopek"],
     transferAnswer: "Hav",
     estimatedMinutes: 8
   ),
@@ -1114,7 +1118,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let model = EkranModeli(servis: Servis(depo: Depo()))",
       "print(model.servis.depo.puan)",
     ],
-    choices: ["Depo", "Servis", "3"],
+    choices: ["Depo", "Servis", "3", "EkranModeli"],
     answer: "3",
     steps: [
       Step(
@@ -1143,7 +1147,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let servis = Servis(depo: Depo())",
       "print(servis.depo.puan)",
     ],
-    transferChoices: ["3", "Servis", "Depo"],
+    transferChoices: ["3", "Servis", "Depo", "0"],
     transferAnswer: "3",
     estimatedMinutes: 10
   ),
@@ -1167,7 +1171,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let puan =",
       "print(puan)",
     ],
-    choices: ["Derlenmez", "0", "nil"],
+    choices: ["Derlenmez", "0", "nil", "Boş satır"],
     answer: "Derlenmez",
     steps: [
       Step(
@@ -1193,7 +1197,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let ad: String",
       "print(ad)",
     ],
-    transferChoices: ["Derlenmez", "Boş metin", "nil"],
+    transferChoices: ["Derlenmez", "Boş metin", "nil", "0"],
     transferAnswer: "Derlenmez"
   ),
   RoadmapBlueprint(
@@ -1217,7 +1221,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let indirimli = fiyat + 10",
       "print(indirimli)",
     ],
-    choices: ["90", "100", "110"],
+    choices: ["90", "100", "110", "10"],
     answer: "110",
     steps: [
       Step(
@@ -1244,7 +1248,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let yeniPuan = puan - 2",
       "print(yeniPuan)",
     ],
-    transferChoices: ["6", "8", "10"],
+    transferChoices: ["6", "8", "10", "2"],
     transferAnswer: "6"
   ),
   RoadmapBlueprint(
@@ -1270,7 +1274,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "}",
       "print(ilk([]))",
     ],
-    choices: ["0", "nil", "Hata"],
+    choices: ["0", "nil", "Hata", "Boş dizi"],
     answer: "Hata",
     steps: [
       Step(
@@ -1306,7 +1310,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let sayilar: [Int] = []",
       "print(sayilar.first ?? 0)",
     ],
-    transferChoices: ["0", "nil", "Hata"],
+    transferChoices: ["0", "nil", "Hata", "[]"],
     transferAnswer: "0",
     estimatedMinutes: 8
   ),
@@ -1331,7 +1335,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let ad: String? = nil",
       "print(ad!)",
     ],
-    choices: ["nil", "Boş", "Hata"],
+    choices: ["nil", "Boş", "Hata", "Optional(nil)"],
     answer: "Hata",
     steps: [
       Step(
@@ -1355,7 +1359,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let ad: String? = nil",
       "print(ad ?? \"Misafir\")",
     ],
-    transferChoices: ["nil", "Misafir", "Hata"],
+    transferChoices: ["nil", "Misafir", "Hata", "Optional(\"Misafir\")"],
     transferAnswer: "Misafir"
   ),
   RoadmapBlueprint(
@@ -1381,7 +1385,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "func c() { fatalError(\"Boom\") }",
       "a()",
     ],
-    choices: ["a()", "b()", "c()"],
+    choices: ["a()", "b()", "c()", "program"],
     answer: "c()",
     steps: [
       Step(
@@ -1425,7 +1429,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "func parse() { fatalError(\"Bozuk veri\") }",
       "yukle()",
     ],
-    transferChoices: ["yukle()", "parse()", "program"],
+    transferChoices: ["yukle()", "parse()", "program", "fatalError()"],
     transferAnswer: "parse()",
     estimatedMinutes: 8
   ),
@@ -1449,7 +1453,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let sayilar = [1, 2, 3]",
       "print(sayilar[3])",
     ],
-    choices: ["3", "nil", "Hata"],
+    choices: ["3", "nil", "Hata", "0"],
     answer: "Hata",
     steps: [
       Step(
@@ -1474,7 +1478,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let sayilar = [1, 2, 3]",
       "print(sayilar[2])",
     ],
-    transferChoices: ["2", "3", "Hata"],
+    transferChoices: ["2", "3", "Hata", "nil"],
     transferAnswer: "3",
     estimatedMinutes: 9
   ),
@@ -1501,7 +1505,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(\"C\")",
       "print(await task.value)",
     ],
-    choices: ["A → B → C", "A → C → B", "B → A → C"],
+    choices: ["A → B → C", "A → C → B", "B → A → C", "C → A → B"],
     answer: "A → C → B",
     steps: [
       Step(
@@ -1541,6 +1545,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "Başla → Yüklendi → Arayüz hazır",
       "Başla → Arayüz hazır → Yüklendi",
       "Yüklendi → Başla → Arayüz hazır",
+      "Arayüz hazır → Başla → Yüklendi",
     ],
     transferAnswer: "Başla → Arayüz hazır → Yüklendi",
     estimatedMinutes: 9
@@ -1572,7 +1577,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let model = ViewModel(repository: Repository())",
       "print(model.yenile())",
     ],
-    choices: ["Repository", "ViewModel", "4"],
+    choices: ["Repository", "ViewModel", "4", "0"],
     answer: "4",
     steps: [
       Step(
@@ -1620,7 +1625,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let repository = Repository()",
       "print(repository.yukle())",
     ],
-    transferChoices: ["4", "Repository", "ViewModel"],
+    transferChoices: ["4", "Repository", "ViewModel", "nil"],
     transferAnswer: "4",
     estimatedMinutes: 10
   ),
@@ -1812,7 +1817,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let gercek = topla(2, 3)",
       "print(gercek == beklenen)",
     ],
-    choices: ["true", "false", "5"],
+    choices: ["true", "false", "5", "gercek == beklenen"],
     answer: "true",
     steps: [
       Step(
@@ -1838,7 +1843,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let gercek = topla(4, 5)",
       "print(gercek == beklenen)",
     ],
-    transferChoices: ["true", "false", "9"],
+    transferChoices: ["true", "false", "9", "9 == 9"],
     transferAnswer: "true",
     estimatedMinutes: 7
   ),
@@ -1866,7 +1871,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let sonuc = indirimliFiyat(100)",
       "print(sonuc == 80)",
     ],
-    choices: ["true", "false", "80"],
+    choices: ["true", "false", "80", "100"],
     answer: "true",
     steps: [
       Step(
@@ -1896,7 +1901,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let sonuc = indirimliFiyat(70)",
       "print(sonuc == 50)",
     ],
-    transferChoices: ["true", "false", "50"],
+    transferChoices: ["true", "false", "50", "70"],
     transferAnswer: "true",
     estimatedMinutes: 7
   ),
@@ -1923,7 +1928,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "}",
       "print(kayitOlabilir(yas: 18))",
     ],
-    choices: ["true", "false", "18"],
+    choices: ["true", "false", "18", "Hata"],
     answer: "true",
     steps: [
       Step(
@@ -1961,7 +1966,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     transferCode: [
       "print(kayitOlabilir(yas: 17))"
     ],
-    transferChoices: ["true", "false", "17"],
+    transferChoices: ["true", "false", "17", "Hata"],
     transferAnswer: "false",
     estimatedMinutes: 8
   ),
@@ -1990,7 +1995,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "}",
       "print(mesaj(saat: SabitSaat(saat: 9)))",
     ],
-    choices: ["Günaydın", "Merhaba", "9"],
+    choices: ["Günaydın", "Merhaba", "9", "Gerçek saate göre değişir"],
     answer: "Günaydın",
     steps: [
       Step(
@@ -2025,7 +2030,9 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     transferCode: [
       "print(mesaj(saat: SabitSaat(saat: 15)))"
     ],
-    transferChoices: ["Günaydın", "Merhaba", "15"],
+    transferChoices: [
+      "Günaydın", "Merhaba", "15", "Gerçek saate göre değişir",
+    ],
     transferAnswer: "Merhaba",
     estimatedMinutes: 9
   ),
@@ -2055,7 +2062,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "}",
       "print(toplam(depo: Depo()) == 5)",
     ],
-    choices: ["true", "false", "5"],
+    choices: ["true", "false", "5", "[2, 3]"],
     answer: "true",
     steps: [
       Step(
@@ -2094,7 +2101,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "struct BosDepo { func sayilar() -> [Int] { [] } }",
       "print(BosDepo().sayilar().reduce(0, +) == 0)",
     ],
-    transferChoices: ["true", "false", "Hata"],
+    transferChoices: ["true", "false", "Hata", "0"],
     transferAnswer: "true",
     estimatedMinutes: 9
   ),
@@ -2122,7 +2129,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let kriterSaglandi = kargoUcreti(sepet: 500) == 0",
       "print(kriterSaglandi)",
     ],
-    choices: ["true", "false", "500"],
+    choices: ["true", "false", "500", "0"],
     answer: "true",
     steps: [
       Step(
@@ -2150,7 +2157,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     transferCode: [
       "print(kargoUcreti(sepet: 499) == 50)"
     ],
-    transferChoices: ["true", "false", "50"],
+    transferChoices: ["true", "false", "50", "0"],
     transferAnswer: "true",
     estimatedMinutes: 8
   ),
@@ -2179,7 +2186,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let girisVar = kimlikDogrula(token: \"abc\")",
       "print(profilYukle(girisVar: girisVar))",
     ],
-    choices: ["Profil", "Giriş gerekli", "abc"],
+    choices: ["Profil", "Giriş gerekli", "abc", "true"],
     answer: "Profil",
     steps: [
       Step(
@@ -2216,7 +2223,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let girisVar = kimlikDogrula(token: \"\")",
       "print(profilYukle(girisVar: girisVar))",
     ],
-    transferChoices: ["Profil", "Giriş gerekli", "Boş"],
+    transferChoices: ["Profil", "Giriş gerekli", "Boş", "false"],
     transferAnswer: "Giriş gerekli",
     estimatedMinutes: 8
   ),
@@ -2244,7 +2251,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "}",
       "print(baslik(KullaniciDTO(ad: nil)))",
     ],
-    choices: ["Misafir", "nil", "Hata"],
+    choices: ["Misafir", "nil", "Hata", "Optional(nil)"],
     answer: "Misafir",
     steps: [
       Step(
@@ -2278,7 +2285,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     transferCode: [
       "print(baslik(KullaniciDTO(ad: \"Ada\")))"
     ],
-    transferChoices: ["Ada", "Misafir", "nil"],
+    transferChoices: ["Ada", "Misafir", "nil", "Optional(\"Ada\")"],
     transferAnswer: "Ada",
     estimatedMinutes: 8
   ),
@@ -2309,7 +2316,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "}",
       "print(toplam(fiyat: 100, vergi: SabitVergi()))",
     ],
-    choices: ["100", "120", "20"],
+    choices: ["100", "120", "20", "140"],
     answer: "120",
     steps: [
       Step(
@@ -2362,7 +2369,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     transferCode: [
       "print(toplam(fiyat: 80, vergi: SabitVergi()))"
     ],
-    transferChoices: ["80", "100", "20"],
+    transferChoices: ["80", "100", "20", "160"],
     transferAnswer: "100",
     estimatedMinutes: 9
   ),

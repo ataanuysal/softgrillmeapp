@@ -83,17 +83,37 @@ public struct WeeklySummary: Equatable, Sendable {
 }
 
 public struct LearningGrowthReport: Equatable, Sendable {
+  /// Yüzde göstermek için gereken en az quiz sayısı.
+  ///
+  /// Dört seçenekli tek soruda şans başarısı %25'tir; iki quizlik bir farkı
+  /// yüzde olarak sunmak ölçüm değil, gürültüdür.
+  public static let minimumSampleSize = 3
+
   public let baselineQuizAccuracy: Double
   public let exitQuizAccuracy: Double
   public let improvement: Double
+  public let baselineSampleSize: Int
+  public let exitSampleSize: Int
 
   public init(
     baselineQuizAccuracy: Double,
-    exitQuizAccuracy: Double
+    exitQuizAccuracy: Double,
+    baselineSampleSize: Int,
+    exitSampleSize: Int
   ) {
     self.baselineQuizAccuracy = baselineQuizAccuracy
     self.exitQuizAccuracy = exitQuizAccuracy
+    self.baselineSampleSize = baselineSampleSize
+    self.exitSampleSize = exitSampleSize
     improvement = exitQuizAccuracy - baselineQuizAccuracy
+  }
+
+  /// Örneklem yüzde sunmaya yetiyor mu?
+  ///
+  /// Yetmiyorsa arayüz sayı yerine "henüz yeterli veri yok" demelidir; rapor
+  /// yine de kaç quizden geldiğini taşır.
+  public var hasEnoughEvidence: Bool {
+    baselineSampleSize >= Self.minimumSampleSize && exitSampleSize >= Self.minimumSampleSize
   }
 }
 
@@ -189,24 +209,31 @@ public struct LessonProgress: Codable, Equatable, Sendable {
     )
   }
 
+  /// Başlangıç ve çıkış quiz doğruluğunu karşılaştırır.
+  ///
+  /// Başlangıç her dersin **ilk** denemesinden, çıkış ise **son** denemesinden
+  /// gelir: ilki henüz öğrenilmemiş hali, ikincisi ulaşılan hali temsil eder.
+  /// Çıkış ölçümü tek derse bağlı değildir; verilen bütün çıkış derslerinden
+  /// toplanır ve rapor kaç quizden geldiğini taşır.
   public func growthReport(
     baselineLessonIDs: Set<String>,
-    exitLessonID: String
+    exitLessonIDs: Set<String>
   ) -> LearningGrowthReport? {
     let baselineAttempts = baselineLessonIDs.compactMap { lessonID in
       attempts.first(where: { $0.lessonID == lessonID })
     }
-    guard baselineAttempts.count == baselineLessonIDs.count,
-      let exitAttempt = attempts.last(where: { $0.lessonID == exitLessonID })
-    else {
+    let exitAttempts = exitLessonIDs.compactMap { lessonID in
+      attempts.last(where: { $0.lessonID == lessonID })
+    }
+    guard baselineAttempts.count == baselineLessonIDs.count, !exitAttempts.isEmpty else {
       return nil
     }
 
-    let baseline = accuracy(of: baselineAttempts)
-    let exit = accuracy(of: [exitAttempt])
     return LearningGrowthReport(
-      baselineQuizAccuracy: baseline,
-      exitQuizAccuracy: exit
+      baselineQuizAccuracy: accuracy(of: baselineAttempts),
+      exitQuizAccuracy: accuracy(of: exitAttempts),
+      baselineSampleSize: baselineAttempts.count,
+      exitSampleSize: exitAttempts.count
     )
   }
 

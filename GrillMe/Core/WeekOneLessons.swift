@@ -16,7 +16,7 @@ extension XRayLesson {
       CodeLine(number: 6, text: "    print(\"Bekle\")"),
       CodeLine(number: 7, text: "}"),
     ],
-    choices: ["Girebilir", "Bekle", "Çıktı yok"],
+    choices: ["Girebilir", "Bekle", "Çıktı yok", "Girebilir ve Bekle"],
     correctAnswer: "Girebilir",
     trace: [
       TraceStep(
@@ -65,7 +65,7 @@ extension XRayLesson {
         CodeLine(number: 6, text: "    print(\"Bekle\")"),
         CodeLine(number: 7, text: "}"),
       ],
-      choices: ["Satışta", "Bekle", "3"],
+      choices: ["Satışta", "Bekle", "3", "Satışta ve Bekle"],
       correctAnswer: "Bekle",
       explanation: "Stok koşulu doğru olsa da aktif false olduğu için birleşik koşul yanlıştır."
     ),
@@ -99,6 +99,7 @@ extension XRayLesson {
       "Başla → Merhaba → Bitti",
       "Merhaba → Başla → Bitti",
       "Başla → Bitti → Merhaba",
+      "Merhaba → Bitti → Başla",
     ],
     correctAnswer: "Başla → Merhaba → Bitti",
     trace: [
@@ -146,7 +147,7 @@ extension XRayLesson {
         CodeLine(number: 4, text: "bip()"),
         CodeLine(number: 5, text: "bip()"),
       ],
-      choices: ["Bir kez", "İki kez", "Hiç"],
+      choices: ["Bir kez", "İki kez", "Hiç", "Üç kez"],
       correctAnswer: "İki kez",
       explanation: "Fonksiyonun gövdesi her çağrıda yeniden çalışır."
     ),
@@ -186,7 +187,7 @@ extension XRayLesson {
       CodeLine(number: 4, text: "let sonuc = ikiKat(4)"),
       CodeLine(number: 5, text: "print(sonuc)"),
     ],
-    choices: ["2", "4", "8"],
+    choices: ["2", "4", "8", "6"],
     correctAnswer: "8",
     trace: [
       TraceStep(
@@ -232,7 +233,7 @@ extension XRayLesson {
         CodeLine(number: 3, text: "}"),
         CodeLine(number: 4, text: "print(ucEkle(5))"),
       ],
-      choices: ["3", "5", "8"],
+      choices: ["3", "5", "8", "15"],
       correctAnswer: "8",
       explanation: "5 parametreye gider, 3 eklenir ve dönen 8 doğrudan yazdırılır."
     ),
@@ -269,7 +270,7 @@ extension XRayLesson {
       CodeLine(number: 10, text: "    print(\"Tamam: \\(sonuc)\")"),
       CodeLine(number: 11, text: "}"),
     ],
-    choices: ["Tamam: 3", "Tamam: 6", "Çıktı yok"],
+    choices: ["Tamam: 3", "Tamam: 6", "Çıktı yok", "6"],
     correctAnswer: "Tamam: 6",
     trace: [
       TraceStep(
@@ -319,7 +320,7 @@ extension XRayLesson {
         CodeLine(number: 5, text: "    print(\"Devam\")"),
         CodeLine(number: 6, text: "}"),
       ],
-      choices: ["Tamam: 3", "Devam", "Tamam: 6"],
+      choices: ["Tamam: 3", "Devam", "Tamam: 6", "Çıktı yok"],
       correctAnswer: "Devam",
       explanation: "topla(2) değeri 3'tür; 3 > 5 yanlış olduğu için else kolu çalışır."
     ),

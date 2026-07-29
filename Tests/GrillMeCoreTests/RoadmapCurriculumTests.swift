@@ -269,19 +269,20 @@ struct RoadmapCurriculumTests {
     }
   }
 
-  @Test("Gelişim raporunun karşılaştırdığı quizler en az dört seçenek taşır")
-  func measuredQuizzesLimitGuessing() {
-    // Başlangıç ve çıkış ölçümü bu derslerden geliyor; üç seçenekte şans başarısı
-    // %33 olduğu için ölçülen fark gürültüden ayrılamaz.
-    let measuredIDs = ["variables", "conditions", "loops", "capstone"]
-    let lessons = LessonCatalog.standard.lessons.filter { measuredIDs.contains($0.id) }
-
-    #expect(lessons.count == measuredIDs.count)
-    for lesson in lessons {
+  @Test("Bütün quizler en az dört seçenek taşır")
+  func everyQuizLimitsGuessing() {
+    // Üç seçenekte şans başarısı %33; ölçülen gelişim bu gürültüden ayrılamaz.
+    for lesson in LessonCatalog.standard.lessons {
       #expect(lesson.choices.count >= 4, Comment(rawValue: lesson.id))
       #expect(
-        (lesson.transferChallenge?.choices.count ?? 0) >= 4,
-        Comment(rawValue: "\(lesson.id) aktarım quizi")
+        Set(lesson.choices).count == lesson.choices.count,
+        Comment(rawValue: "\(lesson.id): tekrar eden seçenek")
+      )
+      let transfer = try? #require(lesson.transferChallenge)
+      #expect((transfer?.choices.count ?? 0) >= 4, Comment(rawValue: "\(lesson.id) aktarım quizi"))
+      #expect(
+        Set(transfer?.choices ?? []).count == (transfer?.choices.count ?? 0),
+        Comment(rawValue: "\(lesson.id) aktarım quizi: tekrar eden seçenek")
       )
     }
   }

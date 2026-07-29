@@ -108,7 +108,7 @@ public struct LearningDashboardSnapshot: Equatable, Sendable {
     weeklySummary = progress.weeklySummary(containing: date, calendar: calendar)
     growthReport = progress.growthReport(
       baselineLessonIDs: ["variables", "conditions", "loops"],
-      exitLessonID: "capstone"
+      exitLessonIDs: ["capstone", "technical-analysis-capstone", "week-one-challenge"]
     )
   }
 }
