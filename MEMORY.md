@@ -88,6 +88,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - `CodeLanguage`, `CodeVariant`, `LanguageComparison`
 - `SocraticMentorSession`, `MentorPromptBuilder`, `MentorSafetyFilter`
 - `ConceptMatcher`, `MentorCoordinator`, `MentorTurn`, `LessonTeaching`
+- `ReviewQueue`, `ReviewItem`, `ReviewReason`
 - `LessonJourney`, `LessonTeachingContent`, `LessonQuiz`
 - `LessonEvidence`, `LessonEvidenceEvaluation`, `AssessmentRubric`
 - `LessonRun`, `LessonAttempt`, `LessonProgress`, `FileProgressStore`
@@ -106,6 +107,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - `GrillMe/Core/SocraticMentor.swift`: Yerel mentor, istem ve güvenlik
 - `GrillMe/Core/ConceptMatcher.swift`: Türkçe ek toleranslı kavram eşleştirme
 - `GrillMe/Core/MentorCoordinator.swift`: Mentor akış kararı ve güvenli paketleme
+- `GrillMe/Core/ReviewQueue.swift`: Aralıklı tekrar kuyruğu
 - `GrillMe/Core/LessonJourney.swift`: Konu → örnek → quiz durum makinesi
 - `GrillMe/Core/LessonEvidence.swift`: Zorunlu kanıt ve bağımsız ölçüm motoru
 - `GrillMe/Core/LearningAnalytics.swift`: Olay sözleşmesi
@@ -113,18 +115,18 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - `GrillMe/Core/ProgressStore.swift`: Deneme kayıtları ve kalıcılık
 - `GrillMe/App/Assets.xcassets/`: App Store için `AppIcon` asset kataloğu
 - `Scripts/generate-app-icon.swift`: 1024×1024 alfa kanalsız kaynak ikon üretimi
-- `Tests/GrillMeCoreTests/`: 21 Swift Testing paketi
+- `Tests/GrillMeCoreTests/`: 22 Swift Testing paketi
 - `GrillMeUITests/`: Uygulama açılışı ve navigasyon duman testi
 - `.github/workflows/ci.yml`: Lint, çekirdek test, build ve UI test hattı
 
 ## Doğrulama durumu
 
-- 92 Swift Testing testi ve 21 test paketi geçmelidir.
+- 98 Swift Testing testi ve 22 test paketi geçmelidir.
 - 1 XCUITest duman testi uygulama açılışı, sekmeler ve derse girişi doğrular.
 - Genel iOS Simulator build ve UI test adımları CI sözleşmesinde yer alır.
 - Release iOS arşivinde birincil ikon adı `AppIcon` ve
   `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.
-- 29 Temmuz 2026: `swift test` (92/92), imzasız `xcodebuild` derlemesi ve
+- 29 Temmuz 2026: `swift test` (98/98), imzasız `xcodebuild` derlemesi ve
   `swift-format lint --strict` yerel makinede geçti.
 - `grillme-final-preview.png` son normal görünümü,
   `grillme-dynamic-type-preview.png` erişilebilir boyutu gösterir.
@@ -141,6 +143,7 @@ Belgelerin özellik listesi ile müfredatın kapsama derinliği aynı şey deği
 | Kendi konu anlatımı (bölüm şablonu yok) | 40 |
 | Dört seçenekli quiz | 40 |
 | Üç soruluk quiz havuzu | 40 |
+| Tekrar kuyruğuna girebilen ders | 40 |
 | Hata avcılığı görevi | 6 |
 | Pratik sorusu | 5 |
 | Değerlendirme görevi ve rubrik | 2 |

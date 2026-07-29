@@ -28,6 +28,7 @@ struct ContentView: View {
             totalLessonCount: catalog.lessons.count,
             asOf: Date()
           ),
+          reviewItems: ReviewQueue.items(from: progress, asOf: Date()),
           onLessonCompleted: complete
         )
       }
@@ -84,6 +85,7 @@ private struct LessonMapView: View {
   let items: [LessonCatalogItem]
   let totalLessonCount: Int
   let dashboard: LearningDashboardSnapshot
+  let reviewItems: [ReviewItem]
   let onLessonCompleted: (LessonRunResult) -> Void
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -106,6 +108,7 @@ private struct LessonMapView: View {
           progressHero
           weeklySummary
           growthSummary
+          reviewCard
 
           ForEach(CurriculumSection.allCases, id: \.self) { section in
             let sectionItems = items.filter { $0.lesson.section == section }
@@ -398,6 +401,81 @@ private struct LessonMapView: View {
   private func percentage(_ value: Double?) -> String {
     guard let value else { return "—" }
     return "\(Int((value * 100).rounded()))%"
+  }
+
+  @ViewBuilder
+  private var reviewCard: some View {
+    let entries = reviewItems.compactMap { review -> (ReviewItem, XRayLesson)? in
+      guard let lesson = items.first(where: { $0.lesson.id == review.lessonID })?.lesson else {
+        return nil
+      }
+      return (review, lesson)
+    }
+
+    if !entries.isEmpty {
+      VStack(alignment: .leading, spacing: 14) {
+        HStack(spacing: 10) {
+          Image(systemName: "arrow.trianglehead.counterclockwise")
+            .foregroundStyle(AppPalette.amber)
+          Text("Tekrar zamanı")
+            .adaptiveFont(size: 15, weight: .bold, design: .rounded)
+            .foregroundStyle(.white)
+        }
+
+        Text("Önceki derslerden gelen sorular. Aynı kavram, yeni kod.")
+          .adaptiveFont(size: 12, design: .rounded)
+          .foregroundStyle(AppPalette.secondaryText)
+
+        ForEach(entries, id: \.0.lessonID) { review, lesson in
+          NavigationLink {
+            XRayLessonView(
+              lesson: lesson,
+              totalLessonCount: totalLessonCount,
+              questionIndex: review.completedAttempts,
+              onComplete: onLessonCompleted
+            )
+          } label: {
+            HStack(spacing: 12) {
+              Image(systemName: review.reason == .incorrectLastTime ? "xmark.circle" : "clock")
+                .foregroundStyle(
+                  review.reason == .incorrectLastTime ? AppPalette.amber : AppPalette.indigo
+                )
+              VStack(alignment: .leading, spacing: 2) {
+                Text(lesson.title)
+                  .adaptiveFont(size: 14, weight: .semibold, design: .rounded)
+                  .foregroundStyle(.white)
+                Text(
+                  review.reason == .incorrectLastTime
+                    ? "Son denemede quiz yanlıştı"
+                    : "Bir süredir tekrar edilmedi"
+                )
+                .adaptiveFont(size: 11, design: .rounded)
+                .foregroundStyle(AppPalette.secondaryText)
+              }
+              Spacer()
+              Image(systemName: "chevron.right")
+                .adaptiveFont(size: 12, weight: .bold)
+                .foregroundStyle(AppPalette.secondaryText)
+            }
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+          }
+          .buttonStyle(.plain)
+          .accessibilityLabel(
+            "\(lesson.title) dersini tekrar et. "
+              + (review.reason == .incorrectLastTime
+                ? "Son denemede quiz yanlıştı." : "Bir süredir tekrar edilmedi.")
+          )
+        }
+      }
+      .padding(16)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 20))
+      .overlay(
+        RoundedRectangle(cornerRadius: 20)
+          .stroke(AppPalette.amber.opacity(0.35), lineWidth: 1)
+      )
+    }
   }
 
   private func lessonDestination(for item: LessonCatalogItem) -> some View {
@@ -772,6 +850,8 @@ private struct LessonRow: View {
 }
 
 private struct XRayLessonView: View {
+  /// Tekrar akışında havuzdaki sıradaki soruyla açılmak için.
+  private let initialQuestionIndex: Int
   let lesson: XRayLesson
   let totalLessonCount: Int
   let onComplete: (LessonRunResult) -> Void
@@ -793,13 +873,21 @@ private struct XRayLessonView: View {
   init(
     lesson: XRayLesson,
     totalLessonCount: Int,
+    questionIndex: Int = 0,
     onComplete: @escaping (LessonRunResult) -> Void
   ) {
     self.lesson = lesson
     self.totalLessonCount = totalLessonCount
+    initialQuestionIndex = questionIndex
     self.onComplete = onComplete
-    _journey = State(initialValue: LessonJourney(lesson: lesson))
-    _run = State(initialValue: LessonRun(lessonID: lesson.id, startedAt: Date()))
+    _journey = State(initialValue: LessonJourney(lesson: lesson, questionIndex: questionIndex))
+    _run = State(
+      initialValue: LessonRun(
+        lessonID: lesson.id,
+        startedAt: Date(),
+        attemptNumber: questionIndex + 1
+      )
+    )
     _debugSession = State(
       initialValue: lesson.debugChallenge.map { DebugSession(challenge: $0) }
     )
@@ -1663,7 +1751,10 @@ private struct XRayLessonView: View {
     // Yeniden çözmede havuzdaki sıradaki soru sorulur; aynı cevabı hatırlamak
     // yerine aynı kavramı yeni bir kodda uygulamak gerekir.
     let nextAttempt = run.attemptNumber + 1
-    journey = LessonJourney(lesson: lesson, questionIndex: nextAttempt - 1)
+    journey = LessonJourney(
+      lesson: lesson,
+      questionIndex: initialQuestionIndex + nextAttempt - 1
+    )
     run = LessonRun(lessonID: lesson.id, startedAt: Date(), attemptNumber: nextAttempt)
     selectedLanguage = .swift
     debugSession = lesson.debugChallenge.map { DebugSession(challenge: $0) }

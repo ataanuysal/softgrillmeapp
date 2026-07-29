@@ -37,6 +37,7 @@ derinleştiğini olduğu gibi gösterir.
   havuzundan gelen ders sonu quizi; yeniden çözmede sıradaki soru sorulur
 - Aktif satır, adım adım değişen bellek ve çıktı görünümü
 - Quiz yapılmadan dersin tamamlanmasını engelleyen bitirme koşulu
+- Yanlış bilinen ve üzerinden zaman geçen dersleri geri getiren tekrar kartı
 - Tur bütçeli, cevabı vermeyen Sokratik mentor ve cevap sızıntısı filtresi
 
 ### Bir kısım derste var
@@ -52,7 +53,6 @@ derinleştiğini olduğu gibi gösterir.
 
 - Ders kodlarının ortanca uzunluğu 5 satırdır. 20 satırlık tek kod çıkış
   değerlendirmesidir, yani o uzunluk sınavdan önce hiç çalışılmaz.
-- Aralıklı tekrar mekanizması yok; 3. dersin kavramı 20. günde geri gelmiyor.
 - Dil karşılaştırması, pratik ve hata avcılığı hâlâ birkaç derste.
 
 Kapanan borç: yürütme izleri şablondan üretilmiyor (40 dersin 38'i en az üç
@@ -85,7 +85,7 @@ cevaplanabilir soru) ve bütün quizler dört seçenekli.
   metinli erişilebilir eylemler; büyük yazıda dikey kartlar, menü tipi dil
   seçimi ve yatay kaydırılabilir kod
 - Uygulama açılışı, iki ana sekme ve derse giriş için gerçek XCUITest hedefi
-- Format, 92 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
+- Format, 98 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
 
 ## Gereksinimler
 
@@ -181,8 +181,8 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 ## Doğrulama
 
-- 92 Swift Testing testi
-- 21 çekirdek test paketi
+- 98 Swift Testing testi
+- 22 çekirdek test paketi
 - 1 XCUITest duman testi
 - GitHub Actions kalite hattı
 - CI içinde genel iOS Simulator derleme adımı

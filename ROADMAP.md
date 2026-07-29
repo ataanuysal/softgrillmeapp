@@ -204,7 +204,7 @@ Kabul sonucu: 30 derslik temel yol korunuyor; 31–40. dersler Yol Haritası'nda
 
 - ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
 - ✅ 40 dersin veri sözleşmesi otomatik doğrulanıyor.
-- ✅ 92 Swift Testing testi ve 21 çekirdek test paketi tanımlı.
+- ✅ 98 Swift Testing testi ve 22 çekirdek test paketi tanımlı.
 - ✅ Uygulama açılışı, sekme geçişi ve derse girişi kapsayan XCUITest hedefi.
 - ✅ Paylaşılan Xcode şeması ve GitHub Actions kalite hattı.
 - ✅ Swift format/lint kontrolü yapılıyor.
@@ -227,8 +227,13 @@ Bu aşama yeni özellik değil, mevcut vaatlerin kapsama derinliğidir.
   38'i en az üç farklı bellek durumundan geçiyor.
 - ✅ Konu anlatımı ders başına yazılıyor; 40 derste 40 farklı "sık hata" metni.
 - ✅ Mentor akış kararı `MentorCoordinator` ile çekirdeğe taşındı ve test edildi.
-- 🚧 Quiz seçeneklerini üçten dörde çıkarmak — ölçümde kullanılan 5 derste
-  tamamlandı, kalan 35 ders üç seçenekli.
+- ✅ Bütün quizler dört seçenekli; çeldiriciler tipik yanlış zihinsel modelden
+  türetildi.
+- ✅ Ders başına üç soruluk quiz havuzu; tekrar denemede sıradaki soru sorulur
+  (toplam cevaplanabilir soru 60 → 140).
+- ✅ Aralıklı tekrar: yanlış bilinen ve üzerinden gün geçen dersler Yol
+  Haritası'ndaki tekrar kartına düşer.
+- ✅ Gelişim raporu örneklem boyutunu taşır ve yetersiz veride yüzde göstermez.
 - ⏳ Ders kodu uzunluğunu 5 satırdan çıkış değerlendirmesinin 20 satırına
   kademeli olarak taşımak
 - ⏳ Dil karşılaştırmasını en az bir bölümün tamamına yaymak (şu an 1/40)
