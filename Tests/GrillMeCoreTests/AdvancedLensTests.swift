@@ -86,7 +86,8 @@ struct AdvancedLensTests {
           output: "-3"
         )
       ],
-      debugChallenge: challenge
+      debugChallenge: challenge,
+      teaching: .test
     )
 
     #expect(lesson.availableLenses == [.flow, .memory, .output, .error])
@@ -99,7 +100,8 @@ struct AdvancedLensTests {
       code: [CodeLine(number: 2, text: "print(8)")],
       choices: ["8"],
       correctAnswer: "8",
-      trace: trace
+      trace: trace,
+      teaching: .test
     )
   }
 }

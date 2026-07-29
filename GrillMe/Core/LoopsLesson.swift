@@ -78,6 +78,14 @@ extension XRayLesson {
       choices: ["10", "16", "24"],
       correctAnswer: "24",
       explanation: "carpim sırasıyla 1, 2, 6 ve 24 olur; son değer ekrana yazdırılır."
+    ),
+    teaching: LessonTeaching(
+      whyItMatters:
+        "Döngüde aynı satır birden çok kez çalışır ama her turda farklı bir değerle. Kodu okumak, turları tek tek yazabilmektir.",
+      commonMistake:
+        "Döngü değişkeninin son değerine bakıp ara turları atlamak. Hata genellikle ilk veya son turda saklanır.",
+      realWorldUse:
+        "Listedeki her satırı çizmek, her siparişi toplamak ve her dosyayı işlemek aynı tur mantığıyla çalışır."
     )
   )
 }

@@ -239,6 +239,36 @@ struct RoadmapCurriculumTests {
     }
   }
 
+  @Test("Her ders kendi konu anlatımını taşır, bölüm şablonunu paylaşmaz")
+  func everyLessonTeachesItsOwnContent() {
+    let lessons = LessonCatalog.standard.lessons
+    let mistakes = lessons.map(\.teaching.commonMistake)
+    let realWorldUses = lessons.map(\.teaching.realWorldUse)
+
+    #expect(Set(mistakes).count == lessons.count)
+    #expect(Set(realWorldUses).count == lessons.count)
+    #expect(lessons.allSatisfy { !$0.teaching.whyItMatters.isEmpty })
+  }
+
+  @Test("Rehberli örnek değerin değişimini adım adım gösterir")
+  func tracesShowMemoryChangingStepByStep() {
+    for lesson in LessonCatalog.standard.lessons {
+      let states = lesson.trace.map { $0.memory.sorted { $0.key < $1.key }.map { "\($0)=\($1)" } }
+      let distinctStates = Set(states.map { $0.joined(separator: ",") })
+      let tracksValues = lesson.trace.contains { $0.memory.count >= 2 }
+
+      #expect(lesson.trace.count >= 3, Comment(rawValue: lesson.id))
+      // Şablon iz, belleği tek adımda boştan tam sonuca atlatıyordu. Birden fazla
+      // değer izleyen her ders en az üç farklı bellek durumundan geçmelidir.
+      if tracksValues {
+        #expect(
+          distinctStates.count >= 3,
+          Comment(rawValue: "\(lesson.id): yalnızca \(distinctStates.count) bellek durumu")
+        )
+      }
+    }
+  }
+
   @Test("Her rubrik kendi örnek cevabını tam puanla değerlendirir")
   func modelAnswersSatisfyTheirOwnRubric() {
     for lesson in LessonCatalog.standard.lessons {

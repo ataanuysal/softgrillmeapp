@@ -55,6 +55,27 @@ public struct TransferChallenge: Equatable, Sendable {
   }
 }
 
+/// Dersin kendi konu anlatımı.
+///
+/// Bölüm başına yazılmış ortak metin, aynı bölümdeki yedi dersi birbirinin
+/// aynısı yapar. Bu tip her dersin kendi gerekçesini, kendi tipik hatasını ve
+/// kendi gerçek proje bağlamını taşımasını sağlar.
+public struct LessonTeaching: Equatable, Sendable {
+  public let whyItMatters: String
+  public let commonMistake: String
+  public let realWorldUse: String
+
+  public init(
+    whyItMatters: String,
+    commonMistake: String,
+    realWorldUse: String
+  ) {
+    self.whyItMatters = whyItMatters
+    self.commonMistake = commonMistake
+    self.realWorldUse = realWorldUse
+  }
+}
+
 public enum ProgramOutcome: Equatable, Sendable {
   case output(String)
   case compileError(String)
@@ -88,6 +109,7 @@ public struct XRayLesson: Equatable, Sendable {
   public let languageVariants: [CodeVariant]
   public let languageComparison: LanguageComparison?
   public let programOutcome: ProgramOutcome
+  public let teaching: LessonTeaching
 
   public init(
     id: String = "lesson",
@@ -109,7 +131,8 @@ public struct XRayLesson: Equatable, Sendable {
     assessmentTasks: [AssessmentTask] = [],
     languageVariants: [CodeVariant] = [],
     languageComparison: LanguageComparison? = nil,
-    programOutcome: ProgramOutcome? = nil
+    programOutcome: ProgramOutcome? = nil,
+    teaching: LessonTeaching
   ) {
     self.id = id
     self.order = order
@@ -131,6 +154,7 @@ public struct XRayLesson: Equatable, Sendable {
     self.languageVariants = languageVariants
     self.languageComparison = languageComparison
     self.programOutcome = programOutcome ?? .output(correctAnswer)
+    self.teaching = teaching
   }
 
   public var availableLenses: [CodeLens] {

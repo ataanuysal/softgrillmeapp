@@ -92,6 +92,14 @@ extension XRayLesson {
         .javascript: "Değişken `let`, satırlar noktalı virgül ve çıktı `console.log` kullanır.",
         .java: "Değişken türü `int` ile belirtilir; çıktı `System.out.println` kullanır.",
       ]
+    ),
+    teaching: LessonTeaching(
+      whyItMatters:
+        "Bir değişkenin adı sabit kalır ama içindeki değer değişir. Kodu okumak, o adın hangi satırda hangi değeri taşıdığını takip etmektir.",
+      commonMistake:
+        "`puan = puan + 2` satırını matematikteki gibi bir eşitlik sanmak. Bu satır bir denklem değil, 'sağdakini hesapla ve sola yaz' komutudur.",
+      realWorldUse:
+        "Sepet tutarı, kalan hak ve okunmamış bildirim sayısı gibi ekranda gördüğün her sayı böyle güncellenir."
     )
   )
 
@@ -166,6 +174,14 @@ extension XRayLesson {
       choices: ["Geçti", "Kaldı", "İkisi de"],
       correctAnswer: "Geçti",
       explanation: "75, 50'den büyük veya eşit olduğu için doğru olan if kolu çalışır."
+    ),
+    teaching: LessonTeaching(
+      whyItMatters:
+        "Koşul, kodun okunduğu sırayı bozan ilk yapıdır. Hangi kolun çalıştığını bilmeden sonucu tahmin etmek imkânsızdır.",
+      commonMistake:
+        "İki kolu da okuyup ikisinin de çalıştığını düşünmek. Bir çalıştırmada yalnızca tek kol çalışır; diğeri hiç görülmez.",
+      realWorldUse:
+        "Giriş yapmış kullanıcıya farklı, yapmamışa farklı ekran göstermek aynı çatalın gerçek uygulamadaki hâlidir."
     )
   )
 }

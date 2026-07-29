@@ -33,14 +33,24 @@ extension XRayLesson {
       ),
       TraceStep(
         lineNumber: 3,
-        explanation: "Yaş ve üyelik koşullarının ikisi de doğru olduğu için if koluna girilir.",
-        memory: ["uye": "true", "yas": "22"],
+        explanation:
+          "Sol koşul değerlendirilir: 22 >= 18 doğru. `&&` bu yüzden sağ tarafa da bakar.",
+        memory: ["uye": "true", "yas": "22", "yas >= 18": "doğru"],
+        output: nil
+      ),
+      TraceStep(
+        lineNumber: 3,
+        explanation:
+          "Sağ koşul da doğru olduğu için birleşik ifade doğru olur ve if koluna girilir.",
+        memory: [
+          "uye": "true", "yas": "22", "yas >= 18": "doğru", "birleşik koşul": "doğru",
+        ],
         output: nil
       ),
       TraceStep(
         lineNumber: 4,
         explanation: "Doğru olan if kolu Girebilir mesajını yazdırır.",
-        memory: ["uye": "true", "yas": "22"],
+        memory: ["uye": "true", "yas": "22", "birleşik koşul": "doğru"],
         output: "Girebilir"
       ),
     ],
@@ -58,6 +68,14 @@ extension XRayLesson {
       choices: ["Satışta", "Bekle", "3"],
       correctAnswer: "Bekle",
       explanation: "Stok koşulu doğru olsa da aktif false olduğu için birleşik koşul yanlıştır."
+    ),
+    teaching: LessonTeaching(
+      whyItMatters:
+        "`&&` ile bağlanan koşullarda tek bir yanlış bütün ifadeyi yanlış yapar. Hangi parçanın yanlış olduğunu bulmak, kolları tek tek değerlendirmeyi gerektirir.",
+      commonMistake:
+        "Koşullardan birinin doğru olmasını yeterli saymak. `&&` hepsini, `||` ise en az birini ister.",
+      realWorldUse:
+        "Bir düğmenin aktif olması genelde birden çok şarta bağlıdır: form dolu, kullanıcı giriş yapmış ve istek sürmüyor."
     )
   )
 
@@ -142,7 +160,15 @@ extension XRayLesson {
         correctAnswer: "hosGeldinMesajiYaz()",
         explanation: "İyi bir ad fonksiyonun niyetini çağrı noktasında açıklar."
       )
-    ]
+    ],
+    teaching: LessonTeaching(
+      whyItMatters:
+        "Fonksiyon çağrısı okuma sırasını böler: akış gövdeye gider, işini bitirir ve tam kaldığı yere döner.",
+      commonMistake:
+        "Fonksiyon tanımını gördüğü yerde çalıştığını sanmak. Tanım beklemede durur; yalnızca çağrıldığında çalışır.",
+      realWorldUse:
+        "Bir düğmeye basıldığında çalışan her işlem, ekranın çağırdığı ve sonucu ekrana dönen bir fonksiyondur."
+    )
   )
 
   public static let parametersAndReturn = XRayLesson(
@@ -211,7 +237,15 @@ extension XRayLesson {
       explanation: "5 parametreye gider, 3 eklenir ve dönen 8 doğrudan yazdırılır."
     ),
     estimatedMinutes: 8,
-    section: .functions
+    section: .functions,
+    teaching: LessonTeaching(
+      whyItMatters:
+        "Parametre ve return, fonksiyonun dış dünyayla kurduğu iki yönlü köprüdür: veri içeri girer, sonuç dışarı çıkar.",
+      commonMistake:
+        "return satırından sonra gövdedeki kodun çalışmaya devam ettiğini sanmak. return fonksiyonu o anda bitirir.",
+      realWorldUse:
+        "Fiyat hesaplama, doğrulama ve biçimlendirme fonksiyonları hep girdi alıp sonuç döndürerek çalışır."
+    )
   )
 
   public static let weekOneChallenge = XRayLesson(
@@ -290,6 +324,14 @@ extension XRayLesson {
       explanation: "topla(2) değeri 3'tür; 3 > 5 yanlış olduğu için else kolu çalışır."
     ),
     estimatedMinutes: 10,
-    section: .fundamentals
+    section: .fundamentals,
+    teaching: LessonTeaching(
+      whyItMatters:
+        "Gerçek kod tek bir kavramdan oluşmaz. Fonksiyon, döngü ve koşul iç içe geçtiğinde okuma sırası da iç içe geçer.",
+      commonMistake:
+        "Fonksiyonun içindeki döngüyü bitirmeden dışarıdaki koşula atlamak. Dıştaki karar, içteki hesap bitmeden verilemez.",
+      realWorldUse:
+        "Bir raporu hesaplayıp sonucuna göre farklı ekran göstermek tam olarak bu iç içe yapıdır."
+    )
   )
 }
