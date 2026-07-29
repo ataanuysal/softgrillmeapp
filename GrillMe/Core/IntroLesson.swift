@@ -228,6 +228,55 @@ extension XRayLesson {
         explanation: "Koşul yanlış ve else kolu yok; program hiçbir şey yazmadan devam eder."
       ),
     ],
+    languageVariants: [
+      CodeVariant(
+        language: .python,
+        lines: [
+          "sicaklik = 18",
+          "mesaj = \"\"",
+          "if sicaklik > 20:",
+          "    mesaj = \"Tişört yeter\"",
+          "else:",
+          "    mesaj = \"Ceket al\"",
+          "print(mesaj)",
+        ]
+      ),
+      CodeVariant(
+        language: .javascript,
+        lines: [
+          "const sicaklik = 18;",
+          "let mesaj = \"\";",
+          "if (sicaklik > 20) {",
+          "    mesaj = \"Tişört yeter\";",
+          "} else {",
+          "    mesaj = \"Ceket al\";",
+          "}",
+          "console.log(mesaj);",
+        ]
+      ),
+      CodeVariant(
+        language: .java,
+        lines: [
+          "int sicaklik = 18;",
+          "String mesaj;",
+          "if (sicaklik > 20) {",
+          "    mesaj = \"Tişört yeter\";",
+          "} else {",
+          "    mesaj = \"Ceket al\";",
+          "}",
+          "System.out.println(mesaj);",
+        ]
+      ),
+    ],
+    languageComparison: LanguageComparison(
+      invariant: "Dört dilde de 18 > 20 yanlıştır; yalnızca else kolu çalışır ve Ceket al yazılır.",
+      syntaxDifferences: [
+        .swift: "Bloklar süslü parantezle ayrılır ve çıktı `print` ile yazılır.",
+        .python: "Blok girinti ve iki nokta ile belirtilir; parantez kullanılmaz.",
+        .javascript: "Koşul parantez içinde yazılır ve çıktı `console.log` kullanır.",
+        .java: "Değişken türü açıkça yazılır; çıktı `System.out.println` kullanır.",
+      ]
+    ),
     teaching: LessonTeaching(
       whyItMatters:
         "Koşul, kodun okunduğu sırayı bozan ilk yapıdır. Hangi kolun çalıştığını bilmeden sonucu tahmin etmek imkânsızdır.",

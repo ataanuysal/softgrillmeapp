@@ -288,6 +288,28 @@ struct RoadmapCurriculumTests {
     }
   }
 
+  @Test("Temeller bölümünün tamamı dört dilde karşılaştırılabilir")
+  func fundamentalsCoverEveryLanguage() {
+    let fundamentals = LessonCatalog.standard.lessons.filter { $0.section == .fundamentals }
+
+    #expect(!fundamentals.isEmpty)
+    for lesson in fundamentals {
+      #expect(
+        lesson.availableLanguages == CodeLanguage.allCases,
+        Comment(rawValue: "\(lesson.id): \(lesson.availableLanguages.count) dil")
+      )
+      #expect(lesson.availableLenses.contains(.language), Comment(rawValue: lesson.id))
+      #expect(lesson.languageComparison != nil, Comment(rawValue: lesson.id))
+      // Her varyant Swift kodundan farklı olmalı; kopyalanan blok dil farkını öğretmez.
+      for variant in lesson.languageVariants {
+        #expect(
+          variant.code.map(\.text) != lesson.code.map(\.text),
+          Comment(rawValue: "\(lesson.id)/\(variant.language.rawValue)")
+        )
+      }
+    }
+  }
+
   @Test("Her ders tekrar denemeye yetecek quiz havuzu taşır")
   func everyLessonOffersAQuestionBank() {
     for lesson in LessonCatalog.standard.lessons {

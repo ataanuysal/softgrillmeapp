@@ -121,12 +121,12 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 
 ## Doğrulama durumu
 
-- 98 Swift Testing testi ve 22 test paketi geçmelidir.
+- 99 Swift Testing testi ve 22 test paketi geçmelidir.
 - 1 XCUITest duman testi uygulama açılışı, sekmeler ve derse girişi doğrular.
 - Genel iOS Simulator build ve UI test adımları CI sözleşmesinde yer alır.
 - Release iOS arşivinde birincil ikon adı `AppIcon` ve
   `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.
-- 29 Temmuz 2026: `swift test` (98/98), imzasız `xcodebuild` derlemesi ve
+- 29 Temmuz 2026: `swift test` (99/99), imzasız `xcodebuild` derlemesi ve
   `swift-format lint --strict` yerel makinede geçti.
 - `grillme-final-preview.png` son normal görünümü,
   `grillme-dynamic-type-preview.png` erişilebilir boyutu gösterir.
@@ -147,7 +147,7 @@ Belgelerin özellik listesi ile müfredatın kapsama derinliği aynı şey deği
 | Hata avcılığı görevi | 6 |
 | Pratik sorusu | 5 |
 | Değerlendirme görevi ve rubrik | 2 |
-| Dil varyantı ve dil lensi | 1 |
+| Dil varyantı ve dil lensi | 5 |
 
 Diğer ölçümler: ders kodunun ortanca uzunluğu 5 satırdır ve 20 satırlık tek ders
 çıkış değerlendirmesidir. Kurstaki toplam cevaplanabilir soru sayısı 60'tan

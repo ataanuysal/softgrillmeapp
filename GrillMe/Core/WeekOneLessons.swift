@@ -102,6 +102,53 @@ extension XRayLesson {
         explanation: "`||` en az bir doğru koşula bakar; aktif true olduğu için ifade doğrudur."
       ),
     ],
+    languageVariants: [
+      CodeVariant(
+        language: .python,
+        lines: [
+          "yas = 22",
+          "uye = True",
+          "if yas >= 18 and uye:",
+          "    print(\"Girebilir\")",
+          "else:",
+          "    print(\"Bekle\")",
+        ]
+      ),
+      CodeVariant(
+        language: .javascript,
+        lines: [
+          "const yas = 22;",
+          "const uye = true;",
+          "if (yas >= 18 && uye) {",
+          "    console.log(\"Girebilir\");",
+          "} else {",
+          "    console.log(\"Bekle\");",
+          "}",
+        ]
+      ),
+      CodeVariant(
+        language: .java,
+        lines: [
+          "int yas = 22;",
+          "boolean uye = true;",
+          "if (yas >= 18 && uye) {",
+          "    System.out.println(\"Girebilir\");",
+          "} else {",
+          "    System.out.println(\"Bekle\");",
+          "}",
+        ]
+      ),
+    ],
+    languageComparison: LanguageComparison(
+      invariant:
+        "Dört dilde de iki koşul birlikte doğrudur; ikisi de doğru olmadan if koluna girilmez.",
+      syntaxDifferences: [
+        .swift: "Birleştirme `&&` ile yazılır ve `true` küçük harflidir.",
+        .python: "Birleştirme `and` kelimesiyle yazılır ve `True` büyük harfle başlar.",
+        .javascript: "`&&` kullanılır; blok süslü parantez ister.",
+        .java: "`&&` kullanılır ve boolean türü açıkça yazılır.",
+      ]
+    ),
     teaching: LessonTeaching(
       whyItMatters:
         "`&&` ile bağlanan koşullarda tek bir yanlış bütün ifadeyi yanlış yapar. Hangi parçanın yanlış olduğunu bulmak, kolları tek tek değerlendirmeyi gerektirir.",
@@ -456,6 +503,62 @@ extension XRayLesson {
     ],
     estimatedMinutes: 10,
     section: .fundamentals,
+    languageVariants: [
+      CodeVariant(
+        language: .python,
+        lines: [
+          "def topla(son):",
+          "    toplam = 0",
+          "    for sayi in range(1, son + 1):",
+          "        toplam = toplam + sayi",
+          "    return toplam",
+          "sonuc = topla(3)",
+          "if sonuc > 5:",
+          "    print(f\"Tamam: {sonuc}\")",
+        ]
+      ),
+      CodeVariant(
+        language: .javascript,
+        lines: [
+          "function topla(son) {",
+          "    let toplam = 0;",
+          "    for (let sayi = 1; sayi <= son; sayi++) {",
+          "        toplam = toplam + sayi;",
+          "    }",
+          "    return toplam;",
+          "}",
+          "const sonuc = topla(3);",
+          "if (sonuc > 5) {",
+          "    console.log(`Tamam: ${sonuc}`);",
+          "}",
+        ]
+      ),
+      CodeVariant(
+        language: .java,
+        lines: [
+          "static int topla(int son) {",
+          "    int toplam = 0;",
+          "    for (int sayi = 1; sayi <= son; sayi++) {",
+          "        toplam = toplam + sayi;",
+          "    }",
+          "    return toplam;",
+          "}",
+          "int sonuc = topla(3);",
+          "if (sonuc > 5) {",
+          "    System.out.println(\"Tamam: \" + sonuc);",
+          "}",
+        ]
+      ),
+    ],
+    languageComparison: LanguageComparison(
+      invariant: "Dört dilde de fonksiyon 6 döndürür, koşul doğrudur ve aynı metin yazılır.",
+      syntaxDifferences: [
+        .swift: "Metne değer gömmek için `\\(sonuc)` yazılır.",
+        .python: "f-string içinde `{sonuc}` kullanılır.",
+        .javascript: "Ters tırnak içinde `${sonuc}` kullanılır.",
+        .java: "Metin ve sayı `+` ile birleştirilir.",
+      ]
+    ),
     teaching: LessonTeaching(
       whyItMatters:
         "Gerçek kod tek bir kavramdan oluşmaz. Fonksiyon, döngü ve koşul iç içe geçtiğinde okuma sırası da iç içe geçer.",

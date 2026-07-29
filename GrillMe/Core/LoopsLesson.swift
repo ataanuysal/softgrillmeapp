@@ -107,6 +107,46 @@ extension XRayLesson {
         explanation: "İlk tur 10 - 1 = 9, ikinci tur 9 - 2 = 7."
       ),
     ],
+    languageVariants: [
+      CodeVariant(
+        language: .python,
+        lines: [
+          "toplam = 0",
+          "for sayi in range(1, 4):",
+          "    toplam = toplam + sayi",
+          "print(toplam)",
+        ]
+      ),
+      CodeVariant(
+        language: .javascript,
+        lines: [
+          "let toplam = 0;",
+          "for (let sayi = 1; sayi <= 3; sayi++) {",
+          "    toplam = toplam + sayi;",
+          "}",
+          "console.log(toplam);",
+        ]
+      ),
+      CodeVariant(
+        language: .java,
+        lines: [
+          "int toplam = 0;",
+          "for (int sayi = 1; sayi <= 3; sayi++) {",
+          "    toplam = toplam + sayi;",
+          "}",
+          "System.out.println(toplam);",
+        ]
+      ),
+    ],
+    languageComparison: LanguageComparison(
+      invariant: "Dört dilde de döngü 1, 2 ve 3 turlarını çalıştırır ve toplam 6 olur.",
+      syntaxDifferences: [
+        .swift: "`1...3` aralığı üç turu kapsar; son değer dahildir.",
+        .python: "`range(1, 4)` üst sınırı dışarıda bırakır, bu yüzden 4 yazılır.",
+        .javascript: "Tur sayacı, koşulu ve artışı elle yazılır.",
+        .java: "Sayaç türü `int` olarak belirtilir; yapı JavaScript ile aynıdır.",
+      ]
+    ),
     teaching: LessonTeaching(
       whyItMatters:
         "Döngüde aynı satır birden çok kez çalışır ama her turda farklı bir değerle. Kodu okumak, turları tek tek yazabilmektir.",

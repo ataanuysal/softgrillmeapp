@@ -47,7 +47,7 @@ derinleştiğini olduğu gibi gösterir.
 | Hipotez zorunlu hata avcılığı | 6 / 40 |
 | Pratik soruları | 5 / 40 |
 | Rubrikli açık uçlu değerlendirme | 2 / 40 |
-| Swift, Python, JavaScript ve Java karşılaştırması | 1 / 40 |
+| Swift, Python, JavaScript ve Java karşılaştırması | 5 / 40 (temeller bölümünün tamamı) |
 
 ### Bilinen içerik borcu
 
@@ -85,7 +85,7 @@ cevaplanabilir soru) ve bütün quizler dört seçenekli.
   metinli erişilebilir eylemler; büyük yazıda dikey kartlar, menü tipi dil
   seçimi ve yatay kaydırılabilir kod
 - Uygulama açılışı, iki ana sekme ve derse giriş için gerçek XCUITest hedefi
-- Format, 98 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
+- Format, 99 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
 
 ## Gereksinimler
 
@@ -181,7 +181,7 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 ## Doğrulama
 
-- 98 Swift Testing testi
+- 99 Swift Testing testi
 - 22 çekirdek test paketi
 - 1 XCUITest duman testi
 - GitHub Actions kalite hattı

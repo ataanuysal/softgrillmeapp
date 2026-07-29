@@ -162,9 +162,10 @@ karşılaştırma üç başlangıç sorusu ile tek bir çıkış sorusu arasınd
 
 Amaç: Zihinsel modeli yeni dillere ve bağımsız öğrenmeye taşımak.
 
-- 🚧 Aynı örneğin Swift, Python, JavaScript ve Java karşılığı — 1/40 derste
-- 🚧 Dil lensi — yalnızca varyantı olan derste açılır, yani 1/40
-- 🚧 Syntax farkı ile mantık farkını ayıran karşılaştırma — 1/40 derste
+- 🚧 Aynı örneğin Swift, Python, JavaScript ve Java karşılığı — temeller
+  bölümünün tamamında, ileri bölümlerde yok
+- 🚧 Dil lensi — varyantı olan 5 derste açılır
+- 🚧 Syntax farkı ile mantık farkını ayıran karşılaştırma — 5/40 derste
 - ✅ Soru sorarak ilerleten cihaz içi AI mentor
 - ✅ Kullanıcı açıklamasındaki kavramlara kişiselleştirilmiş geri bildirim
 - ✅ Ders başına altı turluk maliyet/işlem bütçesi
@@ -204,7 +205,7 @@ Kabul sonucu: 30 derslik temel yol korunuyor; 31–40. dersler Yol Haritası'nda
 
 - ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
 - ✅ 40 dersin veri sözleşmesi otomatik doğrulanıyor.
-- ✅ 98 Swift Testing testi ve 22 çekirdek test paketi tanımlı.
+- ✅ 99 Swift Testing testi ve 22 çekirdek test paketi tanımlı.
 - ✅ Uygulama açılışı, sekme geçişi ve derse girişi kapsayan XCUITest hedefi.
 - ✅ Paylaşılan Xcode şeması ve GitHub Actions kalite hattı.
 - ✅ Swift format/lint kontrolü yapılıyor.
@@ -236,7 +237,7 @@ Bu aşama yeni özellik değil, mevcut vaatlerin kapsama derinliğidir.
 - ✅ Gelişim raporu örneklem boyutunu taşır ve yetersiz veride yüzde göstermez.
 - ⏳ Ders kodu uzunluğunu 5 satırdan çıkış değerlendirmesinin 20 satırına
   kademeli olarak taşımak
-- ⏳ Dil karşılaştırmasını en az bir bölümün tamamına yaymak (şu an 1/40)
+- ✅ Dil karşılaştırması temeller bölümünün tamamında (5 ders, dört dil).
 - ⏳ Pratik ve hata avcılığı görevlerini bölüm başına en az bir derse koymak
 - ⏳ Gelişim raporunu tek soruluk çıkış ölçümünden çıkarmak
 
