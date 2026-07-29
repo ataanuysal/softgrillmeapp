@@ -1660,8 +1660,11 @@ private struct XRayLessonView: View {
   private func resetLesson() {
     mentorTask?.cancel()
     mentorTask = nil
-    journey = LessonJourney(lesson: lesson)
-    run = LessonRun(lessonID: lesson.id, startedAt: Date())
+    // Yeniden çözmede havuzdaki sıradaki soru sorulur; aynı cevabı hatırlamak
+    // yerine aynı kavramı yeni bir kodda uygulamak gerekir.
+    let nextAttempt = run.attemptNumber + 1
+    journey = LessonJourney(lesson: lesson, questionIndex: nextAttempt - 1)
+    run = LessonRun(lessonID: lesson.id, startedAt: Date(), attemptNumber: nextAttempt)
     selectedLanguage = .swift
     debugSession = lesson.debugChallenge.map { DebugSession(challenge: $0) }
     debugHypothesis = ""

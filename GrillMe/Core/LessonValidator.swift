@@ -43,14 +43,11 @@ public struct LessonValidator: Sendable {
         issues.append(.unexpectedOutputForProgramFailure)
       }
     }
-    guard let transfer = lesson.transferChallenge else {
+    if lesson.transferChallenges.isEmpty {
       issues.append(.missingTransferChallenge)
-      if !(5...10).contains(lesson.estimatedMinutes) {
-        issues.append(.invalidEstimatedMinutes)
-      }
-      return issues
     }
-    if !transfer.choices.contains(transfer.correctAnswer) {
+    for transfer in lesson.transferChallenges
+    where !transfer.choices.contains(transfer.correctAnswer) {
       issues.append(.transferAnswerNotInChoices)
     }
     if !(5...10).contains(lesson.estimatedMinutes) {

@@ -119,12 +119,12 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 
 ## Doğrulama durumu
 
-- 88 Swift Testing testi ve 21 test paketi geçmelidir.
+- 92 Swift Testing testi ve 21 test paketi geçmelidir.
 - 1 XCUITest duman testi uygulama açılışı, sekmeler ve derse girişi doğrular.
 - Genel iOS Simulator build ve UI test adımları CI sözleşmesinde yer alır.
 - Release iOS arşivinde birincil ikon adı `AppIcon` ve
   `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.
-- 29 Temmuz 2026: `swift test` (88/88), imzasız `xcodebuild` derlemesi ve
+- 29 Temmuz 2026: `swift test` (92/92), imzasız `xcodebuild` derlemesi ve
   `swift-format lint --strict` yerel makinede geçti.
 - `grillme-final-preview.png` son normal görünümü,
   `grillme-dynamic-type-preview.png` erişilebilir boyutu gösterir.
@@ -139,15 +139,17 @@ Belgelerin özellik listesi ile müfredatın kapsama derinliği aynı şey deği
 | En az üç farklı bellek durumundan geçen yürütme izi | 38 |
 | Dört veya daha fazla adımlı yürütme izi | 28 |
 | Kendi konu anlatımı (bölüm şablonu yok) | 40 |
-| Dört seçenekli quiz | 5 |
+| Dört seçenekli quiz | 40 |
+| Üç soruluk quiz havuzu | 40 |
 | Hata avcılığı görevi | 6 |
 | Pratik sorusu | 5 |
 | Değerlendirme görevi ve rubrik | 2 |
 | Dil varyantı ve dil lensi | 1 |
 
 Diğer ölçümler: ders kodunun ortanca uzunluğu 5 satırdır ve 20 satırlık tek ders
-çıkış değerlendirmesidir; gelişim raporu üç başlangıç quizini tek bir çıkış
-quiziyle karşılaştırır.
+çıkış değerlendirmesidir. Kurstaki toplam cevaplanabilir soru sayısı 60'tan
+140'a çıktı; gelişim raporu artık örneklem boyutunu taşıyor ve üç çıkış quizi
+tamamlanmadan yüzde göstermiyor.
 
 Bu tablo bir hata listesi değil, içerik borcunun envanteridir; yeni ders
 yazarken veya bir özelliği "tamamlandı" saymadan önce buraya bakılmalıdır.

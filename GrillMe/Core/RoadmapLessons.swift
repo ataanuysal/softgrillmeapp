@@ -32,6 +32,24 @@ private struct Step {
   }
 }
 
+/// Havuzdaki ek quiz sorusu.
+///
+/// Her soru aynı kavramı farklı bir kodda ölçer; tekrar denemede sıradaki
+/// soru sorulur.
+private struct Quiz {
+  let code: [String]
+  let choices: [String]
+  let answer: String
+  let explanation: String
+
+  init(_ code: [String], choices: [String], answer: String, explanation: String) {
+    self.code = code
+    self.choices = choices
+    self.answer = answer
+    self.explanation = explanation
+  }
+}
+
 private struct RoadmapBlueprint {
   let id: String
   let order: Int
@@ -56,6 +74,7 @@ private struct RoadmapBlueprint {
   let transferCode: [String]
   let transferChoices: [String]
   let transferAnswer: String
+  let extraQuizzes: [Quiz]
   let estimatedMinutes: Int
 
   init(
@@ -82,6 +101,7 @@ private struct RoadmapBlueprint {
     transferCode: [String] = [],
     transferChoices: [String] = [],
     transferAnswer: String = "",
+    extraQuizzes: [Quiz] = [],
     estimatedMinutes: Int = 7
   ) {
     self.id = id
@@ -107,6 +127,7 @@ private struct RoadmapBlueprint {
     self.transferCode = transferCode
     self.transferChoices = transferChoices
     self.transferAnswer = transferAnswer
+    self.extraQuizzes = extraQuizzes
     self.estimatedMinutes = estimatedMinutes
   }
 
@@ -138,13 +159,15 @@ private struct RoadmapBlueprint {
           architecture: $0.architecture
         )
       },
-      transferChallenge: TransferChallenge(
-        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
-        code: transferSource,
-        choices: resolvedTransferChoices,
-        correctAnswer: resolvedTransferAnswer,
-        explanation: takeaway
-      ),
+      transferChallenges: [
+        TransferChallenge(
+          prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+          code: transferSource,
+          choices: resolvedTransferChoices,
+          correctAnswer: resolvedTransferAnswer,
+          explanation: takeaway
+        )
+      ] + extraQuizzes.map(challenge),
       estimatedMinutes: estimatedMinutes,
       debugChallenge: debugChallenge(source: source),
       section: section,
@@ -180,6 +203,16 @@ private struct RoadmapBlueprint {
       explanation:
         "Beklenen \(expected), gerçek \(actual.isEmpty ? answer : actual). "
         + "\(debugLine). satır incelenmeli."
+    )
+  }
+
+  private func challenge(for quiz: Quiz) -> TransferChallenge {
+    TransferChallenge(
+      prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+      code: numbered(quiz.code),
+      choices: quiz.choices,
+      correctAnswer: quiz.answer,
+      explanation: quiz.explanation
     )
   }
 
@@ -272,6 +305,24 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["İç → Dış", "Dış → İç", "İç → İç", "Dış → Dış"],
     transferAnswer: "İç → Dış",
+    extraQuizzes: [
+      Quiz(
+        [
+          "var sayac = 1", "func artir() {", "    var sayac = 5", "    sayac += 1", "}", "artir()",
+          "print(sayac)",
+        ],
+        choices: ["1", "6", "2", "5"],
+        answer: "1",
+        explanation:
+          "artir kendi yerel sayac'ını 6 yapar; dıştaki sayac hiç değişmediği için 1 kalır."
+      ),
+      Quiz(
+        ["let mesaj = \"dış\"", "func yaz() {", "    print(mesaj)", "}", "yaz()"],
+        choices: ["dış", "Boş satır", "Derlenmez", "nil"],
+        answer: "dış",
+        explanation: "Fonksiyonun kendi mesaj'ı yok; dıştaki kapsamda bulduğu değeri okur."
+      ),
+    ],
     estimatedMinutes: 8
   ),
   RoadmapBlueprint(
@@ -359,6 +410,23 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["4", "8", "16", "2"],
     transferAnswer: "16",
+    extraQuizzes: [
+      Quiz(
+        [
+          "var toplam = 5", "func ekle(_ x: Int) -> Int { x + 1 }", "print(ekle(2))",
+          "print(toplam)",
+        ],
+        choices: ["3 → 5", "3 → 6", "2 → 5", "6 → 5"],
+        answer: "3 → 5",
+        explanation: "ekle yalnızca değer döndürür; toplam'a dokunmadığı için 5 kalır."
+      ),
+      Quiz(
+        ["var log = 0", "func kaydet() { log += 1 }", "kaydet()", "kaydet()", "print(log)"],
+        choices: ["2", "0", "1", "Hata"],
+        answer: "2",
+        explanation: "Her çağrı dış durumu bir arttırır; iki side effect birikir."
+      ),
+    ],
     estimatedMinutes: 8
   ),
   RoadmapBlueprint(
@@ -429,7 +497,24 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     transferChoices: [
       "[\"ada\", \"can\"]", "[\"ADA\", \"CAN\"]", "[\"ADA\"]", "[\"Ada\", \"Can\"]",
     ],
-    transferAnswer: "[\"ADA\", \"CAN\"]"
+    transferAnswer: "[\"ADA\", \"CAN\"]",
+    extraQuizzes: [
+      Quiz(
+        ["let sayilar = [3, 4]", "let kareler = sayilar.map { $0 * $0 }", "print(kareler)"],
+        choices: ["[9, 16]", "[6, 8]", "[3, 4]", "25"],
+        answer: "[9, 16]",
+        explanation: "Her eleman kendisiyle çarpılır; eleman sayısı korunur."
+      ),
+      Quiz(
+        [
+          "let harfler = [\"a\", \"b\", \"c\"]", "let sonuc = harfler.map { $0 + \"!\" }",
+          "print(sonuc.count)",
+        ],
+        choices: ["3", "1", "6", "0"],
+        answer: "3",
+        explanation: "map eleman sayısını değiştirmez; üç elemandan üç eleman üretir."
+      ),
+    ],
   ),
   RoadmapBlueprint(
     id: "filter-intro",
@@ -507,7 +592,24 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     transferChoices: [
       "[\"Ada\", \"Can\", \"Ece\"]", "[\"Ada\", \"Can\"]", "[\"Ece\"]", "[]",
     ],
-    transferAnswer: "[\"Ada\", \"Can\", \"Ece\"]"
+    transferAnswer: "[\"Ada\", \"Can\", \"Ece\"]",
+    extraQuizzes: [
+      Quiz(
+        [
+          "let sayilar = [5, 10, 15]", "let kucukler = sayilar.filter { $0 < 10 }",
+          "print(kucukler)",
+        ],
+        choices: ["[5]", "[5, 10]", "[10, 15]", "[]"],
+        answer: "[5]",
+        explanation: "10 < 10 yanlış olduğu için sınır değeri elenir; yalnızca 5 kalır."
+      ),
+      Quiz(
+        ["let sayilar = [1, 2, 3]", "let hepsi = sayilar.filter { $0 > 0 }", "print(hepsi.count)"],
+        choices: ["3", "0", "1", "6"],
+        answer: "3",
+        explanation: "Koşulu bütün elemanlar geçtiği için hiçbiri elenmez."
+      ),
+    ],
   ),
   RoadmapBlueprint(
     id: "arrays-index",
@@ -566,7 +668,21 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(harfler[harfler.count - 1])",
     ],
     transferChoices: ["A → D", "A → C", "B → D", "B → C"],
-    transferAnswer: "A → D"
+    transferAnswer: "A → D",
+    extraQuizzes: [
+      Quiz(
+        ["let sayilar = [10, 20, 30]", "print(sayilar[sayilar.count - 2])"],
+        choices: ["20", "30", "10", "Hata"],
+        answer: "20",
+        explanation: "count 3, iki eksiği 1; index 1 ikinci elemandır."
+      ),
+      Quiz(
+        ["let sayilar = [10, 20, 30]", "print(sayilar[sayilar.count])"],
+        choices: ["Hata", "30", "nil", "0"],
+        answer: "Hata",
+        explanation: "Geçerli index'ler 0, 1 ve 2; count olan 3 dizinin dışındadır."
+      ),
+    ],
   ),
   RoadmapBlueprint(
     id: "dictionary-key",
@@ -619,7 +735,21 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(puanlar[\"Ece\"] == nil)",
     ],
     transferChoices: ["7 → true", "9 → true", "7 → false", "7 → Hata"],
-    transferAnswer: "7 → true"
+    transferAnswer: "7 → true",
+    extraQuizzes: [
+      Quiz(
+        ["let stok = [\"kalem\": 4]", "print(stok[\"defter\"] ?? 0)"],
+        choices: ["0", "4", "nil", "Hata"],
+        answer: "0",
+        explanation: "Key bulunamaz, arama nil döner ve ?? varsayılan değeri verir."
+      ),
+      Quiz(
+        ["let stok = [\"kalem\": 4]", "print(stok[\"defter\"]!)"],
+        choices: ["Hata", "0", "nil", "4"],
+        answer: "Hata",
+        explanation: "Olmayan key'in sonucu nil'dir; `!` bunu açmaya çalışınca program durur."
+      ),
+    ],
   ),
   RoadmapBlueprint(
     id: "collections-challenge",
@@ -696,6 +826,23 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["5", "8", "10", "0"],
     transferAnswer: "10",
+    extraQuizzes: [
+      Quiz(
+        [
+          "let sayilar = [1, 2, 3, 4, 5]", "let tekler = sayilar.filter { $0 % 2 == 1 }",
+          "let toplam = tekler.reduce(0, +)", "print(toplam)",
+        ],
+        choices: ["9", "15", "6", "3"],
+        answer: "9",
+        explanation: "Tekler [1, 3, 5]; toplamı 9'dur. Elenen çiftler reduce'a hiç girmez."
+      ),
+      Quiz(
+        ["let sayilar: [Int] = []", "let toplam = sayilar.reduce(0, +)", "print(toplam)"],
+        choices: ["0", "Hata", "nil", "1"],
+        answer: "0",
+        explanation: "Boş koleksiyonda reduce başlangıç değerini döndürür; çökme olmaz."
+      ),
+    ],
     estimatedMinutes: 9
   ),
   RoadmapBlueprint(
@@ -753,7 +900,24 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(lamba.acik)",
     ],
     transferChoices: ["true", "false", "Lamba", "nil"],
-    transferAnswer: "true"
+    transferAnswer: "true",
+    extraQuizzes: [
+      Quiz(
+        [
+          "class Kutu { var deger = 5 }", "let a = Kutu()", "let b = Kutu()", "a.deger = 9",
+          "print(b.deger)",
+        ],
+        choices: ["5", "9", "0", "Hata"],
+        answer: "5",
+        explanation: "Her instance şablondan kendi kopyasını alır; a'daki değişiklik b'ye geçmez."
+      ),
+      Quiz(
+        ["class Sepet { var adet = 0 }", "let sepet = Sepet()", "print(sepet.adet)"],
+        choices: ["0", "nil", "Sepet", "Hata"],
+        answer: "0",
+        explanation: "Instance oluştuğunda alan şablondaki başlangıç değeriyle gelir."
+      ),
+    ],
   ),
   RoadmapBlueprint(
     id: "property-method",
@@ -834,7 +998,27 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(sayac.deger)",
     ],
     transferChoices: ["0", "1", "2", "3"],
-    transferAnswer: "2"
+    transferAnswer: "2",
+    extraQuizzes: [
+      Quiz(
+        [
+          "class Kova {", "    var su = 10", "    func bosalt() { su = 0 }", "}",
+          "let kova = Kova()", "kova.bosalt()", "print(kova.su)",
+        ],
+        choices: ["0", "10", "nil", "Hata"],
+        answer: "0",
+        explanation: "Method dönüş değeri üretmez ama nesnenin alanını kalıcı olarak değiştirir."
+      ),
+      Quiz(
+        [
+          "class Kova {", "    var su = 10", "    func bosalt() { su = 0 }", "}",
+          "let kova = Kova()", "print(kova.su)",
+        ],
+        choices: ["10", "0", "nil", "Hata"],
+        answer: "10",
+        explanation: "Method çağrılmadığı için alan başlangıç değerinde kalır."
+      ),
+    ],
   ),
   RoadmapBlueprint(
     id: "initializer",
@@ -907,7 +1091,24 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(kisi.ad)",
     ],
     transferChoices: ["Ada", "Can", "Kullanici", "Boş metin"],
-    transferAnswer: "Can"
+    transferAnswer: "Can",
+    extraQuizzes: [
+      Quiz(
+        [
+          "struct Urun {", "    let ad: String", "    let adet: Int", "}",
+          "let urun = Urun(ad: \"Kalem\", adet: 3)", "print(urun.adet)",
+        ],
+        choices: ["3", "Kalem", "0", "Hata"],
+        answer: "3",
+        explanation: "Her argüman kendi adındaki alana yazılır; adet 3 değerini alır."
+      ),
+      Quiz(
+        ["class Oda {", "    var kisi: Int", "    init() { kisi = 2 }", "}", "print(Oda().kisi)"],
+        choices: ["2", "0", "nil", "Hata"],
+        answer: "2",
+        explanation: "Argüman almayan initializer da alanı kullanılmadan önce kurmak zorundadır."
+      ),
+    ],
   ),
   RoadmapBlueprint(
     id: "value-reference",
@@ -965,6 +1166,21 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["2", "7", "Hata", "9"],
     transferAnswer: "2",
+    extraQuizzes: [
+      Quiz(
+        ["class Kutu { var x = 1 }", "let a = Kutu()", "let b = a", "b.x = 9", "print(a.x)"],
+        choices: ["9", "1", "Hata", "0"],
+        answer: "9",
+        explanation:
+          "Class referans taşır: a ve b aynı nesneyi işaret eder, değişiklik ikisinde de görünür."
+      ),
+      Quiz(
+        ["struct Kutu { var x = 1 }", "var a = Kutu()", "var b = a", "b.x = 9", "print(b.x)"],
+        choices: ["9", "1", "Hata", "0"],
+        answer: "9",
+        explanation: "Kopya bağımsızdır; değiştirilen kopyanın kendi değeri okunur."
+      ),
+    ],
     estimatedMinutes: 8
   ),
   RoadmapBlueprint(
@@ -1025,7 +1241,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(Telefon(pil: Pil()).pil.seviye)",
     ],
     transferChoices: ["Pil", "Telefon", "80", "100"],
-    transferAnswer: "80"
+    transferAnswer: "80",
+    extraQuizzes: [
+      Quiz(
+        [
+          "struct Kalem { let renk = \"Mavi\" }", "struct Kutu { let kalem: Kalem }",
+          "struct Canta { let kutu: Kutu }",
+          "print(Canta(kutu: Kutu(kalem: Kalem())).kutu.kalem.renk)",
+        ],
+        choices: ["Mavi", "Kutu", "Kalem", "Canta"],
+        answer: "Mavi",
+        explanation: "Zincir soldan sağa okunur: çanta → kutu → kalem → renk."
+      ),
+      Quiz(
+        [
+          "struct Motor { let guc = 90 }", "struct Araba { let motor = Motor() }",
+          "print(Araba().motor.guc)",
+        ],
+        choices: ["90", "Motor", "Araba", "0"],
+        answer: "90",
+        explanation: "Araba motoru içerir; içteki parçanın değeri zincir üzerinden okunur."
+      ),
+    ],
   ),
   RoadmapBlueprint(
     id: "inheritance",
@@ -1092,6 +1329,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["?", "Miyav", "Hav", "Kopek"],
     transferAnswer: "Hav",
+    extraQuizzes: [
+      Quiz(
+        [
+          "class Sekil { func ad() -> String { \"Şekil\" } }", "class Kare: Sekil {}",
+          "print(Kare().ad())",
+        ],
+        choices: ["Şekil", "Kare", "Hata", "nil"],
+        answer: "Şekil",
+        explanation: "Kare override etmediği için üst class'tan miras aldığı gövde çalışır."
+      ),
+      Quiz(
+        [
+          "class Sekil { func ad() -> String { \"Şekil\" } }", "class Kare: Sekil {",
+          "    override func ad() -> String { \"Kare\" }", "}", "let s: Sekil = Kare()",
+          "print(s.ad())",
+        ],
+        choices: ["Kare", "Şekil", "Sekil", "Hata"],
+        answer: "Kare",
+        explanation:
+          "Yazılı tür Sekil olsa da nesne Kare olduğu için override edilen gövde çalışır."
+      ),
+    ],
     estimatedMinutes: 8
   ),
   RoadmapBlueprint(
@@ -1149,6 +1408,27 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["3", "Servis", "Depo", "0"],
     transferAnswer: "3",
+    extraQuizzes: [
+      Quiz(
+        [
+          "struct Depo { let ad = \"Ada\" }", "struct Servis { let depo: Depo }",
+          "let servis = Servis(depo: Depo())", "print(servis.depo.ad)",
+        ],
+        choices: ["Ada", "Depo", "Servis", "nil"],
+        answer: "Ada",
+        explanation: "Servis veriyi kendi tutmaz; değeri deposundan okur."
+      ),
+      Quiz(
+        [
+          "struct Depo { let puan = 7 }", "struct Servis { let depo = Depo() }",
+          "struct Ekran { let servis = Servis() }", "print(Ekran().servis.depo.puan)",
+        ],
+        choices: ["7", "0", "Depo", "Ekran"],
+        answer: "7",
+        explanation:
+          "Katmanlar iç içe kurulur; okuma dıştan içe ilerleyip en alttaki değere ulaşır."
+      ),
+    ],
     estimatedMinutes: 10
   ),
   RoadmapBlueprint(
@@ -1198,7 +1478,21 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(ad)",
     ],
     transferChoices: ["Derlenmez", "Boş metin", "nil", "0"],
-    transferAnswer: "Derlenmez"
+    transferAnswer: "Derlenmez",
+    extraQuizzes: [
+      Quiz(
+        ["let sayi: Int = \"beş\"", "print(sayi)"],
+        choices: ["Derlenmez", "beş", "5", "nil"],
+        answer: "Derlenmez",
+        explanation: "Tür uyuşmazlığı derleme anında yakalanır; program hiç başlamaz."
+      ),
+      Quiz(
+        ["let sayilar = [1, 2]", "print(sayilar[5])"],
+        choices: ["Çalışır ama çöker", "Derlenmez", "nil", "2"],
+        answer: "Çalışır ama çöker",
+        explanation: "Sözdizimi doğru olduğu için derlenir; hata çalışma anında ortaya çıkar."
+      ),
+    ],
   ),
   RoadmapBlueprint(
     id: "logic-errors",
@@ -1249,7 +1543,23 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(yeniPuan)",
     ],
     transferChoices: ["6", "8", "10", "2"],
-    transferAnswer: "6"
+    transferAnswer: "6",
+    extraQuizzes: [
+      Quiz(
+        ["let toplam = 10", "let adet = 4", "let ortalama = toplam + adet", "print(ortalama)"],
+        choices: ["14", "2", "2.5", "40"],
+        answer: "14",
+        explanation:
+          "Kod çöker gibi görünmez ama bölme yerine toplama yazıldığı için sonuç anlamsızdır."
+      ),
+      Quiz(
+        ["var puan = 10", "puan = puan - 2", "puan = puan - 2", "print(puan)"],
+        choices: ["6", "8", "10", "4"],
+        answer: "6",
+        explanation:
+          "İki çıkarma da çalışır; beklenen tek indirimse hata sonucu okuyunca anlaşılır."
+      ),
+    ],
   ),
   RoadmapBlueprint(
     id: "edge-cases",
@@ -1312,6 +1622,21 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["0", "nil", "Hata", "[]"],
     transferAnswer: "0",
+    extraQuizzes: [
+      Quiz(
+        ["let sayilar: [Int] = []", "print(sayilar.count)"],
+        choices: ["0", "Hata", "nil", "1"],
+        answer: "0",
+        explanation:
+          "Boş dizinin uzunluğunu sormak güvenlidir; çöken şey olmayan elemana erişmektir."
+      ),
+      Quiz(
+        ["func ortala(_ s: [Int]) -> Int { s.reduce(0, +) / s.count }", "print(ortala([]))"],
+        choices: ["Hata", "0", "nil", "1"],
+        answer: "Hata",
+        explanation: "Boş listede eleman sayısı sıfırdır; sıfıra bölme programı durdurur."
+      ),
+    ],
     estimatedMinutes: 8
   ),
   RoadmapBlueprint(
@@ -1360,7 +1685,24 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "print(ad ?? \"Misafir\")",
     ],
     transferChoices: ["nil", "Misafir", "Hata", "Optional(\"Misafir\")"],
-    transferAnswer: "Misafir"
+    transferAnswer: "Misafir",
+    extraQuizzes: [
+      Quiz(
+        ["let ad: String? = \"Ada\"", "print(ad ?? \"Misafir\")"],
+        choices: ["Ada", "Misafir", "nil", "Hata"],
+        answer: "Ada",
+        explanation: "Değer varken ?? sağdaki varsayılana hiç bakmaz."
+      ),
+      Quiz(
+        [
+          "let yas: Int? = nil", "if let kesin = yas {", "    print(kesin)", "} else {",
+          "    print(\"Bilinmiyor\")", "}",
+        ],
+        choices: ["Bilinmiyor", "nil", "Hata", "0"],
+        answer: "Bilinmiyor",
+        explanation: "if let değeri güvenle açar; yoksa çökmek yerine else koluna geçer."
+      ),
+    ],
   ),
   RoadmapBlueprint(
     id: "stack-traces",
@@ -1431,6 +1773,20 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["yukle()", "parse()", "program", "fatalError()"],
     transferAnswer: "parse()",
+    extraQuizzes: [
+      Quiz(
+        ["func x() { y() }", "func y() { fatalError(\"Dur\") }", "x()"],
+        choices: ["y()", "x()", "program", "fatalError()"],
+        answer: "y()",
+        explanation: "Hata en üstteki çerçevede oluşur; x yalnızca oraya giden yoldur."
+      ),
+      Quiz(
+        ["func disari() { iceri() }", "func iceri() { print(\"tamam\") }", "disari()"],
+        choices: ["tamam", "Hata", "Boş satır", "iceri()"],
+        answer: "tamam",
+        explanation: "Zincir sorunsuz tamamlanırsa yığın geriye sarılır ve trace hiç oluşmaz."
+      ),
+    ],
     estimatedMinutes: 8
   ),
   RoadmapBlueprint(
@@ -1480,6 +1836,20 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["2", "3", "Hata", "nil"],
     transferAnswer: "3",
+    extraQuizzes: [
+      Quiz(
+        ["let harfler = [\"a\", \"b\"]", "print(harfler[1])"],
+        choices: ["b", "a", "Hata", "nil"],
+        answer: "b",
+        explanation: "İki elemanlı dizide geçerli index'ler 0 ve 1'dir; hipotez burada doğrulanır."
+      ),
+      Quiz(
+        ["var sayilar = [1, 2]", "sayilar.append(3)", "print(sayilar[2])"],
+        choices: ["3", "Hata", "2", "nil"],
+        answer: "3",
+        explanation: "Ekleme geçerli index aralığını büyütür; artık 2 de okunabilir."
+      ),
+    ],
     estimatedMinutes: 9
   ),
   RoadmapBlueprint(
@@ -1548,6 +1918,21 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "Arayüz hazır → Başla → Yüklendi",
     ],
     transferAnswer: "Başla → Arayüz hazır → Yüklendi",
+    extraQuizzes: [
+      Quiz(
+        ["let task = Task { \"X\" }", "print(await task.value)", "print(\"Y\")"],
+        choices: ["X → Y", "Y → X", "X", "Y"],
+        answer: "X → Y",
+        explanation:
+          "await hemen ilk satırda kullanıldığı için akış burada bekler ve sıra değişmez."
+      ),
+      Quiz(
+        ["let task = Task { \"Geç\" }", "print(\"Önce\")", "print(await task.value)"],
+        choices: ["Önce → Geç", "Geç → Önce", "Önce", "Geç"],
+        answer: "Önce → Geç",
+        explanation: "Task planlanır ama senkron satır beklemeden çalışır; sonuç await'te alınır."
+      ),
+    ],
     estimatedMinutes: 9
   ),
   RoadmapBlueprint(
@@ -1627,6 +2012,27 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["4", "Repository", "ViewModel", "nil"],
     transferAnswer: "4",
+    extraQuizzes: [
+      Quiz(
+        [
+          "struct Repository { func yukle() -> Int { 9 } }", "struct ViewModel {",
+          "    let repository: Repository", "    func yenile() -> Int { repository.yukle() * 2 }",
+          "}", "print(ViewModel(repository: Repository()).yenile())",
+        ],
+        choices: ["18", "9", "2", "Repository"],
+        answer: "18",
+        explanation: "Repository ham veriyi verir; ViewModel onu ekrana uygun biçime çevirir."
+      ),
+      Quiz(
+        [
+          "struct Repository { func yukle() -> Int { 4 } }", "let repository = Repository()",
+          "print(repository.yukle())",
+        ],
+        choices: ["4", "0", "Repository", "nil"],
+        answer: "4",
+        explanation: "Veriyi tutan katmana doğrudan sorulduğunda ara katman devreye girmez."
+      ),
+    ],
     estimatedMinutes: 10
   ),
   RoadmapBlueprint(
@@ -1792,6 +2198,31 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["Uygun", "Yoğun", "4", "Çıktı yok"],
     transferAnswer: "Uygun",
+    extraQuizzes: [
+      Quiz(
+        [
+          "struct Gorev { let sure: Int }", "class Plan {",
+          "    private var gorevler: [Gorev] = []",
+          "    func ekle(_ g: Gorev) { gorevler.append(g) }",
+          "    func toplam() -> Int { gorevler.map(\\.sure).reduce(0, +) }", "}",
+          "let plan = Plan()", "plan.ekle(Gorev(sure: 1))", "plan.ekle(Gorev(sure: 2))",
+          "print(plan.toplam())",
+        ],
+        choices: ["3", "2", "1", "0"],
+        answer: "3",
+        explanation: "İki görev eklenir, süreleri çıkarılır ve toplanır: 1 + 2 = 3."
+      ),
+      Quiz(
+        [
+          "func durum(_ sure: Int) -> String {", "    if sure > 5 { return \"Yoğun\" }",
+          "    return \"Uygun\"", "}", "print(durum(5))",
+        ],
+        choices: ["Uygun", "Yoğun", "5", "Çıktı yok"],
+        answer: "Uygun",
+        explanation:
+          "5 > 5 yanlış olduğu için ilk return atlanır; sınır değeri Uygun tarafında kalır."
+      ),
+    ],
     estimatedMinutes: 10
   ),
   RoadmapBlueprint(
@@ -1845,6 +2276,27 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["true", "false", "9", "9 == 9"],
     transferAnswer: "true",
+    extraQuizzes: [
+      Quiz(
+        [
+          "func topla(_ a: Int, _ b: Int) -> Int { a + b }", "let beklenen = 7",
+          "let gercek = topla(3, 3)", "print(gercek == beklenen)",
+        ],
+        choices: ["false", "true", "6", "7"],
+        answer: "false",
+        explanation: "Act 6 üretir, Assert 7 bekler. Test kırılır ve fark hemen görünür."
+      ),
+      Quiz(
+        [
+          "func topla(_ a: Int, _ b: Int) -> Int { a + b }", "let beklenen = topla(2, 3)",
+          "let gercek = topla(2, 3)", "print(gercek == beklenen)",
+        ],
+        choices: ["true", "false", "5", "Hata"],
+        answer: "true",
+        explanation:
+          "Test geçer ama değersizdir: beklenen değer test edilen kodun kendisinden üretilmiştir."
+      ),
+    ],
     estimatedMinutes: 7
   ),
   RoadmapBlueprint(
@@ -1903,6 +2355,20 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["true", "false", "50", "70"],
     transferAnswer: "true",
+    extraQuizzes: [
+      Quiz(
+        ["func kdvEkle(_ fiyat: Int) -> Int { fiyat + fiyat / 10 }", "print(kdvEkle(100) == 110)"],
+        choices: ["true", "false", "110", "100"],
+        answer: "true",
+        explanation: "Tek fonksiyon, tek girdi, tek beklenti: kırılırsa şüpheli tek yer vardır."
+      ),
+      Quiz(
+        ["func kdvEkle(_ fiyat: Int) -> Int { fiyat + fiyat / 10 }", "print(kdvEkle(0) == 0)"],
+        choices: ["true", "false", "0", "Hata"],
+        answer: "true",
+        explanation: "Sıfır girdisi de izole biçimde doğrulanabilir; dış sisteme ihtiyaç yoktur."
+      ),
+    ],
     estimatedMinutes: 7
   ),
   RoadmapBlueprint(
@@ -1968,6 +2434,22 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["true", "false", "17", "Hata"],
     transferAnswer: "false",
+    extraQuizzes: [
+      Quiz(
+        ["func kayitOlabilir(yas: Int) -> Bool { yas >= 18 }", "print(kayitOlabilir(yas: 19))"],
+        choices: ["true", "false", "19", "Hata"],
+        answer: "true",
+        explanation:
+          "Sınırın üstü zaten geçer; asıl bilgi veren değer sınırın kendisi ve bir altıdır."
+      ),
+      Quiz(
+        ["func indirimVar(tutar: Int) -> Bool { tutar > 100 }", "print(indirimVar(tutar: 100))"],
+        choices: ["false", "true", "100", "Hata"],
+        answer: "false",
+        explanation:
+          "`>` kullanıldığı için sınırın kendisi dışarıda kalır; `>=` olsaydı true olurdu."
+      ),
+    ],
     estimatedMinutes: 8
   ),
   RoadmapBlueprint(
@@ -2034,6 +2516,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "Günaydın", "Merhaba", "15", "Gerçek saate göre değişir",
     ],
     transferAnswer: "Merhaba",
+    extraQuizzes: [
+      Quiz(
+        [
+          "protocol Rastgele { var sayi: Int { get } }",
+          "struct SabitSayi: Rastgele { let sayi: Int }",
+          "func kazandiMi(_ r: Rastgele) -> Bool { r.sayi == 7 }",
+          "print(kazandiMi(SabitSayi(sayi: 7)))",
+        ],
+        choices: ["true", "false", "7", "Her çalıştırmada değişir"],
+        answer: "true",
+        explanation: "Rastgelelik dışarıdan verildiği için test sonucu sabitlenebilir."
+      ),
+      Quiz(
+        [
+          "protocol Saat { var saat: Int { get } }", "struct Sabit: Saat { let saat: Int }",
+          "func gece(_ s: Saat) -> Bool { s.saat >= 22 }", "print(gece(Sabit(saat: 21)))",
+        ],
+        choices: ["false", "true", "21", "Gerçek saate göre değişir"],
+        answer: "false",
+        explanation: "Sahte bağımlılık sayesinde sınır davranışı istediğin saatte denenebilir."
+      ),
+    ],
     estimatedMinutes: 9
   ),
   RoadmapBlueprint(
@@ -2103,6 +2607,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["true", "false", "Hata", "0"],
     transferAnswer: "true",
+    extraQuizzes: [
+      Quiz(
+        [
+          "struct Depo { func sayilar() -> [Int] { [1, 1, 1] } }",
+          "func toplam(depo: Depo) -> Int { depo.sayilar().reduce(0, +) }",
+          "print(toplam(depo: Depo()))",
+        ],
+        choices: ["3", "1", "0", "[1, 1, 1]"],
+        answer: "3",
+        explanation: "İki parça birlikte çalışır: depo veriyi verir, toplam onu birleştirir."
+      ),
+      Quiz(
+        [
+          "struct Depo { func sayilar() -> [Int] { [] } }",
+          "func toplam(depo: Depo) -> Int { depo.sayilar().reduce(0, +) }",
+          "print(toplam(depo: Depo()) == 0)",
+        ],
+        choices: ["true", "false", "Hata", "0"],
+        answer: "true",
+        explanation: "Bir kez düzeltilen boş liste davranışını koruyan test regression testidir."
+      ),
+    ],
     estimatedMinutes: 9
   ),
   RoadmapBlueprint(
@@ -2159,6 +2685,26 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["true", "false", "50", "0"],
     transferAnswer: "true",
+    extraQuizzes: [
+      Quiz(
+        [
+          "func kargoUcreti(sepet: Int) -> Int { sepet >= 500 ? 0 : 50 }",
+          "print(kargoUcreti(sepet: 501))",
+        ],
+        choices: ["0", "50", "501", "true"],
+        answer: "0",
+        explanation: "Eşiğin üstü kriteri sağlar; asıl belirsizlik tam eşikte çözülür."
+      ),
+      Quiz(
+        [
+          "func kargoUcreti(sepet: Int) -> Int { sepet > 500 ? 0 : 50 }",
+          "print(kargoUcreti(sepet: 500))",
+        ],
+        choices: ["50", "0", "500", "true"],
+        answer: "50",
+        explanation: "`>` yazıldığında 500 eşiğin dışında kalır; kriter bu farkı açıkça yazmalıdır."
+      ),
+    ],
     estimatedMinutes: 8
   ),
   RoadmapBlueprint(
@@ -2225,6 +2771,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["Profil", "Giriş gerekli", "Boş", "false"],
     transferAnswer: "Giriş gerekli",
+    extraQuizzes: [
+      Quiz(
+        [
+          "func dogrula(_ sifre: String) -> Bool { sifre.count >= 6 }",
+          "func sonuc(_ gecti: Bool) -> String { gecti ? \"Açıldı\" : \"Kısa şifre\" }",
+          "print(sonuc(dogrula(\"12345\")))",
+        ],
+        choices: ["Kısa şifre", "Açıldı", "false", "12345"],
+        answer: "Kısa şifre",
+        explanation: "Beş karakter kuralı geçemez; akış hata yoluna sapar ve kullanıcı bunu görür."
+      ),
+      Quiz(
+        [
+          "func dogrula(_ sifre: String) -> Bool { sifre.count >= 6 }",
+          "func sonuc(_ gecti: Bool) -> String { gecti ? \"Açıldı\" : \"Kısa şifre\" }",
+          "print(sonuc(dogrula(\"123456\")))",
+        ],
+        choices: ["Açıldı", "Kısa şifre", "true", "123456"],
+        answer: "Açıldı",
+        explanation: "Tam sınır kuralı sağlar; mutlu yol buradan devam eder."
+      ),
+    ],
     estimatedMinutes: 8
   ),
   RoadmapBlueprint(
@@ -2287,6 +2855,26 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["Ada", "Misafir", "nil", "Optional(\"Ada\")"],
     transferAnswer: "Ada",
+    extraQuizzes: [
+      Quiz(
+        [
+          "struct DTO { let adet: Int? }", "func goster(_ d: DTO) -> Int { d.adet ?? 0 }",
+          "print(goster(DTO(adet: 5)))",
+        ],
+        choices: ["5", "0", "nil", "Hata"],
+        answer: "5",
+        explanation: "Alan doluyken sözleşmedeki varsayılan devreye girmez."
+      ),
+      Quiz(
+        [
+          "struct DTO { let adet: Int? }", "func goster(_ d: DTO) -> Int { d.adet! }",
+          "print(goster(DTO(adet: nil)))",
+        ],
+        choices: ["Hata", "0", "nil", "Optional(nil)"],
+        answer: "Hata",
+        explanation: "Sözleşme boş gelebileceğini söylüyorken `!` yazmak çökmeyi kabul etmektir."
+      ),
+    ],
     estimatedMinutes: 8
   ),
   RoadmapBlueprint(
@@ -2371,6 +2959,31 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["80", "100", "20", "160"],
     transferAnswer: "100",
+    extraQuizzes: [
+      Quiz(
+        [
+          "protocol Vergi { func hesapla(fiyat: Int) -> Int }", "struct OranliVergi: Vergi {",
+          "    func hesapla(fiyat: Int) -> Int { fiyat / 10 }", "}",
+          "func toplam(fiyat: Int, vergi: Vergi) -> Int { fiyat + vergi.hesapla(fiyat: fiyat) }",
+          "print(toplam(fiyat: 200, vergi: OranliVergi()))",
+        ],
+        choices: ["220", "200", "20", "240"],
+        answer: "220",
+        explanation: "Sözleşme aynı kaldığı için toplam değişmedi; yalnızca uygulama değişti."
+      ),
+      Quiz(
+        [
+          "protocol Vergi { func hesapla(fiyat: Int) -> Int }", "struct SifirVergi: Vergi {",
+          "    func hesapla(fiyat: Int) -> Int { 0 }", "}",
+          "func toplam(fiyat: Int, vergi: Vergi) -> Int { fiyat + vergi.hesapla(fiyat: fiyat) }",
+          "print(toplam(fiyat: 150, vergi: SifirVergi()))",
+        ],
+        choices: ["150", "0", "170", "300"],
+        answer: "150",
+        explanation:
+          "Tek bir uygulamayı değiştirmek, o sözleşmeyi kullanan her çağrının sonucunu etkiler."
+      ),
+    ],
     estimatedMinutes: 9
   ),
   RoadmapBlueprint(
@@ -2498,6 +3111,36 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     ],
     transferChoices: ["Onay", "Stok yok", "Geçersiz adet", "Program çöker"],
     transferAnswer: "Stok yok",
+    extraQuizzes: [
+      Quiz(
+        [
+          "struct Siparis { let adet: Int }", "protocol Stok { func varMi(adet: Int) -> Bool }",
+          "struct SabitStok: Stok {", "    let mevcut: Bool",
+          "    func varMi(adet: Int) -> Bool { mevcut }", "}",
+          "func tamamla(_ s: Siparis, stok: Stok) -> String {",
+          "    guard s.adet > 0 else { return \"Geçersiz adet\" }",
+          "    guard stok.varMi(adet: s.adet) else { return \"Stok yok\" }", "    return \"Onay\"",
+          "}", "print(tamamla(Siparis(adet: 0), stok: SabitStok(mevcut: true)))",
+        ],
+        choices: ["Geçersiz adet", "Onay", "Stok yok", "Program çöker"],
+        answer: "Geçersiz adet",
+        explanation: "İlk guard geçilemez; stok hiç sorulmadan erken dönüş yapılır."
+      ),
+      Quiz(
+        [
+          "struct Siparis { let adet: Int }", "protocol Stok { func varMi(adet: Int) -> Bool }",
+          "struct SabitStok: Stok {", "    let mevcut: Bool",
+          "    func varMi(adet: Int) -> Bool { mevcut }", "}",
+          "func tamamla(_ s: Siparis, stok: Stok) -> String {",
+          "    guard s.adet > 0 else { return \"Geçersiz adet\" }",
+          "    guard stok.varMi(adet: s.adet) else { return \"Stok yok\" }", "    return \"Onay\"",
+          "}", "print(tamamla(Siparis(adet: 2), stok: SabitStok(mevcut: false)))",
+        ],
+        choices: ["Stok yok", "Onay", "Geçersiz adet", "Program çöker"],
+        answer: "Stok yok",
+        explanation: "Adet kuralı geçilir ama stok bağımlılığı hayır der; ikinci hata yolu çalışır."
+      ),
+    ],
     estimatedMinutes: 10
   ),
 ]

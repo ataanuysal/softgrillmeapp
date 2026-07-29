@@ -54,21 +54,54 @@ extension XRayLesson {
         output: "Girebilir"
       ),
     ],
-    transferChallenge: TransferChallenge(
-      prompt: "Bu kez koşullardan biri yanlış. Çıktı ne olur?",
-      code: [
-        CodeLine(number: 1, text: "let stok = 3"),
-        CodeLine(number: 2, text: "let aktif = false"),
-        CodeLine(number: 3, text: "if stok > 0 && aktif {"),
-        CodeLine(number: 4, text: "    print(\"Satışta\")"),
-        CodeLine(number: 5, text: "} else {"),
-        CodeLine(number: 6, text: "    print(\"Bekle\")"),
-        CodeLine(number: 7, text: "}"),
-      ],
-      choices: ["Satışta", "Bekle", "3", "Satışta ve Bekle"],
-      correctAnswer: "Bekle",
-      explanation: "Stok koşulu doğru olsa da aktif false olduğu için birleşik koşul yanlıştır."
-    ),
+    transferChallenges: [
+      TransferChallenge(
+        prompt: "Bu kez koşullardan biri yanlış. Çıktı ne olur?",
+        code: [
+          CodeLine(number: 1, text: "let stok = 3"),
+          CodeLine(number: 2, text: "let aktif = false"),
+          CodeLine(number: 3, text: "if stok > 0 && aktif {"),
+          CodeLine(number: 4, text: "    print(\"Satışta\")"),
+          CodeLine(number: 5, text: "} else {"),
+          CodeLine(number: 6, text: "    print(\"Bekle\")"),
+          CodeLine(number: 7, text: "}"),
+        ],
+        choices: ["Satışta", "Bekle", "3", "Satışta ve Bekle"],
+        correctAnswer: "Bekle",
+        explanation: "Stok koşulu doğru olsa da aktif false olduğu için birleşik koşul yanlıştır."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "let yas = 15"),
+          CodeLine(number: 2, text: "let uye = true"),
+          CodeLine(number: 3, text: "if yas >= 18 && uye {"),
+          CodeLine(number: 4, text: "    print(\"Girebilir\")"),
+          CodeLine(number: 5, text: "} else {"),
+          CodeLine(number: 6, text: "    print(\"Bekle\")"),
+          CodeLine(number: 7, text: "}"),
+        ],
+        choices: ["Bekle", "Girebilir", "Çıktı yok", "true"],
+        correctAnswer: "Bekle",
+        explanation:
+          "Üyelik doğru olsa da yaş koşulu yanlış; `&&` tek yanlışta bütün ifadeyi yanlış yapar."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "let stok = 0"),
+          CodeLine(number: 2, text: "let aktif = true"),
+          CodeLine(number: 3, text: "if stok > 0 || aktif {"),
+          CodeLine(number: 4, text: "    print(\"Göster\")"),
+          CodeLine(number: 5, text: "} else {"),
+          CodeLine(number: 6, text: "    print(\"Gizle\")"),
+          CodeLine(number: 7, text: "}"),
+        ],
+        choices: ["Göster", "Gizle", "Çıktı yok", "false"],
+        correctAnswer: "Göster",
+        explanation: "`||` en az bir doğru koşula bakar; aktif true olduğu için ifade doğrudur."
+      ),
+    ],
     teaching: LessonTeaching(
       whyItMatters:
         "`&&` ile bağlanan koşullarda tek bir yanlış bütün ifadeyi yanlış yapar. Hangi parçanın yanlış olduğunu bulmak, kolları tek tek değerlendirmeyi gerektirir.",
@@ -138,19 +171,50 @@ extension XRayLesson {
         callStack: [CallFrame(functionName: "program", locals: [:])]
       ),
     ],
-    transferChallenge: TransferChallenge(
-      prompt: "İki çağrı yapıldığında mesaj kaç kez görünür?",
-      code: [
-        CodeLine(number: 1, text: "func bip() {"),
-        CodeLine(number: 2, text: "    print(\"Bip\")"),
-        CodeLine(number: 3, text: "}"),
-        CodeLine(number: 4, text: "bip()"),
-        CodeLine(number: 5, text: "bip()"),
-      ],
-      choices: ["Bir kez", "İki kez", "Hiç", "Üç kez"],
-      correctAnswer: "İki kez",
-      explanation: "Fonksiyonun gövdesi her çağrıda yeniden çalışır."
-    ),
+    transferChallenges: [
+      TransferChallenge(
+        prompt: "İki çağrı yapıldığında mesaj kaç kez görünür?",
+        code: [
+          CodeLine(number: 1, text: "func bip() {"),
+          CodeLine(number: 2, text: "    print(\"Bip\")"),
+          CodeLine(number: 3, text: "}"),
+          CodeLine(number: 4, text: "bip()"),
+          CodeLine(number: 5, text: "bip()"),
+        ],
+        choices: ["Bir kez", "İki kez", "Hiç", "Üç kez"],
+        correctAnswer: "İki kez",
+        explanation: "Fonksiyonun gövdesi her çağrıda yeniden çalışır."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "func selam() {"),
+          CodeLine(number: 2, text: "    print(\"Merhaba\")"),
+          CodeLine(number: 3, text: "}"),
+          CodeLine(number: 4, text: "print(\"Bir\")"),
+          CodeLine(number: 5, text: "print(\"İki\")"),
+        ],
+        choices: [
+          "Bir → İki", "Bir → Merhaba → İki", "Merhaba → Bir → İki", "Bir → İki → Merhaba",
+        ],
+        correctAnswer: "Bir → İki",
+        explanation: "Fonksiyon tanımlandı ama hiç çağrılmadı; gövdesi çalışmaz."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "func ic() { print(\"iç\") }"),
+          CodeLine(number: 2, text: "func dis() {"),
+          CodeLine(number: 3, text: "    print(\"dış\")"),
+          CodeLine(number: 4, text: "    ic()"),
+          CodeLine(number: 5, text: "}"),
+          CodeLine(number: 6, text: "dis()"),
+        ],
+        choices: ["dış → iç", "iç → dış", "dış", "iç"],
+        correctAnswer: "dış → iç",
+        explanation: "dis çalışır, kendi satırını yazar, sonra ic'i çağırır ve akış oraya iner."
+      ),
+    ],
     estimatedMinutes: 8,
     section: .functions,
     practiceChallenges: [
@@ -225,18 +289,45 @@ extension XRayLesson {
         callStack: [CallFrame(functionName: "program", locals: ["sonuc": "8"])]
       ),
     ],
-    transferChallenge: TransferChallenge(
-      prompt: "Fonksiyon bu kez 5 ile çağrılırsa çıktı ne olur?",
-      code: [
-        CodeLine(number: 1, text: "func ucEkle(_ sayi: Int) -> Int {"),
-        CodeLine(number: 2, text: "    return sayi + 3"),
-        CodeLine(number: 3, text: "}"),
-        CodeLine(number: 4, text: "print(ucEkle(5))"),
-      ],
-      choices: ["3", "5", "8", "15"],
-      correctAnswer: "8",
-      explanation: "5 parametreye gider, 3 eklenir ve dönen 8 doğrudan yazdırılır."
-    ),
+    transferChallenges: [
+      TransferChallenge(
+        prompt: "Fonksiyon bu kez 5 ile çağrılırsa çıktı ne olur?",
+        code: [
+          CodeLine(number: 1, text: "func ucEkle(_ sayi: Int) -> Int {"),
+          CodeLine(number: 2, text: "    return sayi + 3"),
+          CodeLine(number: 3, text: "}"),
+          CodeLine(number: 4, text: "print(ucEkle(5))"),
+        ],
+        choices: ["3", "5", "8", "15"],
+        correctAnswer: "8",
+        explanation: "5 parametreye gider, 3 eklenir ve dönen 8 doğrudan yazdırılır."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "func yarisi(_ sayi: Int) -> Int {"),
+          CodeLine(number: 2, text: "    return sayi / 2"),
+          CodeLine(number: 3, text: "}"),
+          CodeLine(number: 4, text: "print(yarisi(10))"),
+        ],
+        choices: ["5", "10", "2", "20"],
+        correctAnswer: "5",
+        explanation: "Argüman 10 parametreye kopyalanır; dönen değer çağrının yerine geçer."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "func etiket(_ ad: String) -> String {"),
+          CodeLine(number: 2, text: "    return \"Sn. \" + ad"),
+          CodeLine(number: 3, text: "}"),
+          CodeLine(number: 4, text: "let sonuc = etiket(\"Ada\")"),
+          CodeLine(number: 5, text: "print(sonuc)"),
+        ],
+        choices: ["Sn. Ada", "Ada", "Sn. ", "etiket"],
+        correctAnswer: "Sn. Ada",
+        explanation: "Parametreye gelen değer gövdede kullanılır ve üretilen sonuç geri döner."
+      ),
+    ],
     estimatedMinutes: 8,
     section: .functions,
     teaching: LessonTeaching(
@@ -310,20 +401,59 @@ extension XRayLesson {
         output: "Tamam: 6"
       ),
     ],
-    transferChallenge: TransferChallenge(
-      prompt: "Aynı program topla(2) ile çalışırsa ne yazdırır?",
-      code: [
-        CodeLine(number: 1, text: "let sonuc = topla(2)"),
-        CodeLine(number: 2, text: "if sonuc > 5 {"),
-        CodeLine(number: 3, text: "    print(\"Tamam: \\(sonuc)\")"),
-        CodeLine(number: 4, text: "} else {"),
-        CodeLine(number: 5, text: "    print(\"Devam\")"),
-        CodeLine(number: 6, text: "}"),
-      ],
-      choices: ["Tamam: 3", "Devam", "Tamam: 6", "Çıktı yok"],
-      correctAnswer: "Devam",
-      explanation: "topla(2) değeri 3'tür; 3 > 5 yanlış olduğu için else kolu çalışır."
-    ),
+    transferChallenges: [
+      TransferChallenge(
+        prompt: "Aynı program topla(2) ile çalışırsa ne yazdırır?",
+        code: [
+          CodeLine(number: 1, text: "let sonuc = topla(2)"),
+          CodeLine(number: 2, text: "if sonuc > 5 {"),
+          CodeLine(number: 3, text: "    print(\"Tamam: \\(sonuc)\")"),
+          CodeLine(number: 4, text: "} else {"),
+          CodeLine(number: 5, text: "    print(\"Devam\")"),
+          CodeLine(number: 6, text: "}"),
+        ],
+        choices: ["Tamam: 3", "Devam", "Tamam: 6", "Çıktı yok"],
+        correctAnswer: "Devam",
+        explanation: "topla(2) değeri 3'tür; 3 > 5 yanlış olduğu için else kolu çalışır."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "func topla(_ son: Int) -> Int {"),
+          CodeLine(number: 2, text: "    var toplam = 0"),
+          CodeLine(number: 3, text: "    for sayi in 1...son {"),
+          CodeLine(number: 4, text: "        toplam = toplam + sayi"),
+          CodeLine(number: 5, text: "    }"),
+          CodeLine(number: 6, text: "    return toplam"),
+          CodeLine(number: 7, text: "}"),
+          CodeLine(number: 8, text: "let sonuc = topla(4)"),
+          CodeLine(number: 9, text: "if sonuc > 5 {"),
+          CodeLine(number: 10, text: "    print(\"Tamam: \\(sonuc)\")"),
+          CodeLine(number: 11, text: "} else {"),
+          CodeLine(number: 12, text: "    print(\"Devam\")"),
+          CodeLine(number: 13, text: "}"),
+        ],
+        choices: ["Tamam: 10", "Tamam: 4", "Devam", "Çıktı yok"],
+        correctAnswer: "Tamam: 10",
+        explanation: "1+2+3+4 = 10; 10 > 5 doğru olduğu için if kolu çalışır."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "func topla(_ son: Int) -> Int {"),
+          CodeLine(number: 2, text: "    var toplam = 0"),
+          CodeLine(number: 3, text: "    for sayi in 1...son {"),
+          CodeLine(number: 4, text: "        toplam = toplam + sayi"),
+          CodeLine(number: 5, text: "    }"),
+          CodeLine(number: 6, text: "    return toplam"),
+          CodeLine(number: 7, text: "}"),
+          CodeLine(number: 8, text: "print(topla(1))"),
+        ],
+        choices: ["1", "0", "2", "Çıktı yok"],
+        correctAnswer: "1",
+        explanation: "Döngü tek tur çalışır ve toplam 0 + 1 = 1 olur."
+      ),
+    ],
     estimatedMinutes: 10,
     section: .fundamentals,
     teaching: LessonTeaching(

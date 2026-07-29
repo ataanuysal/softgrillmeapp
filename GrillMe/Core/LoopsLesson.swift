@@ -66,19 +66,47 @@ extension XRayLesson {
         output: "6"
       ),
     ],
-    transferChallenge: TransferChallenge(
-      prompt: "Toplama yerine çarpma yapıldığında çıktı ne olur?",
-      code: [
-        CodeLine(number: 1, text: "var carpim = 1"),
-        CodeLine(number: 2, text: "for sayi in 1...4 {"),
-        CodeLine(number: 3, text: "    carpim = carpim * sayi"),
-        CodeLine(number: 4, text: "}"),
-        CodeLine(number: 5, text: "print(carpim)"),
-      ],
-      choices: ["10", "16", "24", "12"],
-      correctAnswer: "24",
-      explanation: "carpim sırasıyla 1, 2, 6 ve 24 olur; son değer ekrana yazdırılır."
-    ),
+    transferChallenges: [
+      TransferChallenge(
+        prompt: "Toplama yerine çarpma yapıldığında çıktı ne olur?",
+        code: [
+          CodeLine(number: 1, text: "var carpim = 1"),
+          CodeLine(number: 2, text: "for sayi in 1...4 {"),
+          CodeLine(number: 3, text: "    carpim = carpim * sayi"),
+          CodeLine(number: 4, text: "}"),
+          CodeLine(number: 5, text: "print(carpim)"),
+        ],
+        choices: ["10", "16", "24", "12"],
+        correctAnswer: "24",
+        explanation: "carpim sırasıyla 1, 2, 6 ve 24 olur; son değer ekrana yazdırılır."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "var sayac = 0"),
+          CodeLine(number: 2, text: "for _ in 1...4 {"),
+          CodeLine(number: 3, text: "    sayac = sayac + 2"),
+          CodeLine(number: 4, text: "}"),
+          CodeLine(number: 5, text: "print(sayac)"),
+        ],
+        choices: ["8", "4", "6", "2"],
+        correctAnswer: "8",
+        explanation: "Dört tur, her turda 2 eklenir: 2, 4, 6, 8."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "var sonuc = 10"),
+          CodeLine(number: 2, text: "for sayi in 1...2 {"),
+          CodeLine(number: 3, text: "    sonuc = sonuc - sayi"),
+          CodeLine(number: 4, text: "}"),
+          CodeLine(number: 5, text: "print(sonuc)"),
+        ],
+        choices: ["7", "8", "9", "10"],
+        correctAnswer: "7",
+        explanation: "İlk tur 10 - 1 = 9, ikinci tur 9 - 2 = 7."
+      ),
+    ],
     teaching: LessonTeaching(
       whyItMatters:
         "Döngüde aynı satır birden çok kez çalışır ama her turda farklı bir değerle. Kodu okumak, turları tek tek yazabilmektir.",

@@ -100,7 +100,13 @@ public struct XRayLesson: Equatable, Sendable {
   public let choices: [String]
   public let correctAnswer: String
   public let trace: [TraceStep]
-  public let transferChallenge: TransferChallenge?
+
+  /// Dersin quiz havuzu.
+  ///
+  /// Tek soru, kavramı tek atışta ölçer ve tekrar denemede aynı cevabın
+  /// hatırlanmasından ibaret kalır. Havuz sayesinde her deneme farklı bir
+  /// soruya düşer; `LessonJourney` sırayı `questionIndex` ile seçer.
+  public let transferChallenges: [TransferChallenge]
   public let estimatedMinutes: Int
   public let debugChallenge: DebugChallenge?
   public let section: CurriculumSection
@@ -123,7 +129,7 @@ public struct XRayLesson: Equatable, Sendable {
     choices: [String],
     correctAnswer: String,
     trace: [TraceStep],
-    transferChallenge: TransferChallenge? = nil,
+    transferChallenges: [TransferChallenge] = [],
     estimatedMinutes: Int = 7,
     debugChallenge: DebugChallenge? = nil,
     section: CurriculumSection = .fundamentals,
@@ -145,7 +151,7 @@ public struct XRayLesson: Equatable, Sendable {
     self.choices = choices
     self.correctAnswer = correctAnswer
     self.trace = trace
-    self.transferChallenge = transferChallenge
+    self.transferChallenges = transferChallenges
     self.estimatedMinutes = estimatedMinutes
     self.debugChallenge = debugChallenge
     self.section = section
@@ -155,6 +161,20 @@ public struct XRayLesson: Equatable, Sendable {
     self.languageComparison = languageComparison
     self.programOutcome = programOutcome ?? .output(correctAnswer)
     self.teaching = teaching
+  }
+
+  /// Havuzdaki ilk soru. Tek soru bekleyen çağrı noktaları için.
+  public var transferChallenge: TransferChallenge? {
+    transferChallenges.first
+  }
+
+  /// Verilen denemeye düşen quiz sorusu; havuz tükendiğinde başa sarar.
+  public func transferChallenge(at index: Int) -> TransferChallenge? {
+    guard !transferChallenges.isEmpty else { return nil }
+    let wrapped =
+      ((index % transferChallenges.count) + transferChallenges.count)
+      % transferChallenges.count
+    return transferChallenges[wrapped]
   }
 
   public var availableLenses: [CodeLens] {

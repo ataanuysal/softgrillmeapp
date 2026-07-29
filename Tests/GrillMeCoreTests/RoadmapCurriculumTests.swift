@@ -278,13 +278,49 @@ struct RoadmapCurriculumTests {
         Set(lesson.choices).count == lesson.choices.count,
         Comment(rawValue: "\(lesson.id): tekrar eden seçenek")
       )
-      let transfer = try? #require(lesson.transferChallenge)
-      #expect((transfer?.choices.count ?? 0) >= 4, Comment(rawValue: "\(lesson.id) aktarım quizi"))
+      for (index, quiz) in lesson.transferChallenges.enumerated() {
+        #expect(quiz.choices.count >= 4, Comment(rawValue: "\(lesson.id) quiz \(index)"))
+        #expect(
+          Set(quiz.choices).count == quiz.choices.count,
+          Comment(rawValue: "\(lesson.id) quiz \(index): tekrar eden seçenek")
+        )
+      }
+    }
+  }
+
+  @Test("Her ders tekrar denemeye yetecek quiz havuzu taşır")
+  func everyLessonOffersAQuestionBank() {
+    for lesson in LessonCatalog.standard.lessons {
+      let quizzes = lesson.transferChallenges
+
+      #expect(quizzes.count >= 3, Comment(rawValue: "\(lesson.id): \(quizzes.count) soru"))
+      // Havuzdaki hiçbir soru rehberli örneğin kodunu tekrar etmemeli; aksi
+      // halde quiz aynı kodu ezberlemeyi ölçer.
       #expect(
-        Set(transfer?.choices ?? []).count == (transfer?.choices.count ?? 0),
-        Comment(rawValue: "\(lesson.id) aktarım quizi: tekrar eden seçenek")
+        quizzes.allSatisfy { $0.code != lesson.code },
+        Comment(rawValue: "\(lesson.id): quiz kodu rehberli örnekle aynı")
+      )
+      #expect(
+        Set(quizzes.map { $0.code.map(\.text).joined(separator: "\n") }).count == quizzes.count,
+        Comment(rawValue: "\(lesson.id): havuzda tekrar eden kod")
+      )
+      #expect(
+        quizzes.allSatisfy { $0.choices.contains($0.correctAnswer) },
+        Comment(rawValue: "\(lesson.id): cevap seçenekler arasında değil")
       )
     }
+  }
+
+  @Test("Tekrar denemede havuzdaki sıradaki soru sorulur")
+  func retryAsksTheNextQuestion() throws {
+    let lesson = try #require(LessonCatalog.standard.lessons.first { $0.id == "scope" })
+
+    let first = LessonJourney(lesson: lesson, questionIndex: 0).quiz
+    let second = LessonJourney(lesson: lesson, questionIndex: 1).quiz
+    let wrapped = LessonJourney(lesson: lesson, questionIndex: lesson.transferChallenges.count).quiz
+
+    #expect(first.code != second.code)
+    #expect(wrapped.code == first.code)
   }
 
   @Test("Her rubrik kendi örnek cevabını tam puanla değerlendirir")

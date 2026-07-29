@@ -45,12 +45,19 @@ public enum LessonJourneyPhase: Equatable, Sendable {
 
 public struct LessonJourney: Equatable, Sendable {
   public let lesson: XRayLesson
+
+  /// Havuzdan hangi quiz sorusunun sorulacağı.
+  ///
+  /// Tekrar denemede bu değer artar; böylece öğrenci aynı cevabı hatırlamak
+  /// yerine aynı kavramı yeni bir kodda uygulamak zorunda kalır.
+  public let questionIndex: Int
   public private(set) var phase: LessonJourneyPhase = .topic
   public private(set) var selectedQuizAnswer: String?
   public private(set) var isQuizAnswerCorrect: Bool?
 
-  public init(lesson: XRayLesson) {
+  public init(lesson: XRayLesson, questionIndex: Int = 0) {
     self.lesson = lesson
+    self.questionIndex = questionIndex
   }
 
   public var teachingContent: LessonTeachingContent {
@@ -73,7 +80,7 @@ public struct LessonJourney: Equatable, Sendable {
   }
 
   public var quiz: LessonQuiz {
-    guard let challenge = lesson.transferChallenge else {
+    guard let challenge = lesson.transferChallenge(at: questionIndex) else {
       return LessonQuiz(
         prompt: lesson.question,
         code: lesson.code,

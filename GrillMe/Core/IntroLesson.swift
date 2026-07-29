@@ -42,17 +42,42 @@ extension XRayLesson {
         output: "12"
       ),
     ],
-    transferChallenge: TransferChallenge(
-      prompt: "Aynı fikri yeni koda taşı: çıktı ne olur?",
-      code: [
-        CodeLine(number: 1, text: "var can = 3"),
-        CodeLine(number: 2, text: "can = can * 2"),
-        CodeLine(number: 3, text: "print(can)"),
-      ],
-      choices: ["3", "5", "6", "9"],
-      correctAnswer: "6",
-      explanation: "can önce 3'tür; ikiyle çarpılıp 6 olur ve bu yeni değer yazdırılır."
-    ),
+    transferChallenges: [
+      TransferChallenge(
+        prompt: "Aynı fikri yeni koda taşı: çıktı ne olur?",
+        code: [
+          CodeLine(number: 1, text: "var can = 3"),
+          CodeLine(number: 2, text: "can = can * 2"),
+          CodeLine(number: 3, text: "print(can)"),
+        ],
+        choices: ["3", "5", "6", "9"],
+        correctAnswer: "6",
+        explanation: "can önce 3'tür; ikiyle çarpılıp 6 olur ve bu yeni değer yazdırılır."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "var stok = 4"),
+          CodeLine(number: 2, text: "stok = stok - 1"),
+          CodeLine(number: 3, text: "stok = stok - 1"),
+          CodeLine(number: 4, text: "print(stok)"),
+        ],
+        choices: ["2", "4", "3", "0"],
+        correctAnswer: "2",
+        explanation: "Her satır önceki değeri okuyup yenisini yazar: 4, sonra 3, sonra 2."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "var ad = \"Ada\""),
+          CodeLine(number: 2, text: "ad = \"Can\""),
+          CodeLine(number: 3, text: "print(ad)"),
+        ],
+        choices: ["Can", "Ada", "AdaCan", "Boş metin"],
+        correctAnswer: "Can",
+        explanation: "İkinci atama eskisinin üzerine yazar; değişkende yalnızca son değer kalır."
+      ),
+    ],
     languageVariants: [
       CodeVariant(
         language: .python,
@@ -161,20 +186,48 @@ extension XRayLesson {
         output: "Ceket al"
       ),
     ],
-    transferChallenge: TransferChallenge(
-      prompt: "Koşulu yeni bir durumda uygula: çıktı ne olur?",
-      code: [
-        CodeLine(number: 1, text: "let puan = 75"),
-        CodeLine(number: 2, text: "if puan >= 50 {"),
-        CodeLine(number: 3, text: "    print(\"Geçti\")"),
-        CodeLine(number: 4, text: "} else {"),
-        CodeLine(number: 5, text: "    print(\"Kaldı\")"),
-        CodeLine(number: 6, text: "}"),
-      ],
-      choices: ["Geçti", "Kaldı", "İkisi de", "Çıktı yok"],
-      correctAnswer: "Geçti",
-      explanation: "75, 50'den büyük veya eşit olduğu için doğru olan if kolu çalışır."
-    ),
+    transferChallenges: [
+      TransferChallenge(
+        prompt: "Koşulu yeni bir durumda uygula: çıktı ne olur?",
+        code: [
+          CodeLine(number: 1, text: "let puan = 75"),
+          CodeLine(number: 2, text: "if puan >= 50 {"),
+          CodeLine(number: 3, text: "    print(\"Geçti\")"),
+          CodeLine(number: 4, text: "} else {"),
+          CodeLine(number: 5, text: "    print(\"Kaldı\")"),
+          CodeLine(number: 6, text: "}"),
+        ],
+        choices: ["Geçti", "Kaldı", "İkisi de", "Çıktı yok"],
+        correctAnswer: "Geçti",
+        explanation: "75, 50'den büyük veya eşit olduğu için doğru olan if kolu çalışır."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "let saat = 9"),
+          CodeLine(number: 2, text: "if saat < 12 {"),
+          CodeLine(number: 3, text: "    print(\"Sabah\")"),
+          CodeLine(number: 4, text: "} else {"),
+          CodeLine(number: 5, text: "    print(\"Öğleden sonra\")"),
+          CodeLine(number: 6, text: "}"),
+        ],
+        choices: ["Sabah", "Öğleden sonra", "İkisi de", "Çıktı yok"],
+        correctAnswer: "Sabah",
+        explanation: "9 < 12 doğru olduğu için yalnızca if kolu çalışır; else hiç görülmez."
+      ),
+      TransferChallenge(
+        prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
+        code: [
+          CodeLine(number: 1, text: "let stok = 0"),
+          CodeLine(number: 2, text: "if stok > 0 {"),
+          CodeLine(number: 3, text: "    print(\"Satışta\")"),
+          CodeLine(number: 4, text: "}"),
+        ],
+        choices: ["Çıktı yok", "Satışta", "0", "Hata"],
+        correctAnswer: "Çıktı yok",
+        explanation: "Koşul yanlış ve else kolu yok; program hiçbir şey yazmadan devam eder."
+      ),
+    ],
     teaching: LessonTeaching(
       whyItMatters:
         "Koşul, kodun okunduğu sırayı bozan ilk yapıdır. Hangi kolun çalıştığını bilmeden sonucu tahmin etmek imkânsızdır.",
