@@ -204,7 +204,7 @@ Kabul sonucu: 30 derslik temel yol korunuyor; 31–40. dersler Yol Haritası'nda
 
 - ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
 - ✅ 40 dersin veri sözleşmesi otomatik doğrulanıyor.
-- ✅ 79 Swift Testing testi ve 20 çekirdek test paketi tanımlı.
+- ✅ 88 Swift Testing testi ve 21 çekirdek test paketi tanımlı.
 - ✅ Uygulama açılışı, sekme geçişi ve derse girişi kapsayan XCUITest hedefi.
 - ✅ Paylaşılan Xcode şeması ve GitHub Actions kalite hattı.
 - ✅ Swift format/lint kontrolü yapılıyor.
@@ -223,16 +223,17 @@ Kabul sonucu: 30 derslik temel yol korunuyor; 31–40. dersler Yol Haritası'nda
 Amaç: Mekanizmaları müfredatın tamamına yaymak ve ölçümü anlamlı hale getirmek.
 Bu aşama yeni özellik değil, mevcut vaatlerin kapsama derinliğidir.
 
-- 🚧 33 dersin şablon yürütme izini gerçek, adım adım değişen bellek gösteren
-  ize çevirmek
-- 🚧 Konu anlatımındaki "sık hata" ve "gerçek projede" metinlerini bölüm başına
-  değil ders başına yazmak
-- 🚧 Quiz seçeneklerini üçten dörde çıkarmak ve çeldiricileri tipik yanlış
-  zihinsel modellerden türetmek
+- ✅ 33 dersin şablon yürütme izi kaldırıldı; izler elle yazılıyor ve 40 dersin
+  38'i en az üç farklı bellek durumundan geçiyor.
+- ✅ Konu anlatımı ders başına yazılıyor; 40 derste 40 farklı "sık hata" metni.
+- ✅ Mentor akış kararı `MentorCoordinator` ile çekirdeğe taşındı ve test edildi.
+- 🚧 Quiz seçeneklerini üçten dörde çıkarmak — ölçümde kullanılan 5 derste
+  tamamlandı, kalan 35 ders üç seçenekli.
 - ⏳ Ders kodu uzunluğunu 5 satırdan çıkış değerlendirmesinin 20 satırına
   kademeli olarak taşımak
-- ⏳ Dil karşılaştırmasını en az bir bölümün tamamına yaymak
+- ⏳ Dil karşılaştırmasını en az bir bölümün tamamına yaymak (şu an 1/40)
 - ⏳ Pratik ve hata avcılığı görevlerini bölüm başına en az bir derse koymak
+- ⏳ Gelişim raporunu tek soruluk çıkış ölçümünden çıkarmak
 
 Kabul ölçütü: kapsama sayıları testle korunur, belgeye elle yazılmaz.
 

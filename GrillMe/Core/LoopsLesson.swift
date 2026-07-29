@@ -14,7 +14,7 @@ extension XRayLesson {
       CodeLine(number: 4, text: "}"),
       CodeLine(number: 5, text: "print(toplam)"),
     ],
-    choices: ["3", "6", "9"],
+    choices: ["3", "6", "9", "12"],
     correctAnswer: "6",
     trace: [
       TraceStep(
@@ -75,7 +75,7 @@ extension XRayLesson {
         CodeLine(number: 4, text: "}"),
         CodeLine(number: 5, text: "print(carpim)"),
       ],
-      choices: ["10", "16", "24"],
+      choices: ["10", "16", "24", "12"],
       correctAnswer: "24",
       explanation: "carpim sırasıyla 1, 2, 6 ve 24 olur; son değer ekrana yazdırılır."
     ),

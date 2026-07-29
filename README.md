@@ -33,8 +33,8 @@ derinleştiğini olduğu gibi gösterir.
   önerilen sıra, bölüm filtresi ve Türkçe karakterlerden bağımsız arama
 - Konu anlatımı → rehberli örnek → farklı kodlu quiz sırasını zorunlu tutan
   ders yolculuğu
-- Rehberli örnekten farklı kod kullanan, üç seçenekli ders sonu quizi
-- Aktif satır, bellek ve çıktı görünümü
+- Rehberli örnekten farklı kod kullanan bağımsız ders sonu quizi
+- Aktif satır, adım adım değişen bellek ve çıktı görünümü
 - Quiz yapılmadan dersin tamamlanmasını engelleyen bitirme koşulu
 - Tur bütçeli, cevabı vermeyen Sokratik mentor ve cevap sızıntısı filtresi
 
@@ -49,15 +49,16 @@ derinleştiğini olduğu gibi gösterir.
 
 ### Bilinen içerik borcu
 
-- 33 derste yürütme izi üç adımlık bir şablondan üretilir; bellek adım adım
-  değil, tek seferde dolar. Satır satır izleme bu derslerde gerçek anlamda
-  gösterilmez.
-- Konu anlatımındaki "sık hata" metni ders başına değil bölüm başına yazılmıştır;
-  40 derste 10 farklı metin vardır.
 - Ders kodlarının ortanca uzunluğu 5 satırdır. 20 satırlık tek kod çıkış
   değerlendirmesidir, yani o uzunluk sınavdan önce hiç çalışılmaz.
-- Bütün quizler üç seçeneklidir; şans başarısı %33'tür ve gelişim raporu üç
-  başlangıç sorusunu tek bir çıkış sorusuyla karşılaştırır.
+- Gelişim raporu üç başlangıç sorusunu tek bir çıkış sorusuyla karşılaştırır;
+  örneklem bu haliyle küçüktür.
+- Ölçümde kullanılan beş quiz dört seçeneklidir, kalan 35 ders hâlâ üç
+  seçeneklidir.
+
+Kapanan borç: yürütme izleri artık şablondan üretilmiyor (40 dersin 38'i en az
+üç farklı bellek durumundan geçiyor, ortanca adım sayısı 4) ve konu anlatımı
+ders başına yazılıyor (40 derste 40 farklı "sık hata" metni).
 
 ### Konu kapsamı
 
@@ -84,7 +85,7 @@ derinleştiğini olduğu gibi gösterir.
   metinli erişilebilir eylemler; büyük yazıda dikey kartlar, menü tipi dil
   seçimi ve yatay kaydırılabilir kod
 - Uygulama açılışı, iki ana sekme ve derse giriş için gerçek XCUITest hedefi
-- Format, 79 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
+- Format, 88 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
 
 ## Gereksinimler
 
@@ -157,6 +158,7 @@ GrillMe/
     ├── LanguageBridge.swift
     ├── SocraticMentor.swift
     ├── ConceptMatcher.swift
+    ├── MentorCoordinator.swift
     ├── LessonJourney.swift
     ├── LessonEvidence.swift
     ├── LessonRun.swift
@@ -179,8 +181,8 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 ## Doğrulama
 
-- 79 Swift Testing testi
-- 20 çekirdek test paketi
+- 88 Swift Testing testi
+- 21 çekirdek test paketi
 - 1 XCUITest duman testi
 - GitHub Actions kalite hattı
 - CI içinde genel iOS Simulator derleme adımı

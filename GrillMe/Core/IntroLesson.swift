@@ -14,7 +14,7 @@ extension XRayLesson {
       CodeLine(number: 4, text: "}"),
       CodeLine(number: 5, text: "print(puan)"),
     ],
-    choices: ["10", "12", "22"],
+    choices: ["10", "12", "20", "22"],
     correctAnswer: "12",
     trace: [
       TraceStep(
@@ -49,7 +49,7 @@ extension XRayLesson {
         CodeLine(number: 2, text: "can = can * 2"),
         CodeLine(number: 3, text: "print(can)"),
       ],
-      choices: ["3", "5", "6"],
+      choices: ["3", "5", "6", "9"],
       correctAnswer: "6",
       explanation: "can önce 3'tür; ikiyle çarpılıp 6 olur ve bu yeni değer yazdırılır."
     ),
@@ -121,7 +121,7 @@ extension XRayLesson {
       CodeLine(number: 7, text: "}"),
       CodeLine(number: 8, text: "print(mesaj)"),
     ],
-    choices: ["Tişört yeter", "Ceket al", "Boş mesaj"],
+    choices: ["Tişört yeter", "Ceket al", "İkisi de yazılır", "Boş mesaj"],
     correctAnswer: "Ceket al",
     trace: [
       TraceStep(
@@ -171,7 +171,7 @@ extension XRayLesson {
         CodeLine(number: 5, text: "    print(\"Kaldı\")"),
         CodeLine(number: 6, text: "}"),
       ],
-      choices: ["Geçti", "Kaldı", "İkisi de"],
+      choices: ["Geçti", "Kaldı", "İkisi de", "Çıktı yok"],
       correctAnswer: "Geçti",
       explanation: "75, 50'den büyük veya eşit olduğu için doğru olan if kolu çalışır."
     ),

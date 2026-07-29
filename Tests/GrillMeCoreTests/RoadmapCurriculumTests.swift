@@ -269,6 +269,23 @@ struct RoadmapCurriculumTests {
     }
   }
 
+  @Test("Gelişim raporunun karşılaştırdığı quizler en az dört seçenek taşır")
+  func measuredQuizzesLimitGuessing() {
+    // Başlangıç ve çıkış ölçümü bu derslerden geliyor; üç seçenekte şans başarısı
+    // %33 olduğu için ölçülen fark gürültüden ayrılamaz.
+    let measuredIDs = ["variables", "conditions", "loops", "capstone"]
+    let lessons = LessonCatalog.standard.lessons.filter { measuredIDs.contains($0.id) }
+
+    #expect(lessons.count == measuredIDs.count)
+    for lesson in lessons {
+      #expect(lesson.choices.count >= 4, Comment(rawValue: lesson.id))
+      #expect(
+        (lesson.transferChallenge?.choices.count ?? 0) >= 4,
+        Comment(rawValue: "\(lesson.id) aktarım quizi")
+      )
+    }
+  }
+
   @Test("Her rubrik kendi örnek cevabını tam puanla değerlendirir")
   func modelAnswersSatisfyTheirOwnRubric() {
     for lesson in LessonCatalog.standard.lessons {

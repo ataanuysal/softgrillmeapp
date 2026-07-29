@@ -775,7 +775,7 @@ private struct XRayLessonView: View {
   @State private var debugSession: DebugSession?
   @State private var debugHypothesis = ""
   @State private var practiceAnswers: [Int: String] = [:]
-  @State private var mentorSession: SocraticMentorSession
+  @State private var mentorCoordinator: MentorCoordinator
   @State private var mentorInput = ""
   @State private var mentorResponses: [MentorResponse] = []
   @State private var isMentorResponding = false
@@ -795,11 +795,14 @@ private struct XRayLessonView: View {
     _debugSession = State(
       initialValue: lesson.debugChallenge.map { DebugSession(challenge: $0) }
     )
-    _mentorSession = State(
-      initialValue: SocraticMentorSession(
-        lesson: lesson,
-        requiredConcepts: lesson.mentorConcepts,
-        turnLimit: 6
+    _mentorCoordinator = State(
+      initialValue: MentorCoordinator(
+        session: SocraticMentorSession(
+          lesson: lesson,
+          requiredConcepts: lesson.mentorConcepts,
+          turnLimit: 6
+        ),
+        correctAnswer: lesson.correctAnswer
       )
     )
   }
@@ -1526,7 +1529,7 @@ private struct XRayLessonView: View {
         Text(OnDeviceMentor.isAvailable ? "Cihaz içi AI" : "Yerel rehber")
           .adaptiveFont(size: 10, weight: .semibold, design: .rounded)
           .foregroundStyle(OnDeviceMentor.isAvailable ? AppPalette.mint : AppPalette.secondaryText)
-        Text("\(mentorSession.remainingTurns) tur")
+        Text("\(mentorCoordinator.remainingTurns) tur")
           .adaptiveFont(size: 11, weight: .semibold, design: .rounded)
           .foregroundStyle(AppPalette.secondaryText)
       }
@@ -1655,10 +1658,13 @@ private struct XRayLessonView: View {
     debugSession = lesson.debugChallenge.map { DebugSession(challenge: $0) }
     debugHypothesis = ""
     practiceAnswers = [:]
-    mentorSession = SocraticMentorSession(
-      lesson: lesson,
-      requiredConcepts: lesson.mentorConcepts,
-      turnLimit: 6
+    mentorCoordinator = MentorCoordinator(
+      session: SocraticMentorSession(
+        lesson: lesson,
+        requiredConcepts: lesson.mentorConcepts,
+        turnLimit: 6
+      ),
+      correctAnswer: lesson.correctAnswer
     )
     mentorInput = ""
     mentorResponses = []
@@ -1667,43 +1673,35 @@ private struct XRayLessonView: View {
   }
 
   private func askMentor() {
-    let explanation = mentorInput.trimmingCharacters(in: .whitespacesAndNewlines)
-    guard !explanation.isEmpty else { return }
+    let explanation = mentorInput
+    guard
+      let turn = mentorCoordinator.beginTurn(
+        explanation: explanation,
+        isModelAvailable: OnDeviceMentor.isAvailable
+      )
+    else {
+      return
+    }
 
     mentorInput = ""
-    let localResponse = mentorSession.reply(to: explanation)
-    guard localResponse.kind == .question, OnDeviceMentor.isAvailable else {
-      mentorResponses.append(localResponse)
+    guard let prompt = turn.promptForModel else {
+      mentorResponses.append(turn.localResponse)
       return
     }
 
     isMentorResponding = true
-    let prompt = MentorPromptBuilder.build(
-      lesson: lesson,
-      userExplanation: explanation,
-      matchedConcepts: localResponse.matchedConcepts
-    )
-
     mentorTask?.cancel()
     mentorTask = Task {
       defer { isMentorResponding = false }
       do {
         let generated = try await OnDeviceMentor.reply(to: prompt)
         guard !Task.isCancelled else { return }
-        let safeText = MentorSafetyFilter(correctAnswer: lesson.correctAnswer)
-          .sanitize(generated)
-        mentorResponses.append(
-          MentorResponse(
-            kind: .question,
-            text: safeText,
-            matchedConcepts: localResponse.matchedConcepts
-          )
-        )
+        mentorResponses.append(mentorCoordinator.response(forGenerated: generated, in: turn))
       } catch is CancellationError {
         return
       } catch {
         guard !Task.isCancelled else { return }
-        mentorResponses.append(localResponse)
+        mentorResponses.append(turn.localResponse)
       }
     }
   }

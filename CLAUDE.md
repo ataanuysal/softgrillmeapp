@@ -66,9 +66,12 @@ Ders = `XRayLesson`. Üç üretim yolu var:
 
 - `IntroLesson.swift`, `WeekOneLessons.swift`: 1–7. dersler, elle yazılmış
   `static let` tanımlar
-- `RoadmapLessons.swift`: 8–40. dersler, `RoadmapBlueprint` üzerinden türetilir
-  (`trace`, `transferChallenge`, `debugChallenge` ve `programOutcome` blueprint
-  alanlarından hesaplanır)
+- `RoadmapLessons.swift`: 8–40. dersler, `RoadmapBlueprint` üzerinden türetilir.
+  `transferChallenge`, `debugChallenge` ve `programOutcome` blueprint
+  alanlarından hesaplanır; **yürütme izi hesaplanmaz, `steps` içinde elle
+  yazılır.** Şablondan iz üretimi bilinçli olarak kaldırıldı: ürünün vaadi
+  değerin adım adım değişmesini göstermek, iz bunu taşımazsa ders o vaadi
+  karşılamıyor demektir.
 - `LessonCatalog.standard`: yayınlanan sıra; yeni ders buraya eklenmeden
   görünmez
 
@@ -81,7 +84,13 @@ adımı çıktı üretmemeli** (hata dersleri quiz cevabını çıktı gibi gös
 
 `RoadmapCurriculumTests` katalogun tam olarak 40 benzersiz derse ve kesintisiz
 `1...40` sırasına sahip olmasını bekler; ders sayısını değiştiren her iş bu
-testi de günceller.
+testi de günceller. Aynı paket üç içerik sözleşmesini de zorunlu kılar:
+
+- Her ders kendi `LessonTeaching` metnini taşır; iki ders aynı "sık hata" veya
+  "gerçek projede" cümlesini paylaşamaz.
+- Birden fazla değer izleyen her ders en az üç farklı bellek durumundan geçer.
+- Gelişim raporunun karşılaştırdığı dersler (`variables`, `conditions`, `loops`,
+  `capstone`) en az dört seçenek taşır.
 
 ## Davranış sözleşmeleri
 
@@ -98,6 +107,10 @@ Bunlar testlerle korunan ürün kuralları, üslup tercihi değil:
 - `SocraticMentorSession`: ders başına 6 tur; mentor sonucu vermez, tek soru
   sorar. `MentorPromptBuilder` isteme `correctAnswer` koymaz,
   `MentorSafetyFilter` sızan cevabı maskeler.
+- `MentorCoordinator`: modele gidilip gidilmeyeceğine karar veren tek yer.
+  Boş açıklama tur harcamaz; tur bittiyse, öğrenci kavramları kurduysa veya
+  model yoksa istem üretilmez. Arayüz yalnızca asenkron çağrıyı ve iptali
+  yönetir — bu kararları `ContentView` içine geri taşıma.
 - `LearningEvent`: yalnızca `lesson_started`, `quiz_submitted`,
   `practice_submitted`, `assessment_submitted`, `lesson_completed`. Kişisel veri
   ve serbest metin taşımaz; olaylar cihazda kalır, hiçbir servise gönderilmez.

@@ -27,6 +27,7 @@
 		A10000000000000000000018 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000024 /* Assets.xcassets */; };
 		A10000000000000000000019 /* LessonEvidence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000025 /* LessonEvidence.swift */; };
 		A10000000000000000000021 /* ConceptMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000028 /* ConceptMatcher.swift */; };
+		A10000000000000000000022 /* MentorCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000029 /* MentorCoordinator.swift */; };
 		A10000000000000000000020 /* GrillMeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000026 /* GrillMeUITests.swift */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +68,7 @@
 		B10000000000000000000024 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B10000000000000000000025 /* LessonEvidence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonEvidence.swift; sourceTree = "<group>"; };
 		B10000000000000000000028 /* ConceptMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConceptMatcher.swift; sourceTree = "<group>"; };
+		B10000000000000000000029 /* MentorCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MentorCoordinator.swift; sourceTree = "<group>"; };
 		B10000000000000000000026 /* GrillMeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrillMeUITests.swift; sourceTree = "<group>"; };
 		B10000000000000000000027 /* GrillMeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GrillMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -138,6 +140,7 @@
 				B10000000000000000000023 /* LessonJourney.swift */,
 				B10000000000000000000025 /* LessonEvidence.swift */,
 				B10000000000000000000028 /* ConceptMatcher.swift */,
+				B10000000000000000000029 /* MentorCoordinator.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -289,6 +292,7 @@
 				A10000000000000000000017 /* LessonJourney.swift in Sources */,
 				A10000000000000000000019 /* LessonEvidence.swift in Sources */,
 				A10000000000000000000021 /* ConceptMatcher.swift in Sources */,
+				A10000000000000000000022 /* MentorCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

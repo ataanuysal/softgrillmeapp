@@ -1663,7 +1663,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "plan.ekle(Gorev(sure: 4))",
       "print(\"\\(durum(plan.toplamSure())): \\(plan.toplamSure())\")",
     ],
-    choices: ["Uygun: 4", "Yoğun: 6", "Yoğun: 8"],
+    choices: ["Uygun: 4", "Uygun: 6", "Yoğun: 6", "Yoğun: 8"],
     answer: "Yoğun: 6",
     steps: [
       Step(
@@ -1785,7 +1785,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let sure = 4",
       "print(durum(sure))",
     ],
-    transferChoices: ["Uygun", "Yoğun", "4"],
+    transferChoices: ["Uygun", "Yoğun", "4", "Çıktı yok"],
     transferAnswer: "Uygun",
     estimatedMinutes: 10
   ),
@@ -2399,7 +2399,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let siparis = Siparis(adet: 2)",
       "print(tamamla(siparis, stok: SabitStok(mevcut: true)))",
     ],
-    choices: ["Onay", "Stok yok", "Geçersiz adet"],
+    choices: ["Onay", "Stok yok", "Geçersiz adet", "Program çöker"],
     answer: "Onay",
     steps: [
       Step(
@@ -2489,7 +2489,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let siparis = Siparis(adet: 1)",
       "print(tamamla(siparis, stok: SabitStok(mevcut: false)))",
     ],
-    transferChoices: ["Onay", "Stok yok", "Geçersiz adet"],
+    transferChoices: ["Onay", "Stok yok", "Geçersiz adet", "Program çöker"],
     transferAnswer: "Stok yok",
     estimatedMinutes: 10
   ),
