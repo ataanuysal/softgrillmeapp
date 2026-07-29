@@ -213,9 +213,8 @@ public struct AssessmentRubric: Equatable, Sendable {
   }
 
   public func evaluate(_ response: String) -> AssessmentEvaluation {
-    let normalizedResponse = normalized(response)
     let matchedConcepts = requiredConcepts.filter {
-      containsWholeConcept(normalized($0), in: normalizedResponse)
+      ConceptMatcher.matches($0, in: response)
     }
     let missingConcepts = requiredConcepts.filter { !matchedConcepts.contains($0) }
     let score =
@@ -233,25 +232,6 @@ public struct AssessmentRubric: Equatable, Sendable {
       missingConcepts: missingConcepts,
       feedback: feedback
     )
-  }
-
-  private func normalized(_ value: String) -> String {
-    value.folding(
-      options: [.caseInsensitive, .diacriticInsensitive],
-      locale: Locale(identifier: "tr_TR")
-    )
-  }
-
-  private func containsWholeConcept(_ concept: String, in response: String) -> Bool {
-    let escapedConcept = concept.split(whereSeparator: \.isWhitespace)
-      .map { NSRegularExpression.escapedPattern(for: String($0)) }
-      .joined(separator: "\\s+")
-    let pattern = "(?<![\\p{L}\\p{N}_])\(escapedConcept)(?![\\p{L}\\p{N}_])"
-    guard let expression = try? NSRegularExpression(pattern: pattern) else {
-      return false
-    }
-    let range = NSRange(response.startIndex..., in: response)
-    return expression.firstMatch(in: response, range: range) != nil
   }
 }
 

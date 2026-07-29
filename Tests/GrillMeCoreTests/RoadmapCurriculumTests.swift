@@ -239,6 +239,20 @@ struct RoadmapCurriculumTests {
     }
   }
 
+  @Test("Her rubrik kendi örnek cevabını tam puanla değerlendirir")
+  func modelAnswersSatisfyTheirOwnRubric() {
+    for lesson in LessonCatalog.standard.lessons {
+      for task in lesson.assessmentTasks {
+        let evaluation = task.rubric.evaluate(task.rubric.modelAnswer)
+
+        #expect(
+          evaluation.score == 1,
+          Comment(rawValue: "\(lesson.id)/\(task.kind): eksik \(evaluation.missingConcepts)")
+        )
+      }
+    }
+  }
+
   private var lessonsByID: [String: XRayLesson] {
     Dictionary(
       uniqueKeysWithValues: LessonCatalog.standard.lessons.map { ($0.id, $0) }

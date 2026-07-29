@@ -20,7 +20,9 @@ struct LearningGrowthTests {
 
     #expect(report?.baselineQuizAccuracy == 1.0 / 3.0)
     #expect(report?.exitQuizAccuracy == 1)
-    #expect(report?.improvement == 2.0 / 3.0)
+    // Fark iki oranın çıkarımıdır; kayan nokta gösterimi 2/3 ifadesiyle
+    // birebir aynı olmak zorunda değildir.
+    #expect(abs((report?.improvement ?? 0) - 2.0 / 3.0) < 1e-9)
   }
 
   @Test("Çıkış değerlendirmesi yoksa erken başarı raporlamaz")

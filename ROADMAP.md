@@ -1,8 +1,13 @@
 # Ürün Yol Haritası
 
 Yol haritası tarih taahhüdü değil, risk ve öğrenme değerine göre sıralanmış
-teslim planıdır. 28 Temmuz 2026 itibarıyla Aşama 0–8'in ürün ve mühendislik
-kapsamı tamamlanmıştır.
+teslim planıdır.
+
+29 Temmuz 2026 itibarıyla Aşama 0–8'in **mekanizmaları** kodda çalışır durumda:
+her yetenek en az bir derste uçtan uca işler ve testle korunur. Bunun "müfredatın
+tamamında var" anlamına gelmediğini not etmek gerekir — kapsama derinliği aşağıda
+madde madde işaretlenmiştir ve "İçerik borcu" bölümünde toplanmıştır. Hiçbir
+aşama gerçek kullanıcıyla doğrulanmamıştır.
 
 ## Durum anahtarı
 
@@ -120,7 +125,8 @@ Amaç: Kod okumayı sistematik debugging becerisine dönüştürmek.
 - ✅ Hata lensi
 
 Kabul sonucu: Kullanıcı satır seçmeden önce test edilebilir bir hipotez
-yazmak zorunda; seçimden sonra kanıt ve açıklama görüyor.
+yazmak zorunda; seçimden sonra kanıt ve açıklama görüyor. Bu akış hata görevi
+taşıyan 6 derste çalışır; diğer 34 derste hata avcılığı yoktur.
 
 ## Aşama 6 — 30 günlük çekirdek yol ✅
 
@@ -148,15 +154,17 @@ Amaç: Ürünün ana vaadini eksiksiz karşılamak.
 - ✅ Eksik kanıtta tamamlamayı kapatan bitirme koşulu
 
 Kabul sonucu: İlk üç ders başlangıç ölçümü, 30. ders çıkış ölçümü olarak
-kullanılıyor; gelişim raporu iki doğruluk değerini ve farkı gösteriyor.
+kullanılıyor; gelişim raporu iki doğruluk değerini ve farkı gösteriyor. Ölçümün
+istatistiksel gücü düşüktür: üç seçenekli quizde şans başarısı %33'tür ve
+karşılaştırma üç başlangıç sorusu ile tek bir çıkış sorusu arasında yapılır.
 
 ## Aşama 7 — Dil köprüsü ve mentor ✅
 
 Amaç: Zihinsel modeli yeni dillere ve bağımsız öğrenmeye taşımak.
 
-- ✅ Aynı örneğin Swift, Python, JavaScript ve Java karşılığı
-- ✅ Dil lensi
-- ✅ Syntax farkı ile mantık farkını ayıran karşılaştırma
+- 🚧 Aynı örneğin Swift, Python, JavaScript ve Java karşılığı — 1/40 derste
+- 🚧 Dil lensi — yalnızca varyantı olan derste açılır, yani 1/40
+- 🚧 Syntax farkı ile mantık farkını ayıran karşılaştırma — 1/40 derste
 - ✅ Soru sorarak ilerleten cihaz içi AI mentor
 - ✅ Kullanıcı açıklamasındaki kavramlara kişiselleştirilmiş geri bildirim
 - ✅ Ders başına altı turluk maliyet/işlem bütçesi
@@ -196,7 +204,7 @@ Kabul sonucu: 30 derslik temel yol korunuyor; 31–40. dersler Yol Haritası'nda
 
 - ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
 - ✅ 40 dersin veri sözleşmesi otomatik doğrulanıyor.
-- ✅ 71 Swift Testing testi ve 19 çekirdek test paketi tanımlı.
+- ✅ 79 Swift Testing testi ve 20 çekirdek test paketi tanımlı.
 - ✅ Uygulama açılışı, sekme geçişi ve derse girişi kapsayan XCUITest hedefi.
 - ✅ Paylaşılan Xcode şeması ve GitHub Actions kalite hattı.
 - ✅ Swift format/lint kontrolü yapılıyor.
@@ -206,6 +214,27 @@ Kabul sonucu: 30 derslik temel yol korunuyor; 31–40. dersler Yol Haritası'nda
 - ✅ Erişilebilir Dynamic Type için tek sütun kartlar, dikey başlıklar, menü
   picker ve kaydırılabilir kod düzeni.
 - ✅ `README.md`, `INTENT.md`, `MEMORY.md`, `DESIGN.md` güncel tutuldu.
+- 🚧 Kalite hattının fiilen okunması. 29 Temmuz 2026'da `main` üzerindeki
+  commit, kendi CI'ının `swift test` adımını geçmiyordu: dört test kırıktı ve
+  bu durum belgelere yansımamıştı. Yeşil hat, okunmadığı sürece garanti değildir.
+
+## Aşama 9 — İçerik borcunu kapatma 🚧
+
+Amaç: Mekanizmaları müfredatın tamamına yaymak ve ölçümü anlamlı hale getirmek.
+Bu aşama yeni özellik değil, mevcut vaatlerin kapsama derinliğidir.
+
+- 🚧 33 dersin şablon yürütme izini gerçek, adım adım değişen bellek gösteren
+  ize çevirmek
+- 🚧 Konu anlatımındaki "sık hata" ve "gerçek projede" metinlerini bölüm başına
+  değil ders başına yazmak
+- 🚧 Quiz seçeneklerini üçten dörde çıkarmak ve çeldiricileri tipik yanlış
+  zihinsel modellerden türetmek
+- ⏳ Ders kodu uzunluğunu 5 satırdan çıkış değerlendirmesinin 20 satırına
+  kademeli olarak taşımak
+- ⏳ Dil karşılaştırmasını en az bir bölümün tamamına yaymak
+- ⏳ Pratik ve hata avcılığı görevlerini bölüm başına en az bir derse koymak
+
+Kabul ölçütü: kapsama sayıları testle korunur, belgeye elle yazılmaz.
 
 ## MVP sonrasına bırakılanlar
 

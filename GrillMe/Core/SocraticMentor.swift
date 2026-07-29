@@ -98,17 +98,8 @@ public struct SocraticMentorSession: Equatable, Sendable {
     }
 
     usedTurns += 1
-    let normalized = explanation.folding(
-      options: [.caseInsensitive, .diacriticInsensitive],
-      locale: Locale(identifier: "tr_TR")
-    )
     let matches = requiredConcepts.filter {
-      normalized.contains(
-        $0.folding(
-          options: [.caseInsensitive, .diacriticInsensitive],
-          locale: Locale(identifier: "tr_TR")
-        )
-      )
+      ConceptMatcher.matches($0, in: explanation)
     }
 
     if matches.count == requiredConcepts.count, !matches.isEmpty {

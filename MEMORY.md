@@ -87,6 +87,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - `PracticeChallenge`, `AssessmentTask`
 - `CodeLanguage`, `CodeVariant`, `LanguageComparison`
 - `SocraticMentorSession`, `MentorPromptBuilder`, `MentorSafetyFilter`
+- `ConceptMatcher`
 - `LessonJourney`, `LessonTeachingContent`, `LessonQuiz`
 - `LessonEvidence`, `LessonEvidenceEvaluation`, `AssessmentRubric`
 - `LessonRun`, `LessonAttempt`, `LessonProgress`, `FileProgressStore`
@@ -103,6 +104,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - `GrillMe/Core/AdvancedLenses.swift`: Çağrı, mimari, hata ve görev modelleri
 - `GrillMe/Core/LanguageBridge.swift`: Dil karşılaştırma modeli
 - `GrillMe/Core/SocraticMentor.swift`: Yerel mentor, istem ve güvenlik
+- `GrillMe/Core/ConceptMatcher.swift`: Türkçe ek toleranslı kavram eşleştirme
 - `GrillMe/Core/LessonJourney.swift`: Konu → örnek → quiz durum makinesi
 - `GrillMe/Core/LessonEvidence.swift`: Zorunlu kanıt ve bağımsız ölçüm motoru
 - `GrillMe/Core/LearningAnalytics.swift`: Olay sözleşmesi
@@ -110,22 +112,43 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - `GrillMe/Core/ProgressStore.swift`: Deneme kayıtları ve kalıcılık
 - `GrillMe/App/Assets.xcassets/`: App Store için `AppIcon` asset kataloğu
 - `Scripts/generate-app-icon.swift`: 1024×1024 alfa kanalsız kaynak ikon üretimi
-- `Tests/GrillMeCoreTests/`: 19 Swift Testing paketi
+- `Tests/GrillMeCoreTests/`: 20 Swift Testing paketi
 - `GrillMeUITests/`: Uygulama açılışı ve navigasyon duman testi
 - `.github/workflows/ci.yml`: Lint, çekirdek test, build ve UI test hattı
 
 ## Doğrulama durumu
 
-- 71 Swift Testing testi ve 19 test paketi geçmelidir.
+- 79 Swift Testing testi ve 20 test paketi geçmelidir.
 - 1 XCUITest duman testi uygulama açılışı, sekmeler ve derse girişi doğrular.
 - Genel iOS Simulator build ve UI test adımları CI sözleşmesinde yer alır.
 - Release iOS arşivinde birincil ikon adı `AppIcon` ve
   `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.
-- Bu oturumda uygulama, çekirdek test ve UI test kaynakları uyarılar hata
-  sayılarak tip kontrolünden geçti. Tam SwiftPM çalıştırması ve simülatör
-  açılışı çalışma alanı sandbox iznine takıldı; CI bu iki kontrolü çalıştırır.
+- 29 Temmuz 2026: `swift test` (79/79), imzasız `xcodebuild` derlemesi ve
+  `swift-format lint --strict` yerel makinede geçti.
 - `grillme-final-preview.png` son normal görünümü,
   `grillme-dynamic-type-preview.png` erişilebilir boyutu gösterir.
+
+## İçerik kapsamının gerçek sayıları
+
+Belgelerin özellik listesi ile müfredatın kapsama derinliği aynı şey değildir.
+29 Temmuz 2026 ölçümü (40 ders üzerinden):
+
+| Özellik | Ders sayısı |
+| --- | ---: |
+| Dil varyantı ve dil lensi | 1 |
+| Değerlendirme görevi ve rubrik | 2 |
+| Pratik sorusu | 5 |
+| Hata avcılığı görevi | 6 |
+| Üç adımlık şablon yürütme izi | 33 |
+| En fazla iki farklı bellek durumu | 36 |
+
+Diğer ölçümler: bütün quizler üç seçeneklidir (şans başarısı %33), ders kodunun
+ortanca uzunluğu 5 satırdır, 20 satırlık tek ders çıkış değerlendirmesidir ve
+`teachingContext` bölüm başına yazıldığı için 40 derste yalnızca 10 farklı
+"sık hata" metni vardır.
+
+Bu tablo bir hata listesi değil, içerik borcunun envanteridir; yeni ders
+yazarken veya bir özelliği "tamamlandı" saymadan önce buraya bakılmalıdır.
 
 Test:
 

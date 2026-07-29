@@ -86,11 +86,7 @@ public struct LessonCatalog: Equatable, Sendable {
   )
 
   private func normalizedSearchText(_ text: String) -> String {
-    text
-      .folding(
-        options: [.caseInsensitive, .diacriticInsensitive],
-        locale: Locale(identifier: "tr_TR")
-      )
+    ConceptMatcher.normalized(text)
       .trimmingCharacters(in: .whitespacesAndNewlines)
   }
 }

@@ -21,44 +21,70 @@ baştan erişilebilir tutar; Yol Haritası yeni başlayanlara önerilen sırayı
 - [DESIGN.md](DESIGN.md): Öğrenme deneyimi, arayüz sistemi ve mimari
 - [ROADMAP.md](ROADMAP.md): Tamamlanan teslim aşamaları ve kabul ölçütleri
 
-## Tamamlanan ürün kapsamı
+## Ürün durumu
 
-- Temelden çıkış değerlendirmesine uzanan 30 ders ve iki uzmanlaşma ünitesindeki
-  10 ders
-- Yol Haritası ve İçindekiler üzerinden 40 dersin tamamına serbest erişim;
+Uygulama uçtan uca çalışır ve 40 dersin tamamı oynanabilir. Ancak **hiçbir ders
+henüz gerçek bir öğrenciyle denenmedi**; aşağıdaki kapsam tablosu neyin ne kadar
+derinleştiğini olduğu gibi gösterir.
+
+### Her derste var
+
+- 40 dersin tamamına Yol Haritası ve İçindekiler üzerinden serbest erişim;
   önerilen sıra, bölüm filtresi ve Türkçe karakterlerden bağımsız arama
-- Değişken, koşul, döngü, fonksiyon, scope, `map`, `filter`, koleksiyon,
-  nesne, mimari, debugging, asenkron sıra ve uygulama akışı içerikleri
 - Konu anlatımı → rehberli örnek → farklı kodlu quiz sırasını zorunlu tutan
   ders yolculuğu
-- Satır satır yürütme, bellek ve çıktı görünümü
-- Fonksiyon çağrı yığını, mimari, hata ve dil lensleri
-- Her derste rehberli örnekten farklı kod kullanan bağımsız quiz
-- Hipotez kurmadan hata satırı seçmeye izin vermeyen hata avcılığı
-- Swift, Python, JavaScript ve Java karşılaştırması
-- 20 satırlık çıkış değerlendirmesi: her biri cevap alanı, kavram rubriği,
-  anlık geri bildirim ve örnek yaklaşım taşıyan çıktı, değer izi, çağrı sırası,
-  hata noktası ve serbest açıklama görevleri
+- Rehberli örnekten farklı kod kullanan, üç seçenekli ders sonu quizi
+- Aktif satır, bellek ve çıktı görünümü
+- Quiz yapılmadan dersin tamamlanmasını engelleyen bitirme koşulu
+- Tur bütçeli, cevabı vermeyen Sokratik mentor ve cevap sızıntısı filtresi
+
+### Bir kısım derste var
+
+| Yetenek | Ders sayısı |
+| --- | ---: |
+| Hipotez zorunlu hata avcılığı | 6 / 40 |
+| Pratik soruları | 5 / 40 |
+| Rubrikli açık uçlu değerlendirme | 2 / 40 |
+| Swift, Python, JavaScript ve Java karşılaştırması | 1 / 40 |
+
+### Bilinen içerik borcu
+
+- 33 derste yürütme izi üç adımlık bir şablondan üretilir; bellek adım adım
+  değil, tek seferde dolar. Satır satır izleme bu derslerde gerçek anlamda
+  gösterilmez.
+- Konu anlatımındaki "sık hata" metni ders başına değil bölüm başına yazılmıştır;
+  40 derste 10 farklı metin vardır.
+- Ders kodlarının ortanca uzunluğu 5 satırdır. 20 satırlık tek kod çıkış
+  değerlendirmesidir, yani o uzunluk sınavdan önce hiç çalışılmaz.
+- Bütün quizler üç seçeneklidir; şans başarısı %33'tür ve gelişim raporu üç
+  başlangıç sorusunu tek bir çıkış sorusuyla karşılaştırır.
+
+### Konu kapsamı
+
+- Değişken, koşul, döngü, fonksiyon, scope, `map`, `filter`, koleksiyon,
+  nesne, mimari, debugging, asenkron sıra ve uygulama akışı
 - Yazılım testi: Arrange–Act–Assert, unit test, sınır değer, test double,
   integration ve regression
 - Teknik analiz: kabul kriteri, sistem akışı, veri sözleşmesi, etki/risk analizi
   ve uygulanabilir teknik plan
+- 20 satırlık çıkış değerlendirmesi: çıktı, değer izi, çağrı sırası, hata noktası
+  ve serbest açıklama görevleri; her biri cevap alanı, kavram rubriği ve örnek
+  yaklaşım taşır
+
+### Platform ve altyapı
+
 - Quiz doğruluğu, ek pratik yüzdesi ve rubrik puanını birbirine karıştırmadan
   saklayan ders ölçümü; günlük seri, haftalık özet ve başlangıç/çıkış raporu
-- Eksik quiz, hata avı, pratik veya değerlendirme kanıtı varken ders
-  tamamlamayı engelleyen açık tamamlama koşulları
 - Cihaz üzerinde JSON tabanlı, eski kayıtlarla uyumlu ilerleme; bozuk dosyayı
   yedekleyen kurtarma ve kullanıcıya görünen kayıt hataları
 - Kişisel verisiz ve cihazda kalıcı öğrenme olayı sözleşmesi
-- Tur bütçeli Sokratik mentor; iOS 26 ve desteklenen cihazlarda Apple
-  Foundation Models, diğer durumlarda çevrimdışı yerel rehber
-- Üretilen mentor cevabının doğru sonucu açıklamasını engelleyen güvenlik
-  filtresi
+- iOS 26 ve desteklenen cihazlarda Apple Foundation Models, diğer durumlarda
+  çevrimdışı yerel rehber
 - Dynamic Type erişilebilirlik boyutlarına uyarlanan SwiftUI arayüzü ve
   metinli erişilebilir eylemler; büyük yazıda dikey kartlar, menü tipi dil
   seçimi ve yatay kaydırılabilir kod
 - Uygulama açılışı, iki ana sekme ve derse giriş için gerçek XCUITest hedefi
-- Format, 71 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
+- Format, 79 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
 
 ## Gereksinimler
 
@@ -130,6 +156,7 @@ GrillMe/
     ├── AdvancedLenses.swift
     ├── LanguageBridge.swift
     ├── SocraticMentor.swift
+    ├── ConceptMatcher.swift
     ├── LessonJourney.swift
     ├── LessonEvidence.swift
     ├── LessonRun.swift
@@ -152,8 +179,8 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 ## Doğrulama
 
-- 71 Swift Testing testi
-- 19 çekirdek test paketi
+- 79 Swift Testing testi
+- 20 çekirdek test paketi
 - 1 XCUITest duman testi
 - GitHub Actions kalite hattı
 - CI içinde genel iOS Simulator derleme adımı

@@ -67,6 +67,56 @@ struct AppPackagingTests {
     #expect(project.contains("INFOPLIST_KEY_CFBundleIconName = AppIcon;"))
   }
 
+  @Test("Uygulama kaynaklarının tamamı Xcode hedefinde derlenir")
+  func compilesEveryApplicationSource() throws {
+    let project = try projectFile()
+    let sourceRoot = repositoryRoot.appendingPathComponent("GrillMe")
+    let enumerator = try #require(
+      FileManager.default.enumerator(
+        at: sourceRoot,
+        includingPropertiesForKeys: nil,
+        options: [.skipsHiddenFiles]
+      )
+    )
+
+    for case let url as URL in enumerator where url.pathExtension == "swift" {
+      #expect(
+        project.contains("\(url.lastPathComponent) in Sources"),
+        Comment(rawValue: "\(url.lastPathComponent) project.pbxproj içine eklenmemiş")
+      )
+    }
+  }
+
+  @Test("Proje dosyası aynı kimliği iki nesneye vermez")
+  func usesUniqueObjectIdentifiers() throws {
+    let project = try projectFile()
+    let definition = try NSRegularExpression(pattern: "^\t\t([A-Z0-9]{24}) /\\*.*\\*/ = \\{")
+    var seen: Set<String> = []
+    var duplicates: [String] = []
+
+    for line in project.components(separatedBy: .newlines) {
+      let range = NSRange(line.startIndex..., in: line)
+      guard let match = definition.firstMatch(in: line, range: range),
+        let identifierRange = Range(match.range(at: 1), in: line)
+      else {
+        continue
+      }
+      let identifier = String(line[identifierRange])
+      if !seen.insert(identifier).inserted {
+        duplicates.append(identifier)
+      }
+    }
+
+    #expect(duplicates.isEmpty, Comment(rawValue: "Tekrar eden kimlikler: \(duplicates)"))
+  }
+
+  private func projectFile() throws -> String {
+    try String(
+      contentsOf: repositoryRoot.appendingPathComponent("GrillMe.xcodeproj/project.pbxproj"),
+      encoding: .utf8
+    )
+  }
+
   private var repositoryRoot: URL {
     URL(fileURLWithPath: #filePath)
       .deletingLastPathComponent()
