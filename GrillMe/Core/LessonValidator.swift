@@ -5,6 +5,7 @@ public enum LessonValidationIssue: Equatable, Sendable {
   case missingTrace
   case traceReferencesUnknownLine(Int)
   case finalOutputDoesNotMatchAnswer
+  case unexpectedOutputForProgramFailure
   case missingTransferChallenge
   case transferAnswerNotInChoices
   case invalidEstimatedMinutes
@@ -32,8 +33,15 @@ public struct LessonValidator: Sendable {
     for step in lesson.trace where !lineNumbers.contains(step.lineNumber) {
       issues.append(.traceReferencesUnknownLine(step.lineNumber))
     }
-    if lesson.trace.last?.output != lesson.correctAnswer {
-      issues.append(.finalOutputDoesNotMatchAnswer)
+    switch lesson.programOutcome {
+    case .output(let expected):
+      if lesson.trace.last?.output != expected {
+        issues.append(.finalOutputDoesNotMatchAnswer)
+      }
+    case .compileError, .runtimeError, .noOutput:
+      if lesson.trace.contains(where: { $0.output != nil }) {
+        issues.append(.unexpectedOutputForProgramFailure)
+      }
     }
     guard let transfer = lesson.transferChallenge else {
       issues.append(.missingTransferChallenge)

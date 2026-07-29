@@ -2,8 +2,9 @@ import Foundation
 
 public enum LearningEventName: String, Codable, Equatable, Sendable {
   case lessonStarted = "lesson_started"
-  case predictionSubmitted = "prediction_submitted"
-  case transferSubmitted = "transfer_submitted"
+  case quizSubmitted = "quiz_submitted"
+  case practiceSubmitted = "practice_submitted"
+  case assessmentSubmitted = "assessment_submitted"
   case lessonCompleted = "lesson_completed"
 }
 
@@ -25,7 +26,7 @@ public struct LearningEvent: Codable, Equatable, Sendable {
     self.properties = properties
   }
 
-  public static func predictionSubmitted(
+  public static func quizSubmitted(
     lessonID: String,
     answer: String,
     isCorrect: Bool,
@@ -33,7 +34,7 @@ public struct LearningEvent: Codable, Equatable, Sendable {
     occurredAt: Date
   ) -> LearningEvent {
     LearningEvent(
-      name: .predictionSubmitted,
+      name: .quizSubmitted,
       lessonID: lessonID,
       occurredAt: occurredAt,
       properties: [
@@ -47,17 +48,53 @@ public struct LearningEvent: Codable, Equatable, Sendable {
   public static func lessonCompleted(
     lessonID: String,
     durationSeconds: Int,
-    transferCorrect: Bool,
+    quizCorrect: Bool,
+    practiceAccuracy: Double?,
+    assessmentScore: Double?,
     occurredAt: Date
   ) -> LearningEvent {
-    LearningEvent(
+    var properties = [
+      "duration_seconds": String(durationSeconds),
+      "quiz_correct": String(quizCorrect),
+    ]
+    if let practiceAccuracy {
+      properties["practice_accuracy"] = String(practiceAccuracy)
+    }
+    if let assessmentScore {
+      properties["assessment_score"] = String(assessmentScore)
+    }
+
+    return LearningEvent(
       name: .lessonCompleted,
       lessonID: lessonID,
       occurredAt: occurredAt,
-      properties: [
-        "duration_seconds": String(durationSeconds),
-        "transfer_correct": String(transferCorrect),
-      ]
+      properties: properties
+    )
+  }
+
+  public static func practiceSubmitted(
+    lessonID: String,
+    score: Double,
+    occurredAt: Date
+  ) -> LearningEvent {
+    return LearningEvent(
+      name: .practiceSubmitted,
+      lessonID: lessonID,
+      occurredAt: occurredAt,
+      properties: ["score": String(score)]
+    )
+  }
+
+  public static func assessmentSubmitted(
+    lessonID: String,
+    score: Double,
+    occurredAt: Date
+  ) -> LearningEvent {
+    return LearningEvent(
+      name: .assessmentSubmitted,
+      lessonID: lessonID,
+      occurredAt: occurredAt,
+      properties: ["score": String(score)]
     )
   }
 }

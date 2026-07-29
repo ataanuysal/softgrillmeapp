@@ -5,11 +5,11 @@ import Testing
 
 @Suite("Öğrenme analitiği sözleşmesi")
 struct LearningAnalyticsTests {
-  @Test("Tahmin olayını kişisel veri taşımayan kararlı alanlarla üretir")
-  func createsPredictionEvent() {
+  @Test("Quiz olayını kişisel veri taşımayan kararlı alanlarla üretir")
+  func createsQuizEvent() {
     let instant = Date(timeIntervalSince1970: 100)
 
-    let event = LearningEvent.predictionSubmitted(
+    let event = LearningEvent.quizSubmitted(
       lessonID: "variables",
       answer: "12",
       isCorrect: true,
@@ -17,7 +17,7 @@ struct LearningAnalyticsTests {
       occurredAt: instant
     )
 
-    #expect(event.name == .predictionSubmitted)
+    #expect(event.name == .quizSubmitted)
     #expect(event.lessonID == "variables")
     #expect(event.occurredAt == instant)
     #expect(event.properties["answer"] == "12")
@@ -25,17 +25,21 @@ struct LearningAnalyticsTests {
     #expect(event.properties["attempt"] == "1")
   }
 
-  @Test("Tamamlama olayı süre ve aktarım sonucunu içerir")
+  @Test("Tamamlama olayı süre ve bağımsız öğrenme sonuçlarını içerir")
   func createsCompletionEvent() {
     let event = LearningEvent.lessonCompleted(
       lessonID: "conditions",
       durationSeconds: 412,
-      transferCorrect: false,
+      quizCorrect: true,
+      practiceAccuracy: 0.75,
+      assessmentScore: 0.5,
       occurredAt: Date(timeIntervalSince1970: 200)
     )
 
     #expect(event.name == .lessonCompleted)
     #expect(event.properties["duration_seconds"] == "412")
-    #expect(event.properties["transfer_correct"] == "false")
+    #expect(event.properties["quiz_correct"] == "true")
+    #expect(event.properties["practice_accuracy"] == "0.75")
+    #expect(event.properties["assessment_score"] == "0.5")
   }
 }

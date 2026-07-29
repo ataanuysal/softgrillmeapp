@@ -27,47 +27,64 @@ public struct LessonRun: Equatable, Sendable {
 
   public func finish(
     journey: LessonJourney,
+    evidence: LessonEvidenceEvaluation,
     completedAt: Date
-  ) -> LessonRunResult {
+  ) -> LessonRunResult? {
+    guard evidence.isReadyToComplete, let quizCorrect = evidence.quizCorrect else {
+      return nil
+    }
+
     let duration = max(0, Int(completedAt.timeIntervalSince(startedAt)))
-    let quizCorrect = journey.isQuizAnswerCorrect ?? false
-    let answer = journey.selectedQuizAnswer ?? ""
     let attempt = LessonAttempt(
       lessonID: lessonID,
       completedAt: completedAt,
       durationSeconds: duration,
-      predictionCorrect: quizCorrect,
-      transferCorrect: quizCorrect
+      quizCorrect: quizCorrect,
+      practiceAccuracy: evidence.practiceAccuracy,
+      assessmentScore: evidence.assessmentScore
     )
-    let events = [
+    var events = [
       LearningEvent(
         name: .lessonStarted,
         lessonID: lessonID,
         occurredAt: startedAt
       ),
-      LearningEvent.predictionSubmitted(
+      LearningEvent.quizSubmitted(
         lessonID: lessonID,
-        answer: answer,
+        answer: journey.selectedQuizAnswer ?? "",
         isCorrect: quizCorrect,
         attemptNumber: attemptNumber,
         occurredAt: completedAt
       ),
-      LearningEvent(
-        name: .transferSubmitted,
-        lessonID: lessonID,
-        occurredAt: completedAt,
-        properties: [
-          "answer": answer,
-          "correct": String(quizCorrect),
-        ]
-      ),
-      LearningEvent.lessonCompleted(
+    ]
+    if let practiceAccuracy = evidence.practiceAccuracy {
+      events.append(
+        .practiceSubmitted(
+          lessonID: lessonID,
+          score: practiceAccuracy,
+          occurredAt: completedAt
+        )
+      )
+    }
+    if let assessmentScore = evidence.assessmentScore {
+      events.append(
+        .assessmentSubmitted(
+          lessonID: lessonID,
+          score: assessmentScore,
+          occurredAt: completedAt
+        )
+      )
+    }
+    events.append(
+      .lessonCompleted(
         lessonID: lessonID,
         durationSeconds: duration,
-        transferCorrect: quizCorrect,
+        quizCorrect: quizCorrect,
+        practiceAccuracy: evidence.practiceAccuracy,
+        assessmentScore: evidence.assessmentScore,
         occurredAt: completedAt
-      ),
-    ]
+      )
+    )
     return LessonRunResult(attempt: attempt, events: events)
   }
 }

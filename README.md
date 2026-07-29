@@ -33,25 +33,32 @@ baştan erişilebilir tutar; Yol Haritası yeni başlayanlara önerilen sırayı
   ders yolculuğu
 - Satır satır yürütme, bellek ve çıktı görünümü
 - Fonksiyon çağrı yığını, mimari, hata ve dil lensleri
-- Her derste yeni bir örneğe aktarım görevi
+- Her derste rehberli örnekten farklı kod kullanan bağımsız quiz
 - Hipotez kurmadan hata satırı seçmeye izin vermeyen hata avcılığı
 - Swift, Python, JavaScript ve Java karşılaştırması
-- 20 satırlık çıkış değerlendirmesi: çıktı, değer izi, çağrı sırası, hata
-  noktası ve serbest açıklama görevleri
+- 20 satırlık çıkış değerlendirmesi: her biri cevap alanı, kavram rubriği,
+  anlık geri bildirim ve örnek yaklaşım taşıyan çıktı, değer izi, çağrı sırası,
+  hata noktası ve serbest açıklama görevleri
 - Yazılım testi: Arrange–Act–Assert, unit test, sınır değer, test double,
   integration ve regression
 - Teknik analiz: kabul kriteri, sistem akışı, veri sözleşmesi, etki/risk analizi
   ve uygulanabilir teknik plan
-- Ders süresi, ilk/tekrar tahmin doğruluğu, aktarım doğruluğu, günlük seri,
-  haftalık özet ve başlangıç/çıkış gelişim raporu
-- Cihaz üzerinde JSON tabanlı, eski kayıtlarla uyumlu ilerleme
-- Kişisel verisiz temel öğrenme olayı sözleşmesi
+- Quiz doğruluğu, ek pratik yüzdesi ve rubrik puanını birbirine karıştırmadan
+  saklayan ders ölçümü; günlük seri, haftalık özet ve başlangıç/çıkış raporu
+- Eksik quiz, hata avı, pratik veya değerlendirme kanıtı varken ders
+  tamamlamayı engelleyen açık tamamlama koşulları
+- Cihaz üzerinde JSON tabanlı, eski kayıtlarla uyumlu ilerleme; bozuk dosyayı
+  yedekleyen kurtarma ve kullanıcıya görünen kayıt hataları
+- Kişisel verisiz ve cihazda kalıcı öğrenme olayı sözleşmesi
 - Tur bütçeli Sokratik mentor; iOS 26 ve desteklenen cihazlarda Apple
   Foundation Models, diğer durumlarda çevrimdışı yerel rehber
 - Üretilen mentor cevabının doğru sonucu açıklamasını engelleyen güvenlik
   filtresi
 - Dynamic Type erişilebilirlik boyutlarına uyarlanan SwiftUI arayüzü ve
-  metinli erişilebilir eylemler
+  metinli erişilebilir eylemler; büyük yazıda dikey kartlar, menü tipi dil
+  seçimi ve yatay kaydırılabilir kod
+- Uygulama açılışı, iki ana sekme ve derse giriş için gerçek XCUITest hedefi
+- Format, 71 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
 
 ## Gereksinimler
 
@@ -93,7 +100,7 @@ xcodebuild \
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
 CLANG_MODULE_CACHE_PATH=/private/tmp/grillme-module-cache \
 SWIFTPM_MODULECACHE_OVERRIDE=/private/tmp/grillme-module-cache \
-swift test --disable-sandbox
+swift test
 ```
 
 Biçim ve lint:
@@ -124,11 +131,16 @@ GrillMe/
     ├── LanguageBridge.swift
     ├── SocraticMentor.swift
     ├── LessonJourney.swift
+    ├── LessonEvidence.swift
     ├── LessonRun.swift
     ├── LearningAnalytics.swift
     └── ProgressStore.swift
 Tests/
 └── GrillMeCoreTests/
+GrillMeUITests/
+└── GrillMeUITests.swift
+.github/workflows/
+└── ci.yml
 Scripts/
 └── generate-app-icon.swift
 ```
@@ -140,13 +152,15 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 ## Doğrulama
 
-- 54 Swift Testing testi
-- 17 test paketi
-- Genel iOS Simulator derlemesi
-- Release iOS arşivinde `CFBundleIconName = AppIcon` ve 120×120 uygulama ikonu
-- iPhone 17 Pro simülatöründe normal ve erişilebilir Dynamic Type görsel QA
+- 71 Swift Testing testi
+- 19 çekirdek test paketi
+- 1 XCUITest duman testi
+- GitHub Actions kalite hattı
+- CI içinde genel iOS Simulator derleme adımı
+- `CFBundleIconName = AppIcon` ve 1024×1024 kaynak ikon için paketleme testleri
+- Uygulama ve UI test kaynaklarında iOS 17 hedefli, uyarısız Swift tip kontrolü
 
-Erişilebilir boyut kontrolü:
+Önceki erişilebilir boyut kontrolü:
 
 ![GrillMe Dynamic Type görünümü](grillme-dynamic-type-preview.png)
 

@@ -4,15 +4,17 @@ struct ContentView: View {
   private let catalog = LessonCatalog.standard
   private let progressStore: FileProgressStore
   @State private var progress: LessonProgress
-  @State private var learningEvents: [LearningEvent] = []
+  @State private var persistenceNotice: String?
 
   init() {
     let store = FileProgressStore(
       fileURL: URL.applicationSupportDirectory
         .appendingPathComponent("grillme-progress.json")
     )
+    let loadResult = store.loadRecovering()
     progressStore = store
-    _progress = State(initialValue: store.load())
+    _progress = State(initialValue: loadResult.progress)
+    _persistenceNotice = State(initialValue: loadResult.notice)
   }
 
   var body: some View {
@@ -48,12 +50,33 @@ struct ContentView: View {
     .toolbarBackground(AppPalette.panel, for: .tabBar)
     .toolbarBackground(.visible, for: .tabBar)
     .toolbarColorScheme(.dark, for: .tabBar)
+    .alert(
+      "İlerleme kaydı",
+      isPresented: Binding(
+        get: { persistenceNotice != nil },
+        set: { isPresented in
+          if !isPresented {
+            persistenceNotice = nil
+          }
+        }
+      )
+    ) {
+      Button("Tamam", role: .cancel) {
+        persistenceNotice = nil
+      }
+    } message: {
+      Text(persistenceNotice ?? "")
+    }
   }
 
   private func complete(_ result: LessonRunResult) {
-    progress.recordAttempt(result.attempt)
-    learningEvents.append(contentsOf: result.events)
-    try? progressStore.save(progress)
+    progress.record(result)
+    do {
+      try progressStore.save(progress)
+    } catch {
+      persistenceNotice =
+        "Ders tamamlandı ancak ilerleme cihaza kaydedilemedi. Uygulamayı kapatmadan önce tekrar dene. Hata: \(error.localizedDescription)"
+    }
   }
 }
 
@@ -169,51 +192,19 @@ private struct LessonMapView: View {
 
   private var progressHero: some View {
     VStack(alignment: .leading, spacing: 18) {
-      HStack(alignment: .top) {
-        VStack(alignment: .leading, spacing: 8) {
-          Text("Kodun içini\nokumaya başla")
-            .adaptiveFont(size: 32, weight: .bold, design: .rounded)
-            .foregroundStyle(.white)
-            .fixedSize(horizontal: false, vertical: true)
-
-          Text("Önce konuyu öğren, örneği adım adım izle ve en son quizde uygula.")
-            .adaptiveFont(size: 15, design: .rounded)
-            .foregroundStyle(AppPalette.secondaryText)
-            .fixedSize(horizontal: false, vertical: true)
-        }
-
-        Spacer(minLength: 16)
-
-        ZStack {
-          Circle()
-            .stroke(AppPalette.card, lineWidth: 7)
-          Circle()
-            .trim(
-              from: 0,
-              to: min(Double(dashboard.completedCount) / Double(dashboard.totalCount), 1)
-            )
-            .stroke(
-              AngularGradient(
-                colors: [AppPalette.mint, AppPalette.indigo],
-                center: .center
-              ),
-              style: StrokeStyle(lineWidth: 7, lineCap: .round)
-            )
-            .rotationEffect(.degrees(-90))
-
-          VStack(spacing: 1) {
-            Text("\(dashboard.completedCount)")
-              .adaptiveFont(size: 21, weight: .bold, design: .rounded)
-              .foregroundStyle(.white)
-            Text("/ \(dashboard.totalCount)")
-              .adaptiveFont(size: 10, weight: .semibold, design: .rounded)
-              .foregroundStyle(AppPalette.secondaryText)
+      Group {
+        if dynamicTypeSize.isAccessibilitySize {
+          VStack(alignment: .leading, spacing: 18) {
+            progressCopy
+            progressRing
+          }
+        } else {
+          HStack(alignment: .top) {
+            progressCopy
+            Spacer(minLength: 16)
+            progressRing
           }
         }
-        .frame(width: 82, height: 82)
-        .accessibilityLabel(
-          "\(dashboard.totalCount) dersten \(dashboard.completedCount) tanesi tamamlandı"
-        )
       }
 
       GeometryReader { geometry in
@@ -249,8 +240,60 @@ private struct LessonMapView: View {
     )
   }
 
+  private var progressCopy: some View {
+    VStack(alignment: .leading, spacing: 8) {
+      Text("Kodun içini\nokumaya başla")
+        .adaptiveFont(size: 32, weight: .bold, design: .rounded)
+        .foregroundStyle(.white)
+        .fixedSize(horizontal: false, vertical: true)
+
+      Text("Önce konuyu öğren, örneği adım adım izle ve en son quizde uygula.")
+        .adaptiveFont(size: 15, design: .rounded)
+        .foregroundStyle(AppPalette.secondaryText)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+  }
+
+  private var progressRing: some View {
+    ZStack {
+      Circle()
+        .stroke(AppPalette.card, lineWidth: 7)
+      Circle()
+        .trim(
+          from: 0,
+          to: min(Double(dashboard.completedCount) / Double(dashboard.totalCount), 1)
+        )
+        .stroke(
+          AngularGradient(
+            colors: [AppPalette.mint, AppPalette.indigo],
+            center: .center
+          ),
+          style: StrokeStyle(lineWidth: 7, lineCap: .round)
+        )
+        .rotationEffect(.degrees(-90))
+
+      VStack(spacing: 1) {
+        Text("\(dashboard.completedCount)")
+          .font(.system(size: 21, weight: .bold, design: .rounded))
+          .foregroundStyle(.white)
+        Text("/ \(dashboard.totalCount)")
+          .font(.system(size: 10, weight: .semibold, design: .rounded))
+          .foregroundStyle(AppPalette.secondaryText)
+      }
+    }
+    .frame(width: 82, height: 82)
+    .accessibilityLabel(
+      "\(dashboard.totalCount) dersten \(dashboard.completedCount) tanesi tamamlandı"
+    )
+  }
+
   private var weeklySummary: some View {
-    HStack(spacing: 12) {
+    LazyVGrid(
+      columns: dynamicTypeSize.isAccessibilitySize
+        ? [GridItem(.flexible())]
+        : [GridItem(.flexible()), GridItem(.flexible())],
+      spacing: 16
+    ) {
       summaryMetric(
         value: "\(dashboard.weeklySummary.completedLessonCount)",
         label: "Bu hafta",
@@ -262,14 +305,19 @@ private struct LessonMapView: View {
         icon: "timer"
       )
       summaryMetric(
-        value: percentage(dashboard.weeklySummary.predictionAccuracy),
+        value: percentage(dashboard.weeklySummary.quizAccuracy),
         label: "Quiz",
         icon: "scope"
       )
       summaryMetric(
-        value: percentage(dashboard.weeklySummary.transferAccuracy),
-        label: "Yeni kod",
-        icon: "arrow.triangle.branch"
+        value: percentage(dashboard.weeklySummary.practiceAccuracy),
+        label: "Pratik doğruluğu",
+        icon: "brain.head.profile"
+      )
+      summaryMetric(
+        value: percentage(dashboard.weeklySummary.assessmentScore),
+        label: "Rubrik puanı",
+        icon: "checklist.checked"
       )
     }
     .padding(16)
@@ -297,7 +345,7 @@ private struct LessonMapView: View {
             .adaptiveFont(size: 15, weight: .bold, design: .rounded)
             .foregroundStyle(.white)
           Text(
-            "Başlangıç \(percentage(report.baselineAccuracy)) · Çıkış \(percentage(report.exitAccuracy))"
+            "Başlangıç quizi \(percentage(report.baselineQuizAccuracy)) · Çıkış quizi \(percentage(report.exitQuizAccuracy))"
           )
           .adaptiveFont(size: 12, design: .rounded)
           .foregroundStyle(AppPalette.secondaryText)
@@ -339,8 +387,9 @@ private struct LessonMapView: View {
     .frame(maxWidth: .infinity)
   }
 
-  private func percentage(_ value: Double) -> String {
-    "\(Int((value * 100).rounded()))%"
+  private func percentage(_ value: Double?) -> String {
+    guard let value else { return "—" }
+    return "\(Int((value * 100).rounded()))%"
   }
 
   private func lessonDestination(for item: LessonCatalogItem) -> some View {
@@ -465,9 +514,13 @@ private struct LessonContentsView: View {
       .foregroundStyle(AppPalette.secondaryText)
       .fixedSize(horizontal: false, vertical: true)
 
-      HStack(spacing: 14) {
-        Label("\(resultCount) ders", systemImage: "book.pages")
-        Label("\(CurriculumSection.allCases.count) bölüm", systemImage: "square.grid.2x2")
+      ViewThatFits(in: .horizontal) {
+        HStack(spacing: 14) {
+          contentsMetrics
+        }
+        VStack(alignment: .leading, spacing: 8) {
+          contentsMetrics
+        }
       }
       .adaptiveFont(size: 12, weight: .bold, design: .rounded)
       .foregroundStyle(AppPalette.amber)
@@ -479,6 +532,12 @@ private struct LessonContentsView: View {
       RoundedRectangle(cornerRadius: 24)
         .stroke(AppPalette.border, lineWidth: 1)
     )
+  }
+
+  @ViewBuilder
+  private var contentsMetrics: some View {
+    Label("\(resultCount) ders", systemImage: "book.pages")
+    Label("\(CurriculumSection.allCases.count) bölüm", systemImage: "square.grid.2x2")
   }
 
   private var sectionPicker: some View {
@@ -583,58 +642,27 @@ private struct LessonContentsView: View {
 
 private struct LessonRow: View {
   let item: LessonCatalogItem
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
   var body: some View {
-    HStack(spacing: 15) {
-      ZStack {
-        Circle()
-          .fill(badgeColor.opacity(0.16))
-        Circle()
-          .stroke(badgeColor.opacity(0.45), lineWidth: 1)
-
-        if item.status == .completed {
-          Image(systemName: "checkmark")
-            .adaptiveFont(size: 15, weight: .bold)
-        } else {
-          Text("\(item.lesson.order)")
-            .adaptiveFont(size: 16, weight: .bold, design: .rounded)
+    Group {
+      if dynamicTypeSize.isAccessibilitySize {
+        VStack(alignment: .leading, spacing: 14) {
+          HStack {
+            badge
+            Spacer()
+            disclosureIndicator
+          }
+          lessonDetails
+        }
+      } else {
+        HStack(spacing: 15) {
+          badge
+          lessonDetails
+          Spacer(minLength: 6)
+          disclosureIndicator
         }
       }
-      .foregroundStyle(badgeColor)
-      .frame(width: 48, height: 48)
-
-      VStack(alignment: .leading, spacing: 5) {
-        HStack(spacing: 7) {
-          Text("DERS \(String(format: "%02d", item.lesson.order))")
-          Text("·")
-          Text(item.lesson.topic)
-        }
-        .adaptiveFont(size: 10, weight: .bold, design: .rounded)
-        .tracking(0.8)
-        .foregroundStyle(badgeColor)
-
-        Text(item.lesson.title)
-          .adaptiveFont(size: 18, weight: .bold, design: .rounded)
-          .foregroundStyle(.white)
-
-        Text(item.lesson.objective)
-          .adaptiveFont(size: 12, design: .rounded)
-          .foregroundStyle(AppPalette.secondaryText)
-          .lineLimit(2)
-
-        HStack(spacing: 10) {
-          Label("\(item.lesson.estimatedMinutes) dk", systemImage: "clock")
-          Label("\(item.lesson.availableLenses.count) lens", systemImage: "scope")
-        }
-        .adaptiveFont(size: 10, weight: .semibold, design: .rounded)
-        .foregroundStyle(AppPalette.tertiaryText)
-      }
-
-      Spacer(minLength: 6)
-
-      Image(systemName: "chevron.right")
-        .adaptiveFont(size: 12, weight: .bold)
-        .foregroundStyle(badgeColor)
     }
     .padding(18)
     .background(
@@ -652,6 +680,66 @@ private struct LessonRow: View {
     )
     .accessibilityElement(children: .combine)
     .accessibilityLabel(accessibilityDescription)
+  }
+
+  private var badge: some View {
+    ZStack {
+      Circle()
+        .fill(badgeColor.opacity(0.16))
+      Circle()
+        .stroke(badgeColor.opacity(0.45), lineWidth: 1)
+
+      if item.status == .completed {
+        Image(systemName: "checkmark")
+          .font(.system(size: 15, weight: .bold))
+      } else {
+        Text("\(item.lesson.order)")
+          .font(.system(size: 16, weight: .bold, design: .rounded))
+      }
+    }
+    .foregroundStyle(badgeColor)
+    .frame(width: 48, height: 48)
+  }
+
+  private var lessonDetails: some View {
+    VStack(alignment: .leading, spacing: 5) {
+      Text("DERS \(String(format: "%02d", item.lesson.order)) · \(item.lesson.topic)")
+        .adaptiveFont(size: 10, weight: .bold, design: .rounded)
+        .tracking(0.8)
+        .foregroundStyle(badgeColor)
+
+      Text(item.lesson.title)
+        .adaptiveFont(size: 18, weight: .bold, design: .rounded)
+        .foregroundStyle(.white)
+
+      Text(item.lesson.objective)
+        .adaptiveFont(size: 12, design: .rounded)
+        .foregroundStyle(AppPalette.secondaryText)
+        .fixedSize(horizontal: false, vertical: true)
+
+      ViewThatFits(in: .horizontal) {
+        HStack(spacing: 10) {
+          lessonMetadata
+        }
+        VStack(alignment: .leading, spacing: 6) {
+          lessonMetadata
+        }
+      }
+      .adaptiveFont(size: 10, weight: .semibold, design: .rounded)
+      .foregroundStyle(AppPalette.tertiaryText)
+    }
+  }
+
+  @ViewBuilder
+  private var lessonMetadata: some View {
+    Label("\(item.lesson.estimatedMinutes) dk", systemImage: "clock")
+    Label("\(item.lesson.availableLenses.count) lens", systemImage: "scope")
+  }
+
+  private var disclosureIndicator: some View {
+    Image(systemName: "chevron.right")
+      .adaptiveFont(size: 12, weight: .bold)
+      .foregroundStyle(badgeColor)
   }
 
   private var badgeColor: Color {
@@ -680,6 +768,7 @@ private struct XRayLessonView: View {
   let totalLessonCount: Int
   let onComplete: (LessonRunResult) -> Void
   @Environment(\.dismiss) private var dismiss
+  @Environment(\.dynamicTypeSize) private var dynamicTypeSize
   @State private var journey: LessonJourney
   @State private var run: LessonRun
   @State private var selectedLanguage: CodeLanguage = .swift
@@ -690,7 +779,8 @@ private struct XRayLessonView: View {
   @State private var mentorInput = ""
   @State private var mentorResponses: [MentorResponse] = []
   @State private var isMentorResponding = false
-  @State private var assessmentExplanation = ""
+  @State private var assessmentResponses: [AssessmentTaskKind: String] = [:]
+  @State private var mentorTask: Task<Void, Never>?
 
   init(
     lesson: XRayLesson,
@@ -742,33 +832,27 @@ private struct XRayLessonView: View {
     .tint(AppPalette.mint)
     .navigationBarTitleDisplayMode(.inline)
     .toolbarBackground(.hidden, for: .navigationBar)
+    .onDisappear {
+      mentorTask?.cancel()
+    }
   }
 
   private var header: some View {
     VStack(spacing: 14) {
-      HStack {
-        HStack(spacing: 10) {
-          Image(systemName: "chevron.left.forwardslash.chevron.right")
-            .adaptiveFont(size: 15, weight: .bold)
-            .foregroundStyle(AppPalette.background)
-            .frame(width: 34, height: 34)
-            .background(AppPalette.mint, in: RoundedRectangle(cornerRadius: 10))
-
-          Text("KOD RÖNTGENİ")
-            .adaptiveFont(size: 13, weight: .bold, design: .rounded)
-            .tracking(1.4)
-            .foregroundStyle(.white)
+      Group {
+        if dynamicTypeSize.isAccessibilitySize {
+          VStack(alignment: .leading, spacing: 12) {
+            lessonHeaderBrand
+            lessonPosition
+          }
+          .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+          HStack {
+            lessonHeaderBrand
+            Spacer()
+            lessonPosition
+          }
         }
-
-        Spacer()
-
-        Label("\(lesson.order) / \(totalLessonCount)", systemImage: "flame.fill")
-          .adaptiveFont(size: 13, weight: .semibold, design: .rounded)
-          .foregroundStyle(AppPalette.amber)
-          .padding(.horizontal, 12)
-          .padding(.vertical, 8)
-          .background(AppPalette.card, in: Capsule())
-          .overlay(Capsule().stroke(AppPalette.border, lineWidth: 1))
       }
 
       GeometryReader { geometry in
@@ -794,6 +878,31 @@ private struct XRayLessonView: View {
       .frame(height: 5)
       .accessibilityLabel("\(totalLessonCount) derslik yolculuğun \(lesson.order). dersi")
     }
+  }
+
+  private var lessonHeaderBrand: some View {
+    HStack(spacing: 10) {
+      Image(systemName: "chevron.left.forwardslash.chevron.right")
+        .adaptiveFont(size: 15, weight: .bold)
+        .foregroundStyle(AppPalette.background)
+        .frame(width: 34, height: 34)
+        .background(AppPalette.mint, in: RoundedRectangle(cornerRadius: 10))
+
+      Text("KOD RÖNTGENİ")
+        .adaptiveFont(size: 13, weight: .bold, design: .rounded)
+        .tracking(1.4)
+        .foregroundStyle(.white)
+    }
+  }
+
+  private var lessonPosition: some View {
+    Label("\(lesson.order) / \(totalLessonCount)", systemImage: "flame.fill")
+      .adaptiveFont(size: 13, weight: .semibold, design: .rounded)
+      .foregroundStyle(AppPalette.amber)
+      .padding(.horizontal, 12)
+      .padding(.vertical, 8)
+      .background(AppPalette.card, in: Capsule())
+      .overlay(Capsule().stroke(AppPalette.border, lineWidth: 1))
   }
 
   private var lessonHeading: some View {
@@ -881,12 +990,21 @@ private struct XRayLessonView: View {
           .tracking(1)
           .foregroundStyle(AppPalette.indigo)
 
-        Picker("Kod dili", selection: $selectedLanguage) {
-          ForEach(lesson.availableLanguages, id: \.rawValue) { language in
-            Text(language.displayName).tag(language)
+        if dynamicTypeSize.isAccessibilitySize {
+          Picker("Kod dili", selection: $selectedLanguage) {
+            ForEach(lesson.availableLanguages, id: \.rawValue) { language in
+              Text(language.displayName).tag(language)
+            }
           }
+          .pickerStyle(.menu)
+        } else {
+          Picker("Kod dili", selection: $selectedLanguage) {
+            ForEach(lesson.availableLanguages, id: \.rawValue) { language in
+              Text(language.displayName).tag(language)
+            }
+          }
+          .pickerStyle(.segmented)
         }
-        .pickerStyle(.segmented)
       }
       .padding(14)
       .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 18))
@@ -979,24 +1097,42 @@ private struct XRayLessonView: View {
   }
 
   private var stageMap: some View {
-    HStack(spacing: 8) {
-      stageBadge(number: 1, title: "Konu", isActive: journey.phase == .topic)
-      Image(systemName: "chevron.right")
-        .foregroundStyle(AppPalette.tertiaryText)
-      stageBadge(
-        number: 2,
-        title: "Örnek",
-        isActive: {
-          if case .example = journey.phase { return true }
-          return false
-        }()
-      )
-      Image(systemName: "chevron.right")
-        .foregroundStyle(AppPalette.tertiaryText)
-      stageBadge(number: 3, title: "Quiz", isActive: journey.phase == .quiz)
+    Group {
+      if dynamicTypeSize.isAccessibilitySize {
+        VStack(alignment: .leading, spacing: 8) {
+          stageBadge(number: 1, title: "Konu", isActive: journey.phase == .topic)
+          Image(systemName: "chevron.down")
+            .foregroundStyle(AppPalette.tertiaryText)
+          exampleStageBadge
+          Image(systemName: "chevron.down")
+            .foregroundStyle(AppPalette.tertiaryText)
+          stageBadge(number: 3, title: "Quiz", isActive: journey.phase == .quiz)
+        }
+      } else {
+        HStack(spacing: 8) {
+          stageBadge(number: 1, title: "Konu", isActive: journey.phase == .topic)
+          Image(systemName: "chevron.right")
+            .foregroundStyle(AppPalette.tertiaryText)
+          exampleStageBadge
+          Image(systemName: "chevron.right")
+            .foregroundStyle(AppPalette.tertiaryText)
+          stageBadge(number: 3, title: "Quiz", isActive: journey.phase == .quiz)
+        }
+      }
     }
     .accessibilityElement(children: .combine)
     .accessibilityLabel("Ders sırası: konu anlatımı, örnek, quiz")
+  }
+
+  private var exampleStageBadge: some View {
+    stageBadge(
+      number: 2,
+      title: "Örnek",
+      isActive: {
+        if case .example = journey.phase { return true }
+        return false
+      }()
+    )
   }
 
   private func stageBadge(
@@ -1342,21 +1478,37 @@ private struct XRayLessonView: View {
           .foregroundStyle(AppPalette.mint)
 
         ForEach(lesson.assessmentTasks, id: \.kind.rawValue) { task in
-          Label(task.prompt, systemImage: task.kind.icon)
-            .adaptiveFont(size: 13, design: .rounded)
-            .foregroundStyle(.white)
-        }
+          VStack(alignment: .leading, spacing: 10) {
+            Label(task.prompt, systemImage: task.kind.icon)
+              .adaptiveFont(size: 13, weight: .semibold, design: .rounded)
+              .foregroundStyle(.white)
 
-        if lesson.assessmentTasks.contains(where: { $0.kind == .freeExplanation }) {
-          TextField(
-            "Kodu kendi cümlenle açıkla",
-            text: $assessmentExplanation,
-            axis: .vertical
-          )
-          .lineLimit(3...6)
-          .padding(14)
-          .foregroundStyle(.white)
-          .background(AppPalette.codeBackground, in: RoundedRectangle(cornerRadius: 14))
+            TextField(
+              "Kanıtını kendi cümlenle yaz",
+              text: assessmentBinding(for: task.kind),
+              axis: .vertical
+            )
+            .lineLimit(2...6)
+            .padding(14)
+            .foregroundStyle(.white)
+            .background(AppPalette.codeBackground, in: RoundedRectangle(cornerRadius: 14))
+
+            if let response = assessmentResponses[task.kind],
+              !response.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            {
+              let evaluation = task.rubric.evaluate(response)
+              VStack(alignment: .leading, spacing: 5) {
+                Text("Rubrik puanı: \(Int((evaluation.score * 100).rounded()))%")
+                  .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+                  .foregroundStyle(
+                    evaluation.score == 1 ? AppPalette.mint : AppPalette.amber
+                  )
+                Text(evaluation.feedback)
+                  .adaptiveFont(size: 12, design: .rounded)
+                  .foregroundStyle(AppPalette.secondaryText)
+              }
+            }
+          }
         }
       }
       .padding(18)
@@ -1437,8 +1589,27 @@ private struct XRayLessonView: View {
       .padding(18)
       .background(AppPalette.amber.opacity(0.1), in: RoundedRectangle(cornerRadius: 18))
 
+      if !evidenceEvaluation.isReadyToComplete {
+        Label(
+          missingEvidenceMessage,
+          systemImage: "lock.open.trianglebadge.exclamationmark"
+        )
+        .adaptiveFont(size: 13, weight: .semibold, design: .rounded)
+        .foregroundStyle(AppPalette.amber)
+        .frame(maxWidth: .infinity, alignment: .leading)
+      }
+
       Button {
-        onComplete(run.finish(journey: journey, completedAt: Date()))
+        guard
+          let result = run.finish(
+            journey: journey,
+            evidence: evidenceEvaluation,
+            completedAt: Date()
+          )
+        else {
+          return
+        }
+        onComplete(result)
         dismiss()
       } label: {
         HStack {
@@ -1452,6 +1623,8 @@ private struct XRayLessonView: View {
         .background(AppPalette.mint, in: RoundedRectangle(cornerRadius: 18))
       }
       .buttonStyle(.plain)
+      .disabled(!evidenceEvaluation.isReadyToComplete)
+      .opacity(evidenceEvaluation.isReadyToComplete ? 1 : 0.45)
 
       Button {
         withAnimation(.snappy) {
@@ -1474,6 +1647,8 @@ private struct XRayLessonView: View {
   }
 
   private func resetLesson() {
+    mentorTask?.cancel()
+    mentorTask = nil
     journey = LessonJourney(lesson: lesson)
     run = LessonRun(lessonID: lesson.id, startedAt: Date())
     selectedLanguage = .swift
@@ -1488,7 +1663,7 @@ private struct XRayLessonView: View {
     mentorInput = ""
     mentorResponses = []
     isMentorResponding = false
-    assessmentExplanation = ""
+    assessmentResponses = [:]
   }
 
   private func askMentor() {
@@ -1509,10 +1684,12 @@ private struct XRayLessonView: View {
       matchedConcepts: localResponse.matchedConcepts
     )
 
-    Task {
+    mentorTask?.cancel()
+    mentorTask = Task {
       defer { isMentorResponding = false }
       do {
         let generated = try await OnDeviceMentor.reply(to: prompt)
+        guard !Task.isCancelled else { return }
         let safeText = MentorSafetyFilter(correctAnswer: lesson.correctAnswer)
           .sanitize(generated)
         mentorResponses.append(
@@ -1522,10 +1699,43 @@ private struct XRayLessonView: View {
             matchedConcepts: localResponse.matchedConcepts
           )
         )
+      } catch is CancellationError {
+        return
       } catch {
+        guard !Task.isCancelled else { return }
         mentorResponses.append(localResponse)
       }
     }
+  }
+
+  private var evidenceEvaluation: LessonEvidenceEvaluation {
+    LessonEvidence(
+      quizAnswer: journey.selectedQuizAnswer,
+      practiceAnswers: practiceAnswers,
+      assessmentResponses: assessmentResponses,
+      debugCompleted: lesson.debugChallenge == nil || debugSession?.phase == .complete
+    ).evaluate(for: lesson)
+  }
+
+  private var missingEvidenceMessage: String {
+    let labels = evidenceEvaluation.missingRequirements
+      .sorted { $0.rawValue < $1.rawValue }
+      .map {
+        switch $0 {
+        case .quiz: "quiz"
+        case .debugging: "hata ayıklama"
+        case .practice: "ek pratik"
+        case .assessment: "çıkış değerlendirmesi"
+        }
+      }
+    return "Tamamlamak için eksik: \(labels.joined(separator: ", "))."
+  }
+
+  private func assessmentBinding(for kind: AssessmentTaskKind) -> Binding<String> {
+    Binding(
+      get: { assessmentResponses[kind, default: ""] },
+      set: { assessmentResponses[kind] = $0 }
+    )
   }
 
   private var exampleProgress: String {
@@ -1569,39 +1779,44 @@ private struct CodeCard: View {
       .padding(.vertical, 14)
       .background(Color.white.opacity(0.025))
 
-      VStack(spacing: 3) {
-        ForEach(lines, id: \.number) { line in
-          HStack(spacing: 14) {
-            Text("\(line.number)")
-              .adaptiveFont(size: 13, design: .monospaced)
-              .foregroundStyle(
-                activeLineNumber == line.number
-                  ? AppPalette.mint
-                  : AppPalette.tertiaryText
-              )
-              .frame(width: 18, alignment: .trailing)
+      ScrollView(.horizontal) {
+        VStack(alignment: .leading, spacing: 3) {
+          ForEach(lines, id: \.number) { line in
+            HStack(spacing: 14) {
+              Text("\(line.number)")
+                .adaptiveFont(size: 13, design: .monospaced)
+                .foregroundStyle(
+                  activeLineNumber == line.number
+                    ? AppPalette.mint
+                    : AppPalette.tertiaryText
+                )
+                .frame(width: 18, alignment: .trailing)
 
-            Text(highlightedCode(line.text))
-              .adaptiveFont(size: 15, weight: .medium, design: .monospaced)
-              .frame(maxWidth: .infinity, alignment: .leading)
-          }
-          .padding(.horizontal, 16)
-          .padding(.vertical, 9)
-          .background(
-            activeLineNumber == line.number
-              ? AppPalette.mint.opacity(0.1)
-              : Color.clear
-          )
-          .overlay(alignment: .leading) {
-            if activeLineNumber == line.number {
-              RoundedRectangle(cornerRadius: 2)
-                .fill(AppPalette.mint)
-                .frame(width: 3)
+              Text(highlightedCode(line.text))
+                .adaptiveFont(size: 15, weight: .medium, design: .monospaced)
+                .fixedSize(horizontal: true, vertical: false)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 9)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+              activeLineNumber == line.number
+                ? AppPalette.mint.opacity(0.1)
+                : Color.clear
+            )
+            .overlay(alignment: .leading) {
+              if activeLineNumber == line.number {
+                RoundedRectangle(cornerRadius: 2)
+                  .fill(AppPalette.mint)
+                  .frame(width: 3)
+              }
             }
           }
         }
+        .frame(minWidth: 320, alignment: .leading)
+        .padding(.vertical, 12)
       }
-      .padding(.vertical, 12)
+      .scrollIndicators(.visible)
     }
     .background(AppPalette.codeBackground, in: RoundedRectangle(cornerRadius: 24))
     .clipShape(RoundedRectangle(cornerRadius: 24))

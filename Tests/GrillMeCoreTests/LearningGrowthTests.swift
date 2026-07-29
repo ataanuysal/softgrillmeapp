@@ -8,25 +8,25 @@ struct LearningGrowthTests {
   @Test("Başlangıç dersleri ile çıkış değerlendirmesi arasındaki farkı ölçer")
   func comparesBaselineAndExitAccuracy() {
     var progress = LessonProgress()
-    progress.recordAttempt(attempt("variables", prediction: false, transfer: true))
-    progress.recordAttempt(attempt("conditions", prediction: false, transfer: true))
-    progress.recordAttempt(attempt("loops", prediction: true, transfer: false))
-    progress.recordAttempt(attempt("capstone", prediction: true, transfer: true))
+    progress.recordAttempt(attempt("variables", quiz: false, practice: 0.5, assessment: 1))
+    progress.recordAttempt(attempt("conditions", quiz: false, practice: 0.5, assessment: 1))
+    progress.recordAttempt(attempt("loops", quiz: true, practice: 0, assessment: 0.5))
+    progress.recordAttempt(attempt("capstone", quiz: true, practice: 1, assessment: 1))
 
     let report = progress.growthReport(
       baselineLessonIDs: ["variables", "conditions", "loops"],
       exitLessonID: "capstone"
     )
 
-    #expect(report?.baselineAccuracy == 0.5)
-    #expect(report?.exitAccuracy == 1)
-    #expect(report?.improvement == 0.5)
+    #expect(report?.baselineQuizAccuracy == 1.0 / 3.0)
+    #expect(report?.exitQuizAccuracy == 1)
+    #expect(report?.improvement == 2.0 / 3.0)
   }
 
   @Test("Çıkış değerlendirmesi yoksa erken başarı raporlamaz")
   func requiresExitAssessment() {
     var progress = LessonProgress()
-    progress.recordAttempt(attempt("variables", prediction: true, transfer: true))
+    progress.recordAttempt(attempt("variables", quiz: true, practice: 1, assessment: 1))
 
     let report = progress.growthReport(
       baselineLessonIDs: ["variables"],
@@ -38,15 +38,17 @@ struct LearningGrowthTests {
 
   private func attempt(
     _ lessonID: String,
-    prediction: Bool,
-    transfer: Bool
+    quiz: Bool,
+    practice: Double,
+    assessment: Double
   ) -> LessonAttempt {
     LessonAttempt(
       lessonID: lessonID,
       completedAt: Date(timeIntervalSince1970: 100),
       durationSeconds: 300,
-      predictionCorrect: prediction,
-      transferCorrect: transfer
+      quizCorrect: quiz,
+      practiceAccuracy: practice,
+      assessmentScore: assessment
     )
   }
 }

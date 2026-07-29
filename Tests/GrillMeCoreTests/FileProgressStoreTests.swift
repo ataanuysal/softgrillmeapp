@@ -23,14 +23,33 @@ struct FileProgressStoreTests {
 
     try store.save(progress)
 
-    #expect(store.load() == progress)
+    #expect(try store.load() == progress)
   }
 
   @Test("Henüz dosya yoksa boş ilerlemeyle başlar")
-  func missingFileReturnsEmptyProgress() {
+  func missingFileReturnsEmptyProgress() throws {
     let store = FileProgressStore(fileURL: temporaryFileURL())
 
-    #expect(store.load() == LessonProgress())
+    #expect(try store.load() == LessonProgress())
+  }
+
+  @Test("Bozuk ilerleme dosyasını yedekler ve kullanıcıya kurtarma bilgisi verir")
+  func recoversCorruptProgress() throws {
+    let fileURL = temporaryFileURL()
+    try FileManager.default.createDirectory(
+      at: fileURL.deletingLastPathComponent(),
+      withIntermediateDirectories: true
+    )
+    try Data("{not-json}".utf8).write(to: fileURL)
+    let store = FileProgressStore(fileURL: fileURL)
+
+    let result = store.loadRecovering()
+
+    #expect(result.progress == LessonProgress())
+    #expect(result.notice != nil)
+    #expect(result.backupURL != nil)
+    #expect(result.backupURL.map { FileManager.default.fileExists(atPath: $0.path) } == true)
+    #expect(!FileManager.default.fileExists(atPath: fileURL.path))
   }
 
   private func temporaryFileURL() -> URL {

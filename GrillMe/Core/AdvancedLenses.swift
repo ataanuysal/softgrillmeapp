@@ -184,12 +184,89 @@ public enum AssessmentTaskKind: String, Codable, Equatable, Hashable, Sendable {
   case freeExplanation
 }
 
+public struct AssessmentEvaluation: Equatable, Sendable {
+  public let score: Double
+  public let matchedConcepts: [String]
+  public let missingConcepts: [String]
+  public let feedback: String
+
+  public init(
+    score: Double,
+    matchedConcepts: [String],
+    missingConcepts: [String],
+    feedback: String
+  ) {
+    self.score = score
+    self.matchedConcepts = matchedConcepts
+    self.missingConcepts = missingConcepts
+    self.feedback = feedback
+  }
+}
+
+public struct AssessmentRubric: Equatable, Sendable {
+  public let requiredConcepts: [String]
+  public let modelAnswer: String
+
+  public init(requiredConcepts: [String], modelAnswer: String) {
+    self.requiredConcepts = requiredConcepts
+    self.modelAnswer = modelAnswer
+  }
+
+  public func evaluate(_ response: String) -> AssessmentEvaluation {
+    let normalizedResponse = normalized(response)
+    let matchedConcepts = requiredConcepts.filter {
+      containsWholeConcept(normalized($0), in: normalizedResponse)
+    }
+    let missingConcepts = requiredConcepts.filter { !matchedConcepts.contains($0) }
+    let score =
+      requiredConcepts.isEmpty
+      ? 1
+      : Double(matchedConcepts.count) / Double(requiredConcepts.count)
+    let feedback =
+      missingConcepts.isEmpty
+      ? "Gerekli kavramların tamamını kanıtla ilişkilendirdin."
+      : "Eksik kavramlar: \(missingConcepts.joined(separator: ", ")). Örnek yaklaşım: \(modelAnswer)"
+
+    return AssessmentEvaluation(
+      score: score,
+      matchedConcepts: matchedConcepts,
+      missingConcepts: missingConcepts,
+      feedback: feedback
+    )
+  }
+
+  private func normalized(_ value: String) -> String {
+    value.folding(
+      options: [.caseInsensitive, .diacriticInsensitive],
+      locale: Locale(identifier: "tr_TR")
+    )
+  }
+
+  private func containsWholeConcept(_ concept: String, in response: String) -> Bool {
+    let escapedConcept = concept.split(whereSeparator: \.isWhitespace)
+      .map { NSRegularExpression.escapedPattern(for: String($0)) }
+      .joined(separator: "\\s+")
+    let pattern = "(?<![\\p{L}\\p{N}_])\(escapedConcept)(?![\\p{L}\\p{N}_])"
+    guard let expression = try? NSRegularExpression(pattern: pattern) else {
+      return false
+    }
+    let range = NSRange(response.startIndex..., in: response)
+    return expression.firstMatch(in: response, range: range) != nil
+  }
+}
+
 public struct AssessmentTask: Equatable, Sendable {
   public let kind: AssessmentTaskKind
   public let prompt: String
+  public let rubric: AssessmentRubric
 
-  public init(kind: AssessmentTaskKind, prompt: String) {
+  public init(
+    kind: AssessmentTaskKind,
+    prompt: String,
+    rubric: AssessmentRubric
+  ) {
     self.kind = kind
     self.prompt = prompt
+    self.rubric = rubric
   }
 }

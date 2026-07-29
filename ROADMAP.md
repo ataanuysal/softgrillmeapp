@@ -63,8 +63,8 @@ Amaç: İlk haftada kod okuma alışkanlığı ve ölçülebilir gelişim oluşt
 
 - ✅ Günlük seri
 - ✅ Ders süresi ve ilerleme göstergesi
-- ✅ İlk deneme ve tekrar denemesi tahmin kaydı
-- ✅ Haftalık ders, süre, tahmin ve aktarım özeti
+- ✅ İlk deneme ve tekrar denemesi quiz kaydı
+- ✅ Quiz, ek pratik ve rubrik puanını ayıran haftalık özet
 - ✅ Dynamic Type erişilebilir boyut kontrolü
 - ✅ VoiceOver için semantik gruplar, durum etiketleri ve metinli eylemler
 - ✅ Temel analitik olay sözleşmesi
@@ -144,6 +144,8 @@ Amaç: Ürünün ana vaadini eksiksiz karşılamak.
 - ✅ Fonksiyon çağrı sırası
 - ✅ Hata noktası tahmini
 - ✅ Kodu kendi cümlesiyle açıklama
+- ✅ Her görev için zorunlu cevap alanı, kavram rubriği ve anlık geri bildirim
+- ✅ Eksik kanıtta tamamlamayı kapatan bitirme koşulu
 
 Kabul sonucu: İlk üç ders başlangıç ölçümü, 30. ders çıkış ölçümü olarak
 kullanılıyor; gelişim raporu iki doğruluk değerini ve farkı gösteriyor.
@@ -194,12 +196,15 @@ Kabul sonucu: 30 derslik temel yol korunuyor; 31–40. dersler Yol Haritası'nda
 
 - ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
 - ✅ 40 dersin veri sözleşmesi otomatik doğrulanıyor.
-- ✅ 54 Swift Testing testi ve 17 test paketi geçiyor.
+- ✅ 71 Swift Testing testi ve 19 çekirdek test paketi tanımlı.
+- ✅ Uygulama açılışı, sekme geçişi ve derse girişi kapsayan XCUITest hedefi.
+- ✅ Paylaşılan Xcode şeması ve GitHub Actions kalite hattı.
 - ✅ Swift format/lint kontrolü yapılıyor.
-- ✅ Genel iOS Simulator hedefi derleniyor.
+- ✅ CI genel iOS Simulator hedefini derleyecek şekilde yapılandırıldı.
 - ✅ Release arşivinde `AppIcon` adı ve 120×120 dağıtım ikonu doğrulanıyor.
-- ✅ iPhone 17 Pro simülatör hedefi derleniyor ve uygulama açılıyor.
-- ✅ Normal ve erişilebilir Dynamic Type ekranları görsel kontrol edildi.
+- ✅ CI kullanılabilir ilk iPhone simülatörünü seçip UI duman testini çalıştırıyor.
+- ✅ Erişilebilir Dynamic Type için tek sütun kartlar, dikey başlıklar, menü
+  picker ve kaydırılabilir kod düzeni.
 - ✅ `README.md`, `INTENT.md`, `MEMORY.md`, `DESIGN.md` güncel tutuldu.
 
 ## MVP sonrasına bırakılanlar

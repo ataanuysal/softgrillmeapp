@@ -13,8 +13,10 @@ flowchart LR
   C --> D["İlgili lensleri kullan"]
   D --> E["En son farklı kodlu quiz"]
   E --> F["Geri bildirim veya pratik"]
-  F --> G["Kendi cümlenle açıkla"]
-  G --> H["İlerlemeyi kaydet"]
+  F --> G["Rubrikli görevleri kanıtla"]
+  G --> H{"Gerekli kanıtlar tamam mı?"}
+  H -->|Hayır| F
+  H -->|Evet| I["Bağımsız ölçümleri kaydet"]
 ```
 
 ## Bilgi mimarisi
@@ -68,11 +70,11 @@ Her yayınlanabilir ders şunları taşır:
 
 1. Kimlik, sıra, bölüm, konu, hedef, kalıcı çıkarım ve tahmini süre
 2. Çalışabilir kaynak satırları
-3. Sade konu anlatımı ve kalıcı ana fikir
-4. Gerçek sıraya uygun en az iki rehberli örnek adımı
+3. Neden önemli, sık hata ve gerçek proje bağlamı taşıyan konu anlatımı
+4. Gerçek sıraya uygun en az üç rehberli örnek adımı
 5. Bellek, çıktı ve varsa çağrı/mimari görüntüsü
 6. Örnekten farklı kod kullanan ders sonu quiz
-7. Gerekiyorsa hata, pratik veya değerlendirme görevi
+7. Gerekiyorsa hata, pratik veya cevap alanı ve rubrik taşıyan değerlendirme
 8. Varsa dil varyantları ve syntax/mantık karşılaştırması
 
 `LessonValidator`; boş kodu, seçenekler dışındaki doğru cevabı, geçersiz satır
@@ -104,6 +106,8 @@ Kurallar:
 - Yanlış quiz cevabı açıklayıcı geri bildirimi engellemez.
 - Quiz yapılmadan ders tamamlanmış sayılmaz.
 - Hata görevinde hipotez yazılmadan satır seçilemez.
+- Dersin bütün pratik soruları ve değerlendirme görevleri cevaplanmadan
+  tamamlama açılmaz; yanlış kanıt saklanır ve geri bildirim üretir.
 - Yeniden çözme bütün geçici ders ve mentor durumunu temizler.
 - Tamamlama tek bir `LessonRunResult` üretir; deneme ve olaylar birlikte
   kaydedilir.
@@ -132,20 +136,27 @@ flowchart TD
 
 ## Ölçüm ve ilerleme
 
-`LessonAttempt`; ders kimliği, tamamlama zamanı, süre, ilk tahmin doğruluğu ve
-aktarım doğruluğunu saklar. Türetilen göstergeler:
+`LessonAttempt`; ders kimliği, tamamlama zamanı ve sürenin yanında üç bağımsız
+kanıtı saklar: quiz doğruluğu, pratik doğruluk yüzdesi ve rubrik puanı.
+Türetilen göstergeler:
 
 - Günlük seri
 - Son yedi günlük ders ve pratik süresi
-- İlk tahmin doğruluğu
-- Aktarım doğruluğu
-- Aynı dersin tekrar deneme doğruluğu
-- İlk üç ders ile capstone arasındaki gelişim
+- Quiz doğruluğu
+- Ek pratik doğruluk yüzdesi
+- Açık uçlu değerlendirme rubrik puanı
+- Aynı dersin tekrar deneme quiz doğruluğu
+- Karşılaştırılabilir tek boyut olarak ilk üç ders quizi ile capstone quizi
+  arasındaki gelişim
 
-Olay sözleşmesi `lesson_started`, `prediction_submitted`,
-`transfer_submitted`, `lesson_completed` adlarını kullanır. Olaylarda kişi adı,
-e-posta veya serbest mentor metni bulunmaz. Olaylar şu an yalnızca uygulama
-oturumunda tutulur; dış servise gönderilmez.
+Olay sözleşmesi `lesson_started`, `quiz_submitted`, `practice_submitted`,
+`assessment_submitted`, `lesson_completed` adlarını kullanır. Olaylarda kişi
+adı, e-posta veya serbest cevap metni bulunmaz. Olaylar ilerleme dosyasında
+cihaz içinde kalıcıdır; dış servise gönderilmez.
+
+`AssessmentRubric` kavramları harf/sayı sınırlarıyla eşler; örneğin `6`, `16`
+içinden yanlışlıkla puan kazanmaz. Bu puan otomatik bir insan değerlendirmesi
+iddiası değildir: öğrenciye açık kavram kapsama sinyali ve örnek yaklaşım verir.
 
 ## Görsel sistem
 
@@ -163,6 +174,9 @@ oturumunda tutulur; dış servise gönderilmez.
   birleştirir.
 - İlerleme ve haftalık özetler semantik gruplardır.
 - Dynamic Type, erişilebilir boyutlarda üst başlığı dikey düzene geçirir.
+- Ders kartları ve haftalık özet erişilebilir boyutlarda tek sütuna geçer.
+- Kod satırları büyüdüğünde kırılmak yerine yatay kaydırılır.
+- Dört dilli segmented picker erişilebilir boyutta menüye dönüşür.
 - Metinler büyüyebilir ve ana içerik dikey kaydırılabilir.
 - Seçim durumları yalnızca renkle anlatılmaz; ikon ve metinle desteklenir.
 - Birincil butonlarda en az 44 punto dokunma yüksekliği korunur.
@@ -186,6 +200,9 @@ flowchart TD
   Tests --> Run
   Tests --> Progress
   Tests --> Local
+  UITests["XCUITest"] --> UI
+  CI["GitHub Actions"] --> Tests
+  CI --> UITests
 ```
 
 ### Core
@@ -196,6 +213,7 @@ flowchart TD
 - Deneme, seri, haftalık özet, gelişim ve olay sözleşmesi
 - Yerel Sokratik mentor, güvenli istem ve cevap filtresi
 - JSON kalıcılığı
+- Bozuk kayıt yedeği ve görünür kayıt hatası
 
 ### App
 

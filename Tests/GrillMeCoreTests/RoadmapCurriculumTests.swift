@@ -24,6 +24,71 @@ struct RoadmapCurriculumTests {
     )
   }
 
+  @Test("Devam dersleri iki adımlık özet yerine çok adımlı yürütme izi sunar")
+  func continuationLessonsProvideMeaningfulExecutionTraces() {
+    let continuation = LessonCatalog.standard.lessons.filter { $0.order >= 8 }
+
+    #expect(continuation.allSatisfy { $0.trace.count >= 3 })
+    #expect(
+      continuation.allSatisfy { lesson in
+        Set(lesson.trace.map(\.explanation)).count == lesson.trace.count
+      }
+    )
+  }
+
+  @Test("Derlenmeyen veya çöken örnekler quiz cevabını program çıktısı gibi göstermez")
+  func failingProgramsDoNotFabricateOutput() {
+    let lessons = lessonsByID
+    let failingLessonIDs = [
+      "error-types",
+      "edge-cases",
+      "optionals",
+      "stack-traces",
+      "debug-hypothesis",
+    ]
+
+    for id in failingLessonIDs {
+      #expect(lessons[id]?.trace.compactMap(\.output).isEmpty == true)
+      #expect(lessons[id].map { LessonValidator().issues(in: $0).isEmpty } == true)
+    }
+  }
+
+  @Test("Hata derslerinin izi tetikleyici çağrıdan gerçek hata satırına gider")
+  func failingProgramsEndTraceAtFailure() {
+    let catalog = LessonCatalog.standard
+    let runtimeFailureIDs = ["edge-cases", "optionals", "stack-traces", "debug-hypothesis"]
+
+    for id in runtimeFailureIDs {
+      let lesson = catalog.lessons.first { $0.id == id }!
+      let failureLine = lesson.debugChallenge!.correctLineNumber
+
+      #expect(lesson.trace.last?.lineNumber == failureLine, Comment(rawValue: id))
+      #expect(
+        lesson.trace.dropLast().contains { $0.lineNumber == lesson.code.last?.number },
+        Comment(rawValue: id)
+      )
+    }
+
+    let syntaxLesson = catalog.lessons.first { $0.id == "error-types" }!
+    #expect(
+      syntaxLesson.trace.allSatisfy {
+        $0.lineNumber == syntaxLesson.debugChallenge?.correctLineNumber
+      }
+    )
+  }
+
+  @Test("Asenkron sıra açık bekleme noktasıyla deterministik hale getirilir")
+  func asynchronousLessonUsesExplicitAwait() throws {
+    let lesson = try #require(lessonsByID["async-order"])
+    let source = lesson.code.map(\.text).joined(separator: "\n")
+    let transfer = try #require(lesson.transferChallenge).code.map(\.text).joined(separator: "\n")
+
+    #expect(source.contains("await task.value"))
+    #expect(transfer.contains("await task.value"))
+    #expect(!source.contains("Task { print"))
+    #expect(!transfer.contains("Task { print"))
+  }
+
   @Test("Roadmapteki bütün içerik bölümlerini kapsar")
   func coversEveryCurriculumSection() {
     let sections = Set(LessonCatalog.standard.lessons.map(\.section))
@@ -161,6 +226,17 @@ struct RoadmapCurriculumTests {
         .freeExplanation,
       ]
     )
+  }
+
+  @Test("Çıkış görevleri puanlanabilir rubrikler taşır")
+  func capstoneTasksHaveScoringRubrics() throws {
+    let capstone = try #require(lessonsByID["capstone"])
+    let analysisCapstone = try #require(lessonsByID["technical-analysis-capstone"])
+
+    for task in capstone.assessmentTasks + analysisCapstone.assessmentTasks {
+      #expect(!task.rubric.requiredConcepts.isEmpty)
+      #expect(!task.rubric.modelAnswer.isEmpty)
+    }
   }
 
   private var lessonsByID: [String: XRayLesson] {

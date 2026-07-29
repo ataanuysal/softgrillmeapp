@@ -27,7 +27,8 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - İş mantığı SwiftUI'dan bağımsız `GrillMeCore` hedefinde tutulur.
 - Yeni davranışlar başarısız testle tanımlanıp en küçük uygulamayla geçirilir.
 - İlerleme cihazdaki JSON dosyasında saklanır; eski tamamlanma kayıtları yeni
-  deneme modeliyle uyumlu okunur.
+  deneme modeliyle uyumlu okunur. Bozuk dosya yedeklenir; yükleme ve kayıt
+  sorunu kullanıcıdan gizlenmez.
 - Mentor doğrudan cevap vermez. En fazla altı tur kullanır ve doğru cevap
   sızıntıları filtrelenir.
 - iOS 26 ve uygun Apple Intelligence cihazlarında Foundation Models kullanılır;
@@ -67,11 +68,15 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - Swift/Python/JavaScript/Java kod seçimi ve syntax/mantık ayrımı
 - Hipotez kurulmadan hata satırı seçilemeyen `DebugSession`
 - İsimlendirme, kavram ve mimari pratik görevleri
-- Ders süresi ve tahmin/aktarım doğruluk kayıtları
-- Günlük seri, haftalık özet ve başlangıç/çıkış gelişim raporu
-- Dört olaydan oluşan kişisel verisiz öğrenme analitiği sözleşmesi
+- Ders süresi, quiz doğruluğu, ek pratik yüzdesi ve rubrik puanı kayıtları
+- Günlük seri, üç bağımsız ölçümlü haftalık özet ve aynı boyuttaki quizleri
+  karşılaştıran başlangıç/çıkış raporu
+- Cihazda kalıcı, kişisel verisiz öğrenme analitiği olayları
+- Rubrikli capstone cevapları ve eksik kanıtta kapalı ders tamamlama
 - Bütçeli, kişiselleştirilmiş Sokratik mentor ve güvenlik filtresi
 - Dynamic Type erişilebilir boyutlarında uyarlanan yerleşim
+- İstek iptalinde eski cihaz içi mentor yanıtını eklemeyen görev yaşam döngüsü
+- Gerçek XCUITest hedefi, paylaşılan şema ve GitHub Actions kalite hattı
 
 ## Çekirdek model
 
@@ -83,6 +88,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - `CodeLanguage`, `CodeVariant`, `LanguageComparison`
 - `SocraticMentorSession`, `MentorPromptBuilder`, `MentorSafetyFilter`
 - `LessonJourney`, `LessonTeachingContent`, `LessonQuiz`
+- `LessonEvidence`, `LessonEvidenceEvaluation`, `AssessmentRubric`
 - `LessonRun`, `LessonAttempt`, `LessonProgress`, `FileProgressStore`
 - `LearningEvent`, `WeeklySummary`, `LearningGrowthReport`,
   `LearningDashboardSnapshot`
@@ -98,21 +104,26 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - `GrillMe/Core/LanguageBridge.swift`: Dil karşılaştırma modeli
 - `GrillMe/Core/SocraticMentor.swift`: Yerel mentor, istem ve güvenlik
 - `GrillMe/Core/LessonJourney.swift`: Konu → örnek → quiz durum makinesi
+- `GrillMe/Core/LessonEvidence.swift`: Zorunlu kanıt ve bağımsız ölçüm motoru
 - `GrillMe/Core/LearningAnalytics.swift`: Olay sözleşmesi
 - `GrillMe/Core/LessonRun.swift`: Oturum sonucu ve dashboard
 - `GrillMe/Core/ProgressStore.swift`: Deneme kayıtları ve kalıcılık
 - `GrillMe/App/Assets.xcassets/`: App Store için `AppIcon` asset kataloğu
 - `Scripts/generate-app-icon.swift`: 1024×1024 alfa kanalsız kaynak ikon üretimi
-- `Tests/GrillMeCoreTests/`: 17 Swift Testing paketi
+- `Tests/GrillMeCoreTests/`: 19 Swift Testing paketi
+- `GrillMeUITests/`: Uygulama açılışı ve navigasyon duman testi
+- `.github/workflows/ci.yml`: Lint, çekirdek test, build ve UI test hattı
 
 ## Doğrulama durumu
 
-- 54 Swift Testing testi ve 17 test paketi geçmelidir.
-- Genel iOS Simulator hedefi Xcode 26.5 SDK ile derlenir.
+- 71 Swift Testing testi ve 19 test paketi geçmelidir.
+- 1 XCUITest duman testi uygulama açılışı, sekmeler ve derse girişi doğrular.
+- Genel iOS Simulator build ve UI test adımları CI sözleşmesinde yer alır.
 - Release iOS arşivinde birincil ikon adı `AppIcon` ve
   `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.
-- iPhone 17 Pro simülatöründe normal ve erişilebilir Dynamic Type boyutları
-  görsel olarak kontrol edilmiştir.
+- Bu oturumda uygulama, çekirdek test ve UI test kaynakları uyarılar hata
+  sayılarak tip kontrolünden geçti. Tam SwiftPM çalıştırması ve simülatör
+  açılışı çalışma alanı sandbox iznine takıldı; CI bu iki kontrolü çalıştırır.
 - `grillme-final-preview.png` son normal görünümü,
   `grillme-dynamic-type-preview.png` erişilebilir boyutu gösterir.
 
@@ -122,7 +133,7 @@ Test:
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
 CLANG_MODULE_CACHE_PATH=/private/tmp/grillme-module-cache \
 SWIFTPM_MODULECACHE_OVERRIDE=/private/tmp/grillme-module-cache \
-swift test --disable-sandbox
+swift test
 ```
 
 Derleme:
@@ -147,13 +158,14 @@ Depoda tek uygulama projesi vardır: kök dizindeki SwiftUI tabanlı
 
 ## Sıradaki önerilen çalışma
 
-Roadmap'in ürün ve mühendislik işleri tamamlandı. Sonraki adım yeni kapsam
-eklemek değil, gerçek kullanıcılarla öğrenme etkisini doğrulamaktır:
+Ürün ve mühendislik bulguları kodda kapatıldı. Sonraki adım yeni kapsam eklemek
+değil, gerçek kullanıcılarla öğrenme etkisini doğrulamaktır:
 
 1. 5–10 hedef kullanıcıyla ilk hafta kullanılabilirlik testi yap.
 2. Yerel olayları bir gizlilik kararı sonrası analitik servisine bağlayıp
    başlangıç/çıkış gelişimini ölç.
-3. İçerik editörlüğüyle 8–40. derslerin açıklama derinliğini iyileştir.
+3. Kavram rubriği puanlarını öğretmen değerlendirmesiyle karşılaştırıp eşikleri
+   kalibre et.
 
 ## Açık ürün kararları
 

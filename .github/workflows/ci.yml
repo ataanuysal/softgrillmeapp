@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Format lint
+        run: xcrun swift-format lint --strict --recursive GrillMe Tests GrillMeUITests Scripts
+
+      - name: Core tests
+        run: swift test
+
+      - name: App build
+        run: |
+          xcodebuild \
+            -project GrillMe.xcodeproj \
+            -scheme GrillMe \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath "$RUNNER_TEMP/grillme-derived" \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: UI smoke test
+        run: |
+          DEVICE_ID=$(xcrun simctl list devices available -j | ruby -rjson -e '
+            devices = JSON.parse(STDIN.read).fetch("devices").values.flatten
+            phone = devices.find { |device| device["name"].start_with?("iPhone") }
+            abort "No available iPhone simulator" unless phone
+            puts phone.fetch("udid")
+          ')
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+          xcodebuild \
+            -project GrillMe.xcodeproj \
+            -scheme GrillMe \
+            -destination "platform=iOS Simulator,id=$DEVICE_ID" \
+            -derivedDataPath "$RUNNER_TEMP/grillme-ui-derived" \
+            CODE_SIGNING_ALLOWED=NO \
+            test

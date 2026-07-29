@@ -55,6 +55,18 @@ public struct TransferChallenge: Equatable, Sendable {
   }
 }
 
+public enum ProgramOutcome: Equatable, Sendable {
+  case output(String)
+  case compileError(String)
+  case runtimeError(String)
+  case noOutput
+
+  public var output: String? {
+    guard case .output(let value) = self else { return nil }
+    return value
+  }
+}
+
 public struct XRayLesson: Equatable, Sendable {
   public let id: String
   public let order: Int
@@ -75,6 +87,7 @@ public struct XRayLesson: Equatable, Sendable {
   public let assessmentTasks: [AssessmentTask]
   public let languageVariants: [CodeVariant]
   public let languageComparison: LanguageComparison?
+  public let programOutcome: ProgramOutcome
 
   public init(
     id: String = "lesson",
@@ -95,7 +108,8 @@ public struct XRayLesson: Equatable, Sendable {
     practiceChallenges: [PracticeChallenge] = [],
     assessmentTasks: [AssessmentTask] = [],
     languageVariants: [CodeVariant] = [],
-    languageComparison: LanguageComparison? = nil
+    languageComparison: LanguageComparison? = nil,
+    programOutcome: ProgramOutcome? = nil
   ) {
     self.id = id
     self.order = order
@@ -116,6 +130,7 @@ public struct XRayLesson: Equatable, Sendable {
     self.assessmentTasks = assessmentTasks
     self.languageVariants = languageVariants
     self.languageComparison = languageComparison
+    self.programOutcome = programOutcome ?? .output(correctAnswer)
   }
 
   public var availableLenses: [CodeLens] {

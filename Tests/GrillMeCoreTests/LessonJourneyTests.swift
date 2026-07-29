@@ -39,4 +39,15 @@ struct LessonJourneyTests {
     #expect(journey.quiz.code == lesson.transferChallenge?.code)
     #expect(journey.quiz.code != journey.teachingContent.exampleCode)
   }
+
+  @Test("Her ders neden, sık hata ve gerçek proje bağlamıyla öğretilir")
+  func everyLessonProvidesDeepTeachingContext() {
+    for lesson in LessonCatalog.standard.lessons {
+      let explanation = LessonJourney(lesson: lesson).teachingContent.explanation
+
+      #expect(explanation.contains("Neden önemli:"))
+      #expect(explanation.contains("Sık hata:"))
+      #expect(explanation.contains("Gerçek projede:"))
+    }
+  }
 }

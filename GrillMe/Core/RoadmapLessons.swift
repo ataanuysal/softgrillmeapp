@@ -80,6 +80,11 @@ private struct RoadmapBlueprint {
   var lesson: XRayLesson {
     let source = numbered(code)
     let finalLine = source.last?.number ?? 1
+    let outcome = programOutcome
+    let focusLine =
+      source.first(where: { $0.number == debugLine })
+      ?? source.dropFirst().first
+      ?? source.first
     let transferSource = numbered(transferCode.isEmpty ? code : transferCode)
     let resolvedTransferChoices = transferChoices.isEmpty ? choices : transferChoices
     let resolvedTransferAnswer = transferAnswer.isEmpty ? answer : transferAnswer
@@ -95,24 +100,12 @@ private struct RoadmapBlueprint {
       code: source,
       choices: choices,
       correctAnswer: answer,
-      trace: [
-        TraceStep(
-          lineNumber: source.first?.number ?? 1,
-          explanation: "Önce giriş değerleri ve çalışacak yapılar hazırlanır.",
-          memory: [:],
-          output: nil,
-          callStack: callStack.first.map { [$0] } ?? [],
-          architecture: nil
-        ),
-        TraceStep(
-          lineNumber: finalLine,
-          explanation: takeaway,
-          memory: memory,
-          output: answer,
-          callStack: callStack,
-          architecture: architecture
-        ),
-      ],
+      trace: trace(
+        source: source,
+        focusLine: focusLine,
+        finalLine: finalLine,
+        outcome: outcome
+      ),
       transferChallenge: TransferChallenge(
         prompt: "Aynı zihinsel modeli yeni durumda uygula. Sonuç nedir?",
         code: transferSource,
@@ -124,8 +117,114 @@ private struct RoadmapBlueprint {
       debugChallenge: debugChallenge(source: source),
       section: section,
       practiceChallenges: practices,
-      assessmentTasks: assessmentTasks
+      assessmentTasks: assessmentTasks,
+      programOutcome: outcome
     )
+  }
+
+  private var programOutcome: ProgramOutcome {
+    switch debugKind {
+    case .syntax:
+      .compileError(actual)
+    case .runtime, .edgeCase, .optional, .stackTrace:
+      .runtimeError(actual)
+    case .logic, nil:
+      .output(answer)
+    }
+  }
+
+  private func trace(
+    source: [CodeLine],
+    focusLine: CodeLine?,
+    finalLine: Int,
+    outcome: ProgramOutcome
+  ) -> [TraceStep] {
+    let firstLine = source.first?.number ?? 1
+    let failureLine = focusLine?.number ?? debugLine
+
+    switch outcome {
+    case .compileError(let reason):
+      return [
+        TraceStep(
+          lineNumber: failureLine,
+          explanation: "Derleyici önce \(failureLine). satırdaki ifadeyi ayrıştırmayı dener.",
+          memory: [:],
+          output: nil
+        ),
+        TraceStep(
+          lineNumber: failureLine,
+          explanation: "İfade tamamlanmadığı için tür ve değer üretilemez: \(reason).",
+          memory: [:],
+          output: nil
+        ),
+        TraceStep(
+          lineNumber: failureLine,
+          explanation: "Program başlamaz; bellek değişmez ve konsol çıktısı oluşmaz.",
+          memory: [:],
+          output: nil
+        ),
+      ]
+
+    case .runtimeError(let reason):
+      let triggerLine = source.last?.number ?? failureLine
+      return [
+        TraceStep(
+          lineNumber: firstLine,
+          explanation:
+            "\(topic) örneğinin tanımları yüklenir; henüz hata üreten ifade çalışmamıştır.",
+          memory: [:],
+          output: nil,
+          callStack: callStack.first.map { [$0] } ?? []
+        ),
+        TraceStep(
+          lineNumber: triggerLine,
+          explanation:
+            "\(triggerLine). satır çağrıyı veya riskli erişimi tetikler; yürütme ilgili gövdeye geçer.",
+          memory: memory,
+          output: nil,
+          callStack: callStack
+        ),
+        TraceStep(
+          lineNumber: failureLine,
+          explanation:
+            "\(failureLine). satırda \(reason) oluşur. Yürütme burada kesilir; program çıktı üretmez.",
+          memory: memory,
+          output: nil,
+          callStack: callStack,
+          architecture: architecture
+        ),
+      ]
+
+    case .output, .noOutput:
+      return [
+        TraceStep(
+          lineNumber: firstLine,
+          explanation:
+            "\(topic) örneğinde önce başlangıç verisi, tanımlar ve kodun giriş noktası belirlenir.",
+          memory: [:],
+          output: nil,
+          callStack: callStack.first.map { [$0] } ?? [],
+          architecture: nil
+        ),
+        TraceStep(
+          lineNumber: failureLine,
+          explanation:
+            "\(failureLine). satırdaki kritik ifade değerlendirilir; hangi değerin veya kod yolunun değiştiği kanıtla izlenir.",
+          memory: memory,
+          output: nil,
+          callStack: callStack,
+          architecture: nil
+        ),
+        TraceStep(
+          lineNumber: finalLine,
+          explanation: takeaway,
+          memory: memory,
+          output: outcome.output,
+          callStack: callStack,
+          architecture: architecture
+        ),
+      ]
+    }
   }
 
   private func debugChallenge(source: [CodeLine]) -> DebugChallenge? {
@@ -746,20 +845,22 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     title: "Sonra çalışacak işi ayır",
     objective: "Task içindeki işin mevcut senkron akıştan ayrı planlandığını gör.",
     takeaway:
-      "Asenkron iş başlatıldığında mevcut akış beklemek zorunda değildir; sonuç daha sonra gelir.",
+      "Asenkron iş başlatılabilir; sonucu kullanacağın yerde `await task.value` ile açık bir bekleme noktası kurarsın.",
     code: [
+      "let task = Task { \"B\" }",
       "print(\"A\")",
-      "Task { print(\"B\") }",
       "print(\"C\")",
+      "print(await task.value)",
     ],
     choices: ["A → B → C", "A → C → B", "B → A → C"],
     answer: "A → C → B",
     memory: ["planlanan": "B"],
     callStack: [CallFrame(functionName: "program", locals: [:])],
     transferCode: [
+      "let task = Task { \"Yüklendi\" }",
       "print(\"Başla\")",
-      "Task { print(\"Yüklendi\") }",
       "print(\"Arayüz hazır\")",
+      "print(await task.value)",
     ],
     transferChoices: [
       "Başla → Yüklendi → Arayüz hazır",
@@ -855,12 +956,47 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       )
     ],
     assessmentTasks: [
-      AssessmentTask(kind: .outputPrediction, prompt: "Programın son çıktısını tahmin et."),
-      AssessmentTask(kind: .valueTrace, prompt: "gorevler ve toplam değerlerini izle."),
-      AssessmentTask(kind: .callOrder, prompt: "Fonksiyon ve method çağrı sırasını açıkla."),
       AssessmentTask(
-        kind: .errorLocation, prompt: "Boş görev edge case'inde riskli varsayımı bul."),
-      AssessmentTask(kind: .freeExplanation, prompt: "Kodun amacını kendi cümlenle açıkla."),
+        kind: .outputPrediction,
+        prompt: "Programın son çıktısını tahmin et.",
+        rubric: AssessmentRubric(
+          requiredConcepts: ["Yoğun", "6"],
+          modelAnswer: "İki görevin toplam süresi 6 olduğu için çıktı Yoğun: 6 olur."
+        )
+      ),
+      AssessmentTask(
+        kind: .valueTrace,
+        prompt: "gorevler ve toplam değerlerini izle.",
+        rubric: AssessmentRubric(
+          requiredConcepts: ["2", "4", "6"],
+          modelAnswer: "gorevler 2 ve 4 sürelerini tutar; toplam değer 6 olur."
+        )
+      ),
+      AssessmentTask(
+        kind: .callOrder,
+        prompt: "Fonksiyon ve method çağrı sırasını açıkla.",
+        rubric: AssessmentRubric(
+          requiredConcepts: ["toplamSure", "durum"],
+          modelAnswer: "Önce toplamSure 6 üretir, sonra durum bu değeri Yoğun sonucuna çevirir."
+        )
+      ),
+      AssessmentTask(
+        kind: .errorLocation,
+        prompt: "Boş görev edge case'inde davranışı kanıtla.",
+        rubric: AssessmentRubric(
+          requiredConcepts: ["boş", "reduce", "0"],
+          modelAnswer: "Boş listede reduce başlangıç değeri olan 0'ı döndürür; sonuç güvenlidir."
+        )
+      ),
+      AssessmentTask(
+        kind: .freeExplanation,
+        prompt: "Kodun amacını kendi cümlenle açıkla.",
+        rubric: AssessmentRubric(
+          requiredConcepts: ["görev", "toplam", "durum"],
+          modelAnswer:
+            "Planlayıcı görev sürelerini toplar ve durum fonksiyonu toplamı sınıflandırır."
+        )
+      ),
     ],
     transferCode: [
       "let sure = 4",
@@ -1184,19 +1320,38 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     assessmentTasks: [
       AssessmentTask(
         kind: .outputPrediction,
-        prompt: "Mutlu yol ve iki hata yolunun sonuçlarını yaz."
+        prompt: "Mutlu yol ve iki hata yolunun sonuçlarını yaz.",
+        rubric: AssessmentRubric(
+          requiredConcepts: ["Onay", "Geçersiz adet", "Stok yok"],
+          modelAnswer:
+            "Pozitif ve mevcut stokta Onay; sıfır adette Geçersiz adet; stok yoksa Stok yok."
+        )
       ),
       AssessmentTask(
         kind: .callOrder,
-        prompt: "Siparişten stok kontrolüne uzanan çağrı sırasını açıkla."
+        prompt: "Siparişten stok kontrolüne uzanan çağrı sırasını açıkla.",
+        rubric: AssessmentRubric(
+          requiredConcepts: ["tamamla", "varMi", "stok"],
+          modelAnswer:
+            "tamamla önce adedi doğrular, sonra stok.varMi çağrısıyla stok kontrolü yapar."
+        )
       ),
       AssessmentTask(
         kind: .errorLocation,
-        prompt: "Sıfır adet ve stok yok risklerini hangi satırların karşıladığını göster."
+        prompt: "Sıfır adet ve stok yok risklerini hangi satırların karşıladığını göster.",
+        rubric: AssessmentRubric(
+          requiredConcepts: ["guard", "adet", "stok"],
+          modelAnswer: "İlk guard adet riskini, ikinci guard stok riskini erken dönüşle karşılar."
+        )
       ),
       AssessmentTask(
         kind: .freeExplanation,
-        prompt: "Bu özellik için kabul kriteri ve test planını kendi cümlenle yaz."
+        prompt: "Bu özellik için kabul kriteri ve test planını kendi cümlenle yaz.",
+        rubric: AssessmentRubric(
+          requiredConcepts: ["kabul kriteri", "risk", "test"],
+          modelAnswer:
+            "Kabul kriteri üç sonucu tanımlar; adet ve stok riskleri ayrı testlerle doğrulanır."
+        )
       ),
     ],
     transferCode: [

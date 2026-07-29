@@ -25,7 +25,19 @@
 		A10000000000000000000016 /* OnDeviceMentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000017 /* OnDeviceMentor.swift */; };
 		A10000000000000000000017 /* LessonJourney.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000023 /* LessonJourney.swift */; };
 		A10000000000000000000018 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000024 /* Assets.xcassets */; };
+		A10000000000000000000019 /* LessonEvidence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000025 /* LessonEvidence.swift */; };
+		A10000000000000000000020 /* GrillMeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000026 /* GrillMeUITests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		P10000000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C10000000000000000000006 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E10000000000000000000001;
+			remoteInfo = GrillMe;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		B10000000000000000000001 /* GrillMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrillMeApp.swift; sourceTree = "<group>"; };
@@ -52,10 +64,20 @@
 		B10000000000000000000022 /* ROADMAP.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ROADMAP.md; sourceTree = "<group>"; };
 		B10000000000000000000023 /* LessonJourney.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonJourney.swift; sourceTree = "<group>"; };
 		B10000000000000000000024 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B10000000000000000000025 /* LessonEvidence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonEvidence.swift; sourceTree = "<group>"; };
+		B10000000000000000000026 /* GrillMeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrillMeUITests.swift; sourceTree = "<group>"; };
+		B10000000000000000000027 /* GrillMeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GrillMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		F10000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F10000000000000000000005 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -69,6 +91,7 @@
 			isa = PBXGroup;
 			children = (
 				C10000000000000000000002 /* GrillMe */,
+				C10000000000000000000008 /* GrillMeUITests */,
 				C10000000000000000000007 /* Documentation */,
 				C10000000000000000000005 /* Products */,
 			);
@@ -111,6 +134,7 @@
 				B10000000000000000000015 /* SocraticMentor.swift */,
 				B10000000000000000000016 /* LessonRun.swift */,
 				B10000000000000000000023 /* LessonJourney.swift */,
+				B10000000000000000000025 /* LessonEvidence.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -127,10 +151,19 @@
 			name = Documentation;
 			sourceTree = "<group>";
 		};
+		C10000000000000000000008 /* GrillMeUITests */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000026 /* GrillMeUITests.swift */,
+			);
+			path = GrillMeUITests;
+			sourceTree = "<group>";
+		};
 		C10000000000000000000005 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				B10000000000000000000005 /* GrillMe.app */,
+				B10000000000000000000027 /* GrillMeUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -155,6 +188,24 @@
 			productReference = B10000000000000000000005 /* GrillMe.app */;
 			productType = "com.apple.product-type.application";
 		};
+		E10000000000000000000002 /* GrillMeUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D10000000000000000000009 /* Build configuration list for PBXNativeTarget "GrillMeUITests" */;
+			buildPhases = (
+				F10000000000000000000004 /* Sources */,
+				F10000000000000000000005 /* Frameworks */,
+				F10000000000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				T10000000000000000000001 /* PBXTargetDependency */,
+			);
+			name = GrillMeUITests;
+			productName = GrillMeUITests;
+			productReference = B10000000000000000000027 /* GrillMeUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -167,6 +218,10 @@
 				TargetAttributes = {
 					E10000000000000000000001 = {
 						CreatedOnToolsVersion = 26.6;
+					};
+					E10000000000000000000002 = {
+						CreatedOnToolsVersion = 26.6;
+						TestTargetID = E10000000000000000000001;
 					};
 				};
 			};
@@ -184,6 +239,7 @@
 			projectRoot = "";
 			targets = (
 				E10000000000000000000001 /* GrillMe */,
+				E10000000000000000000002 /* GrillMeUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -194,6 +250,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A10000000000000000000018 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F10000000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,10 +284,27 @@
 				A10000000000000000000015 /* LessonRun.swift in Sources */,
 				A10000000000000000000016 /* OnDeviceMentor.swift in Sources */,
 				A10000000000000000000017 /* LessonJourney.swift in Sources */,
+				A10000000000000000000019 /* LessonEvidence.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F10000000000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000020 /* GrillMeUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		T10000000000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E10000000000000000000001 /* GrillMe */;
+			targetProxy = P10000000000000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		D10000000000000000000003 /* Debug */ = {
@@ -400,6 +480,42 @@
 			};
 			name = Release;
 		};
+		D10000000000000000000007 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D34637J64V;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grillme.learn.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = GrillMe;
+			};
+			name = Debug;
+		};
+		D10000000000000000000008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D34637J64V;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.grillme.learn.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = GrillMe;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -417,6 +533,15 @@
 			buildConfigurations = (
 				D10000000000000000000005 /* Debug */,
 				D10000000000000000000006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D10000000000000000000009 /* Build configuration list for PBXNativeTarget "GrillMeUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D10000000000000000000007 /* Debug */,
+				D10000000000000000000008 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

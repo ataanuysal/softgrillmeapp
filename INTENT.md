@@ -152,6 +152,7 @@ doğru yürütme tahmini yapabilmesidir.
 
 - İlk dersin tamamlanma oranı
 - Bir hafta içindeki geri dönüş oranı
-- İlk deneme ve ikinci deneme tahmin doğruluğu arasındaki gelişim
+- İlk deneme ve ikinci deneme quiz doğruluğu arasındaki gelişim
+- Ek pratik doğruluğu ile açık uçlu rubrik puanının birbirinden bağımsız gelişimi
 - Kullanıcının yardımsız tamamladığı yürütme izi sayısı
 - “Bu kodu kendi cümlenle açıkla” görevlerindeki gelişim
