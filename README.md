@@ -17,10 +17,7 @@ Sokratik mentor döngüsüyle sunar. Yol Haritası ve İçindekiler bütün ders
 baştan erişilebilir tutar; Yol Haritası yeni başlayanlara önerilen sırayı,
 İçindekiler ise bölüm ve arama üzerinden serbest gezinmeyi sunar.
 
-![GrillMe:Code 30 günlük öğrenme yolu](grillme-final-preview.png)
-
-> Ekran görüntüsü IDE temasından **önceki** arayüzü gösteriyor; yeni tema
-> simülatörde yakalanınca yenilenecek.
+![GrillMe:Code yol haritası](grillme-final-preview.png)
 
 ## Belgeler
 
@@ -211,7 +208,7 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 - `CFBundleIconName = AppIcon` ve 1024×1024 kaynak ikon için paketleme testleri
 - Uygulama ve UI test kaynaklarında iOS 17 hedefli, uyarısız Swift tip kontrolü
 
-Erişilebilir boyut kontrolü (IDE temasından önceki arayüz):
+Erişilebilir Dynamic Type boyutunda başlık dikeye, kartlar tek sütuna geçer:
 
 ![GrillMe:Code Dynamic Type görünümü](grillme-dynamic-type-preview.png)
 

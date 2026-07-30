@@ -143,12 +143,12 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - Genel iOS Simulator build ve UI test adımları CI sözleşmesinde yer alır.
 - Release iOS arşivinde birincil ikon adı `AppIcon` ve
   `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.
-- 29 Temmuz 2026: `swift test` (116/116), imzasız `xcodebuild` derlemesi ve
-  `swift-format lint --strict` yerel makinede geçti.
-- `grillme-final-preview.png` ve `grillme-dynamic-type-preview.png` **IDE
-  temasından önceki** arayüzü gösterir; tema değiştiği için ikisi de eskidi ve
-  simülatörde yeniden yakalanmalı. Belgelerde atıf yapılmayan dört eski
-  önizleme görseli 30 Temmuz 2026'da silindi.
+- 30 Temmuz 2026: `swift test` (116/116), `xcodebuild` derlemesi ve
+  `swift-format lint --strict` geçti; uygulama iPhone 17 simülatöründe açılış,
+  onboarding ve ilk ders akışı boyunca elle denendi.
+- `grillme-final-preview.png` ve `grillme-dynamic-type-preview.png` 30 Temmuz
+  2026'da IDE temasıyla iPhone 17 simülatöründe yeniden yakalandı. Belgelerde
+  atıf yapılmayan dört eski önizleme görseli aynı gün silindi.
 
 ## İçerik kapsamının gerçek sayıları
 
