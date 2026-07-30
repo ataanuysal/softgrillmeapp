@@ -105,7 +105,11 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 
 ## Önemli dosyalar
 
-- `GrillMe/App/ContentView.swift`: Harita, İçindekiler ve bütün ders deneyimi
+- `GrillMe/App/ContentView.swift`: Açılış zinciri (splash → onboarding → sekmeler)
+- `GrillMe/App/LessonMapView.swift`: Yol Haritası ve ders satırları
+- `GrillMe/App/LessonContentsView.swift`: İçindekiler ve arama
+- `GrillMe/App/LessonDetailView.swift`: Ders deneyiminin tamamı
+- `GrillMe/App/EditorViews.swift`: Kod kartı ve yürütme adımı paneli
 - `GrillMe/App/OnDeviceMentor.swift`: Foundation Models adaptörü ve uygunluk
 - `GrillMe/Core/GrillMeCore.swift`: Ana ders ve oturum modeli
 - `GrillMe/Core/WeekOneLessons.swift`: İlk hafta içeriği

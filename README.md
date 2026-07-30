@@ -156,9 +156,14 @@ GrillMe/
 │   ├── Assets.xcassets/
 │   ├── GrillMeApp.swift
 │   ├── ContentView.swift
-│   ├── IDETheme.swift
 │   ├── SplashView.swift
 │   ├── OnboardingView.swift
+│   ├── LessonMapView.swift
+│   ├── LessonContentsView.swift
+│   ├── LessonDetailView.swift
+│   ├── EditorViews.swift
+│   ├── PresentationNames.swift
+│   ├── IDETheme.swift
 │   └── OnDeviceMentor.swift
 └── Core/
     ├── GrillMeCore.swift

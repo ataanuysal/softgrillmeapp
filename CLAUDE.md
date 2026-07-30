@@ -63,9 +63,15 @@ olmasını doğrular; ekleme sonrası `swift test` bunu yakalar.
 
 Katman kuralı: `Core` SwiftUI'yı import etmez; ders verisi, durum makineleri,
 ölçüm ve kalıcılık oradadır. `App` yalnızca bağlama, yerleşim ve sistem model
-erişimi yapar. `ContentView.swift` tek dosyada tüm ekranları taşır (`private
-struct` alt görünümler); `AppPalette` renkleri, `ScaledFontModifier` Dynamic
-Type ölçeklemesini tutar.
+erişimi yapar.
+
+`App` ekran başına bölünmüştür: `ContentView` yalnızca açılış zincirini
+(splash → onboarding → sekmeler) kurar; ekranlar `LessonMapView`,
+`LessonContentsView`, `LessonDetailView` dosyalarındadır. Paylaşılan parçalar
+`EditorViews` (kod kartı, yürütme paneli), `IDETheme` (Dark+ paleti, durum
+çubuğu, klasör başlığı, uyarı çubuğu, adım göstergesi) ve `PresentationNames`
+(çekirdek tiplerin görünen adları) içindedir. Yeni ekran açarken ContentView'ı
+tekrar şişirme.
 
 ## Ders verisi
 

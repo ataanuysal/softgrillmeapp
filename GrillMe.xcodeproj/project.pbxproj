@@ -34,6 +34,11 @@
 		A10000000000000000000026 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000033 /* SplashView.swift */; };
 		A10000000000000000000027 /* DailyGoal.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000034 /* DailyGoal.swift */; };
 		A10000000000000000000028 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000035 /* OnboardingView.swift */; };
+		A10000000000000000000033 /* PresentationNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000040 /* PresentationNames.swift */; };
+		A10000000000000000000032 /* EditorViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000039 /* EditorViews.swift */; };
+		A10000000000000000000031 /* LessonDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000038 /* LessonDetailView.swift */; };
+		A10000000000000000000030 /* LessonContentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000037 /* LessonContentsView.swift */; };
+		A10000000000000000000029 /* LessonMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000036 /* LessonMapView.swift */; };
 		A10000000000000000000020 /* GrillMeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000026 /* GrillMeUITests.swift */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +86,11 @@
 		B10000000000000000000033 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		B10000000000000000000034 /* DailyGoal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyGoal.swift; sourceTree = "<group>"; };
 		B10000000000000000000035 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		B10000000000000000000040 /* PresentationNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationNames.swift; sourceTree = "<group>"; };
+		B10000000000000000000039 /* EditorViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViews.swift; sourceTree = "<group>"; };
+		B10000000000000000000038 /* LessonDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonDetailView.swift; sourceTree = "<group>"; };
+		B10000000000000000000037 /* LessonContentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonContentsView.swift; sourceTree = "<group>"; };
+		B10000000000000000000036 /* LessonMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonMapView.swift; sourceTree = "<group>"; };
 		B10000000000000000000026 /* GrillMeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrillMeUITests.swift; sourceTree = "<group>"; };
 		B10000000000000000000027 /* GrillMeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GrillMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -132,6 +142,11 @@
 				B10000000000000000000032 /* IDETheme.swift */,
 				B10000000000000000000033 /* SplashView.swift */,
 				B10000000000000000000035 /* OnboardingView.swift */,
+				B10000000000000000000040 /* PresentationNames.swift */,
+				B10000000000000000000039 /* EditorViews.swift */,
+				B10000000000000000000038 /* LessonDetailView.swift */,
+				B10000000000000000000037 /* LessonContentsView.swift */,
+				B10000000000000000000036 /* LessonMapView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -317,6 +332,11 @@
 				A10000000000000000000026 /* SplashView.swift in Sources */,
 				A10000000000000000000027 /* DailyGoal.swift in Sources */,
 				A10000000000000000000028 /* OnboardingView.swift in Sources */,
+				A10000000000000000000033 /* PresentationNames.swift in Sources */,
+				A10000000000000000000032 /* EditorViews.swift in Sources */,
+				A10000000000000000000031 /* LessonDetailView.swift in Sources */,
+				A10000000000000000000030 /* LessonContentsView.swift in Sources */,
+				A10000000000000000000029 /* LessonMapView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
