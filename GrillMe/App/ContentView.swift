@@ -1,23 +1,61 @@
 import SwiftUI
 
 struct ContentView: View {
-  private let catalog = LessonCatalog.standard
-  private let progressStore: FileProgressStore
-  @State private var progress: LessonProgress
-  @State private var persistenceNotice: String?
+  /// Açılış ekranının en az görünür kalacağı süre.
+  ///
+  /// İlerleme dosyasını okumak çoğu cihazda birkaç milisaniye sürer; bu süre
+  /// olmadan açılış ekranı göz kırpması gibi görünürdü. Marka için eklenmiş
+  /// yapay bir bekleme değil, titremeyi önleyen alt sınırdır.
+  private static let minimumSplashDuration = Duration.milliseconds(650)
 
-  init() {
-    let store = FileProgressStore(
-      fileURL: URL.applicationSupportDirectory
-        .appendingPathComponent("grillme-progress.json")
-    )
-    let loadResult = store.loadRecovering()
-    progressStore = store
-    _progress = State(initialValue: loadResult.progress)
-    _persistenceNotice = State(initialValue: loadResult.notice)
-  }
+  private let catalog = LessonCatalog.standard
+  private let progressStore = FileProgressStore(
+    fileURL: URL.applicationSupportDirectory
+      .appendingPathComponent("grillme-progress.json")
+  )
+  @State private var progress = LessonProgress()
+  @State private var persistenceNotice: String?
+  @State private var isWorkspaceReady = false
 
   var body: some View {
+    ZStack {
+      workspace
+        .opacity(isWorkspaceReady ? 1 : 0)
+
+      if !isWorkspaceReady {
+        SplashView(versionLabel: Self.versionLabel)
+          .transition(.opacity)
+      }
+    }
+    .task(loadWorkspace)
+  }
+
+  private static var versionLabel: String {
+    let version =
+      Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+    return "v\(version ?? "1.0")"
+  }
+
+  /// İlerlemeyi ana iş parçacığını bloklamadan okur.
+  @Sendable
+  private func loadWorkspace() async {
+    let store = progressStore
+    async let loaded = Task.detached(priority: .userInitiated) {
+      store.loadRecovering()
+    }.value
+    async let floor: Void? = try? await Task.sleep(for: Self.minimumSplashDuration)
+
+    let result = await loaded
+    _ = await floor
+
+    progress = result.progress
+    persistenceNotice = result.notice
+    withAnimation(.easeOut(duration: 0.3)) {
+      isWorkspaceReady = true
+    }
+  }
+
+  private var workspace: some View {
     TabView {
       NavigationStack {
         LessonMapView(
@@ -47,7 +85,7 @@ struct ContentView: View {
         Label("İçindekiler", systemImage: "list.bullet.rectangle.portrait.fill")
       }
     }
-    .tint(AppPalette.mint)
+    .tint(AppPalette.accent)
     .toolbarBackground(AppPalette.panel, for: .tabBar)
     .toolbarBackground(.visible, for: .tabBar)
     .toolbarColorScheme(.dark, for: .tabBar)
@@ -95,7 +133,7 @@ private struct LessonMapView: View {
         .ignoresSafeArea()
 
       RadialGradient(
-        colors: [AppPalette.indigo.opacity(0.24), .clear],
+        colors: [AppPalette.mentor.opacity(0.24), .clear],
         center: .topTrailing,
         startRadius: 10,
         endRadius: 430
@@ -115,7 +153,7 @@ private struct LessonMapView: View {
             if !sectionItems.isEmpty {
               VStack(alignment: .leading, spacing: 16) {
                 Text(section.displayName)
-                  .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+                  .adaptiveFont(size: 12, weight: .bold, design: .default)
                   .tracking(1.3)
                   .foregroundStyle(section.accentColor)
                   .frame(maxWidth: .infinity, alignment: .leading)
@@ -161,16 +199,16 @@ private struct LessonMapView: View {
         .adaptiveFont(size: 15, weight: .bold)
         .foregroundStyle(AppPalette.background)
         .frame(width: 38, height: 38)
-        .background(AppPalette.mint, in: RoundedRectangle(cornerRadius: 12))
+        .background(AppPalette.accent, in: RoundedRectangle(cornerRadius: 12))
 
       VStack(alignment: .leading, spacing: 2) {
         Text("GRILLME")
-          .adaptiveFont(size: 15, weight: .bold, design: .rounded)
+          .adaptiveFont(size: 15, weight: .bold, design: .default)
           .tracking(1.1)
           .foregroundStyle(.white)
           .lineLimit(1)
         Text("Kod okuma laboratuvarı")
-          .adaptiveFont(size: 11, design: .rounded)
+          .adaptiveFont(size: 11, design: .default)
           .foregroundStyle(AppPalette.secondaryText)
       }
     }
@@ -179,14 +217,14 @@ private struct LessonMapView: View {
   private var headerMetrics: some View {
     HStack(spacing: 8) {
       Label("\(dashboard.currentStreak)", systemImage: "flame.fill")
-        .foregroundStyle(AppPalette.amber)
+        .foregroundStyle(AppPalette.highlight)
         .accessibilityLabel("\(dashboard.currentStreak) günlük seri")
 
       Label("\(dashboard.completedCount)", systemImage: "checkmark.seal.fill")
-        .foregroundStyle(AppPalette.mint)
+        .foregroundStyle(AppPalette.accent)
         .accessibilityLabel("\(dashboard.completedCount) ders tamamlandı")
     }
-    .adaptiveFont(size: 13, weight: .bold, design: .rounded)
+    .adaptiveFont(size: 13, weight: .bold, design: .default)
     .padding(.horizontal, 12)
     .padding(.vertical, 9)
     .background(AppPalette.card, in: Capsule())
@@ -216,7 +254,7 @@ private struct LessonMapView: View {
           Capsule()
             .fill(
               LinearGradient(
-                colors: [AppPalette.mint, AppPalette.indigo],
+                colors: [AppPalette.accent, AppPalette.mentor],
                 startPoint: .leading,
                 endPoint: .trailing
               )
@@ -246,12 +284,12 @@ private struct LessonMapView: View {
   private var progressCopy: some View {
     VStack(alignment: .leading, spacing: 8) {
       Text("Kodun içini\nokumaya başla")
-        .adaptiveFont(size: 32, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 32, weight: .bold, design: .default)
         .foregroundStyle(.white)
         .fixedSize(horizontal: false, vertical: true)
 
       Text("Önce konuyu öğren, örneği adım adım izle ve en son quizde uygula.")
-        .adaptiveFont(size: 15, design: .rounded)
+        .adaptiveFont(size: 15, design: .default)
         .foregroundStyle(AppPalette.secondaryText)
         .fixedSize(horizontal: false, vertical: true)
     }
@@ -268,7 +306,7 @@ private struct LessonMapView: View {
         )
         .stroke(
           AngularGradient(
-            colors: [AppPalette.mint, AppPalette.indigo],
+            colors: [AppPalette.accent, AppPalette.mentor],
             center: .center
           ),
           style: StrokeStyle(lineWidth: 7, lineCap: .round)
@@ -277,10 +315,10 @@ private struct LessonMapView: View {
 
       VStack(spacing: 1) {
         Text("\(dashboard.completedCount)")
-          .font(.system(size: 21, weight: .bold, design: .rounded))
+          .font(.system(size: 21, weight: .bold, design: .default))
           .foregroundStyle(.white)
         Text("/ \(dashboard.totalCount)")
-          .font(.system(size: 10, weight: .semibold, design: .rounded))
+          .font(.system(size: 10, weight: .semibold, design: .default))
           .foregroundStyle(AppPalette.secondaryText)
       }
     }
@@ -341,18 +379,18 @@ private struct LessonMapView: View {
           systemName: report.improvement >= 0
             ? "chart.line.uptrend.xyaxis" : "chart.line.downtrend.xyaxis"
         )
-        .foregroundStyle(report.improvement >= 0 ? AppPalette.mint : AppPalette.amber)
+        .foregroundStyle(report.improvement >= 0 ? AppPalette.accent : AppPalette.highlight)
 
         VStack(alignment: .leading, spacing: 4) {
           Text("Kod okuma gelişimin")
-            .adaptiveFont(size: 15, weight: .bold, design: .rounded)
+            .adaptiveFont(size: 15, weight: .bold, design: .default)
             .foregroundStyle(.white)
           Text(
             report.hasEnoughEvidence
               ? "Başlangıç quizi \(percentage(report.baselineQuizAccuracy)) · Çıkış quizi \(percentage(report.exitQuizAccuracy))"
               : "\(report.baselineSampleSize) başlangıç, \(report.exitSampleSize) çıkış quizi çözüldü. Yüzde göstermek için en az \(LearningGrowthReport.minimumSampleSize) çıkış quizi gerekiyor."
           )
-          .adaptiveFont(size: 12, design: .rounded)
+          .adaptiveFont(size: 12, design: .default)
           .foregroundStyle(AppPalette.secondaryText)
         }
 
@@ -362,11 +400,11 @@ private struct LessonMapView: View {
           Text(
             "\(report.improvement >= 0 ? "+" : "")\(Int((report.improvement * 100).rounded())) puan"
           )
-          .adaptiveFont(size: 13, weight: .bold, design: .rounded)
-          .foregroundStyle(report.improvement >= 0 ? AppPalette.mint : AppPalette.amber)
+          .adaptiveFont(size: 13, weight: .bold, design: .default)
+          .foregroundStyle(report.improvement >= 0 ? AppPalette.accent : AppPalette.highlight)
         } else {
           Text("Ölçüm sürüyor")
-            .adaptiveFont(size: 13, weight: .bold, design: .rounded)
+            .adaptiveFont(size: 13, weight: .bold, design: .default)
             .foregroundStyle(AppPalette.secondaryText)
         }
       }
@@ -387,12 +425,12 @@ private struct LessonMapView: View {
   ) -> some View {
     VStack(spacing: 6) {
       Image(systemName: icon)
-        .foregroundStyle(AppPalette.indigo)
+        .foregroundStyle(AppPalette.mentor)
       Text(value)
-        .adaptiveFont(size: 16, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 16, weight: .bold, design: .default)
         .foregroundStyle(.white)
       Text(label)
-        .adaptiveFont(size: 10, weight: .semibold, design: .rounded)
+        .adaptiveFont(size: 10, weight: .semibold, design: .default)
         .foregroundStyle(AppPalette.secondaryText)
     }
     .frame(maxWidth: .infinity)
@@ -416,14 +454,14 @@ private struct LessonMapView: View {
       VStack(alignment: .leading, spacing: 14) {
         HStack(spacing: 10) {
           Image(systemName: "arrow.trianglehead.counterclockwise")
-            .foregroundStyle(AppPalette.amber)
+            .foregroundStyle(AppPalette.highlight)
           Text("Tekrar zamanı")
-            .adaptiveFont(size: 15, weight: .bold, design: .rounded)
+            .adaptiveFont(size: 15, weight: .bold, design: .default)
             .foregroundStyle(.white)
         }
 
         Text("Önceki derslerden gelen sorular. Aynı kavram, yeni kod.")
-          .adaptiveFont(size: 12, design: .rounded)
+          .adaptiveFont(size: 12, design: .default)
           .foregroundStyle(AppPalette.secondaryText)
 
         ForEach(entries, id: \.0.lessonID) { review, lesson in
@@ -438,18 +476,18 @@ private struct LessonMapView: View {
             HStack(spacing: 12) {
               Image(systemName: review.reason == .incorrectLastTime ? "xmark.circle" : "clock")
                 .foregroundStyle(
-                  review.reason == .incorrectLastTime ? AppPalette.amber : AppPalette.indigo
+                  review.reason == .incorrectLastTime ? AppPalette.highlight : AppPalette.mentor
                 )
               VStack(alignment: .leading, spacing: 2) {
                 Text(lesson.title)
-                  .adaptiveFont(size: 14, weight: .semibold, design: .rounded)
+                  .adaptiveFont(size: 14, weight: .semibold, design: .default)
                   .foregroundStyle(.white)
                 Text(
                   review.reason == .incorrectLastTime
                     ? "Son denemede quiz yanlıştı"
                     : "Bir süredir tekrar edilmedi"
                 )
-                .adaptiveFont(size: 11, design: .rounded)
+                .adaptiveFont(size: 11, design: .default)
                 .foregroundStyle(AppPalette.secondaryText)
               }
               Spacer()
@@ -473,7 +511,7 @@ private struct LessonMapView: View {
       .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 20))
       .overlay(
         RoundedRectangle(cornerRadius: 20)
-          .stroke(AppPalette.amber.opacity(0.35), lineWidth: 1)
+          .stroke(AppPalette.highlight.opacity(0.35), lineWidth: 1)
       )
     }
   }
@@ -495,25 +533,25 @@ private struct LessonMapView: View {
     HStack(spacing: 14) {
       Image(systemName: "ellipsis")
         .adaptiveFont(size: 17, weight: .bold)
-        .foregroundStyle(AppPalette.indigo)
+        .foregroundStyle(AppPalette.mentor)
         .frame(width: 42, height: 42)
-        .background(AppPalette.indigo.opacity(0.12), in: Circle())
+        .background(AppPalette.mentor.opacity(0.12), in: Circle())
 
       VStack(alignment: .leading, spacing: 4) {
         Text("Yolculuk devam edecek")
-          .adaptiveFont(size: 15, weight: .bold, design: .rounded)
+          .adaptiveFont(size: 15, weight: .bold, design: .default)
           .foregroundStyle(.white)
         Text("Temelden teknik analize uzanan \(totalLessonCount) ders hazır.")
-          .adaptiveFont(size: 13, design: .rounded)
+          .adaptiveFont(size: 13, design: .default)
           .foregroundStyle(AppPalette.secondaryText)
       }
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .padding(18)
-    .background(AppPalette.indigo.opacity(0.06), in: RoundedRectangle(cornerRadius: 20))
+    .background(AppPalette.mentor.opacity(0.06), in: RoundedRectangle(cornerRadius: 20))
     .overlay(
       RoundedRectangle(cornerRadius: 20)
-        .stroke(AppPalette.indigo.opacity(0.18), style: StrokeStyle(lineWidth: 1, dash: [5]))
+        .stroke(AppPalette.mentor.opacity(0.18), style: StrokeStyle(lineWidth: 1, dash: [5]))
     )
   }
 }
@@ -544,7 +582,7 @@ private struct LessonContentsView: View {
         .ignoresSafeArea()
 
       RadialGradient(
-        colors: [AppPalette.indigo.opacity(0.2), .clear],
+        colors: [AppPalette.mentor.opacity(0.2), .clear],
         center: .topTrailing,
         startRadius: 10,
         endRadius: 420
@@ -585,18 +623,18 @@ private struct LessonContentsView: View {
   private var contentsIntro: some View {
     VStack(alignment: .leading, spacing: 12) {
       Label("SERBEST DERS KATALOĞU", systemImage: "books.vertical.fill")
-        .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 12, weight: .bold, design: .default)
         .tracking(1)
-        .foregroundStyle(AppPalette.mint)
+        .foregroundStyle(AppPalette.accent)
 
       Text("İstediğin konudan başla")
-        .adaptiveFont(size: 27, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 27, weight: .bold, design: .default)
         .foregroundStyle(.white)
 
       Text(
         "Tüm \(catalog.lessons.count) ders açık. Konuya göre filtrele, aradığın kavramı bul ve doğrudan derse gir."
       )
-      .adaptiveFont(size: 15, design: .rounded)
+      .adaptiveFont(size: 15, design: .default)
       .foregroundStyle(AppPalette.secondaryText)
       .fixedSize(horizontal: false, vertical: true)
 
@@ -608,8 +646,8 @@ private struct LessonContentsView: View {
           contentsMetrics
         }
       }
-      .adaptiveFont(size: 12, weight: .bold, design: .rounded)
-      .foregroundStyle(AppPalette.amber)
+      .adaptiveFont(size: 12, weight: .bold, design: .default)
+      .foregroundStyle(AppPalette.highlight)
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .padding(20)
@@ -652,14 +690,14 @@ private struct LessonContentsView: View {
       }
     } label: {
       Text(title)
-        .adaptiveFont(size: 11, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 11, weight: .bold, design: .default)
         .padding(.horizontal, 13)
         .padding(.vertical, 10)
         .foregroundStyle(isSelected ? AppPalette.background : AppPalette.secondaryText)
-        .background(isSelected ? AppPalette.mint : AppPalette.card, in: Capsule())
+        .background(isSelected ? AppPalette.accent : AppPalette.card, in: Capsule())
         .overlay(
           Capsule()
-            .stroke(isSelected ? AppPalette.mint : AppPalette.border, lineWidth: 1)
+            .stroke(isSelected ? AppPalette.accent : AppPalette.border, lineWidth: 1)
         )
     }
     .buttonStyle(.plain)
@@ -669,14 +707,14 @@ private struct LessonContentsView: View {
     VStack(alignment: .leading, spacing: 15) {
       HStack {
         Text(group.section.displayName)
-          .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+          .adaptiveFont(size: 12, weight: .bold, design: .default)
           .tracking(1.1)
           .foregroundStyle(group.section.accentColor)
 
         Spacer()
 
         Text("\(group.items.count) ders")
-          .adaptiveFont(size: 11, weight: .semibold, design: .rounded)
+          .adaptiveFont(size: 11, weight: .semibold, design: .default)
           .foregroundStyle(AppPalette.tertiaryText)
       }
 
@@ -699,22 +737,22 @@ private struct LessonContentsView: View {
     VStack(spacing: 12) {
       Image(systemName: "magnifyingglass")
         .adaptiveFont(size: 28, weight: .semibold)
-        .foregroundStyle(AppPalette.indigo)
+        .foregroundStyle(AppPalette.mentor)
 
       Text("Bu aramayla eşleşen ders yok")
-        .adaptiveFont(size: 18, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 18, weight: .bold, design: .default)
         .foregroundStyle(.white)
 
       Text("Başka bir konu veya kavram deneyebilirsin.")
-        .adaptiveFont(size: 14, design: .rounded)
+        .adaptiveFont(size: 14, design: .default)
         .foregroundStyle(AppPalette.secondaryText)
 
       Button("Filtreleri temizle") {
         searchQuery = ""
         selectedSection = nil
       }
-      .adaptiveFont(size: 14, weight: .bold, design: .rounded)
-      .foregroundStyle(AppPalette.mint)
+      .adaptiveFont(size: 14, weight: .bold, design: .default)
+      .foregroundStyle(AppPalette.accent)
     }
     .frame(maxWidth: .infinity)
     .padding(28)
@@ -760,7 +798,7 @@ private struct LessonRow: View {
     .overlay(
       RoundedRectangle(cornerRadius: 22)
         .stroke(
-          item.status == .available ? AppPalette.mint.opacity(0.34) : AppPalette.border,
+          item.status == .available ? AppPalette.accent.opacity(0.34) : AppPalette.border,
           lineWidth: 1
         )
     )
@@ -780,7 +818,7 @@ private struct LessonRow: View {
           .font(.system(size: 15, weight: .bold))
       } else {
         Text("\(item.lesson.order)")
-          .font(.system(size: 16, weight: .bold, design: .rounded))
+          .font(.system(size: 16, weight: .bold, design: .default))
       }
     }
     .foregroundStyle(badgeColor)
@@ -790,16 +828,16 @@ private struct LessonRow: View {
   private var lessonDetails: some View {
     VStack(alignment: .leading, spacing: 5) {
       Text("DERS \(String(format: "%02d", item.lesson.order)) · \(item.lesson.topic)")
-        .adaptiveFont(size: 10, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 10, weight: .bold, design: .default)
         .tracking(0.8)
         .foregroundStyle(badgeColor)
 
       Text(item.lesson.title)
-        .adaptiveFont(size: 18, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 18, weight: .bold, design: .default)
         .foregroundStyle(.white)
 
       Text(item.lesson.objective)
-        .adaptiveFont(size: 12, design: .rounded)
+        .adaptiveFont(size: 12, design: .default)
         .foregroundStyle(AppPalette.secondaryText)
         .fixedSize(horizontal: false, vertical: true)
 
@@ -811,7 +849,7 @@ private struct LessonRow: View {
           lessonMetadata
         }
       }
-      .adaptiveFont(size: 10, weight: .semibold, design: .rounded)
+      .adaptiveFont(size: 10, weight: .semibold, design: .default)
       .foregroundStyle(AppPalette.tertiaryText)
     }
   }
@@ -831,9 +869,9 @@ private struct LessonRow: View {
   private var badgeColor: Color {
     switch item.status {
     case .completed:
-      AppPalette.mint
+      AppPalette.accent
     case .available:
-      AppPalette.amber
+      AppPalette.highlight
     }
   }
 
@@ -909,7 +947,7 @@ private struct XRayLessonView: View {
         .ignoresSafeArea()
 
       RadialGradient(
-        colors: [AppPalette.indigo.opacity(0.22), .clear],
+        colors: [AppPalette.mentor.opacity(0.22), .clear],
         center: .topTrailing,
         startRadius: 20,
         endRadius: 380
@@ -928,7 +966,7 @@ private struct XRayLessonView: View {
       }
       .scrollIndicators(.hidden)
     }
-    .tint(AppPalette.mint)
+    .tint(AppPalette.accent)
     .navigationBarTitleDisplayMode(.inline)
     .toolbarBackground(.hidden, for: .navigationBar)
     .onDisappear {
@@ -961,7 +999,7 @@ private struct XRayLessonView: View {
           Capsule()
             .fill(
               LinearGradient(
-                colors: [AppPalette.mint, AppPalette.indigo],
+                colors: [AppPalette.accent, AppPalette.mentor],
                 startPoint: .leading,
                 endPoint: .trailing
               )
@@ -985,10 +1023,10 @@ private struct XRayLessonView: View {
         .adaptiveFont(size: 15, weight: .bold)
         .foregroundStyle(AppPalette.background)
         .frame(width: 34, height: 34)
-        .background(AppPalette.mint, in: RoundedRectangle(cornerRadius: 10))
+        .background(AppPalette.accent, in: RoundedRectangle(cornerRadius: 10))
 
       Text("KOD RÖNTGENİ")
-        .adaptiveFont(size: 13, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 13, weight: .bold, design: .default)
         .tracking(1.4)
         .foregroundStyle(.white)
     }
@@ -996,8 +1034,8 @@ private struct XRayLessonView: View {
 
   private var lessonPosition: some View {
     Label("\(lesson.order) / \(totalLessonCount)", systemImage: "flame.fill")
-      .adaptiveFont(size: 13, weight: .semibold, design: .rounded)
-      .foregroundStyle(AppPalette.amber)
+      .adaptiveFont(size: 13, weight: .semibold, design: .default)
+      .foregroundStyle(AppPalette.highlight)
       .padding(.horizontal, 12)
       .padding(.vertical, 8)
       .background(AppPalette.card, in: Capsule())
@@ -1007,16 +1045,16 @@ private struct XRayLessonView: View {
   private var lessonHeading: some View {
     VStack(alignment: .leading, spacing: 10) {
       Text("DERS \(String(format: "%02d", lesson.order))  ·  \(lesson.topic)")
-        .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 12, weight: .bold, design: .default)
         .tracking(1.2)
-        .foregroundStyle(AppPalette.mint)
+        .foregroundStyle(AppPalette.accent)
 
       Text(lesson.title)
-        .adaptiveFont(size: 34, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 34, weight: .bold, design: .default)
         .foregroundStyle(.white)
 
       Text(stageInstruction)
-        .adaptiveFont(size: 16, weight: .regular, design: .rounded)
+        .adaptiveFont(size: 16, weight: .regular, design: .default)
         .foregroundStyle(AppPalette.secondaryText)
         .fixedSize(horizontal: false, vertical: true)
     }
@@ -1036,7 +1074,8 @@ private struct XRayLessonView: View {
         lines: lesson.code(for: selectedLanguage),
         activeLineNumber:
           selectedLanguage == .swift ? journey.currentExampleStep?.lineNumber : nil,
-        languageLabel: selectedLanguage.displayName.uppercased()
+        languageLabel: selectedLanguage.displayName.uppercased(),
+        language: selectedLanguage
       )
       languageComparison
       examplePanel
@@ -1067,7 +1106,7 @@ private struct XRayLessonView: View {
       HStack(spacing: 8) {
         ForEach(lesson.availableLenses, id: \.rawValue) { lens in
           Label(lens.displayName, systemImage: lens.icon)
-            .adaptiveFont(size: 11, weight: .bold, design: .rounded)
+            .adaptiveFont(size: 11, weight: .bold, design: .default)
             .foregroundStyle(lens.accentColor)
             .padding(.horizontal, 11)
             .padding(.vertical, 8)
@@ -1085,9 +1124,9 @@ private struct XRayLessonView: View {
     if lesson.availableLanguages.count > 1 {
       VStack(alignment: .leading, spacing: 10) {
         Text("DİL KÖPRÜSÜ")
-          .adaptiveFont(size: 11, weight: .bold, design: .rounded)
+          .adaptiveFont(size: 11, weight: .bold, design: .default)
           .tracking(1)
-          .foregroundStyle(AppPalette.indigo)
+          .foregroundStyle(AppPalette.mentor)
 
         if dynamicTypeSize.isAccessibilitySize {
           Picker("Kod dili", selection: $selectedLanguage) {
@@ -1109,7 +1148,7 @@ private struct XRayLessonView: View {
       .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 18))
       .overlay(
         RoundedRectangle(cornerRadius: 18)
-          .stroke(AppPalette.indigo.opacity(0.22), lineWidth: 1)
+          .stroke(AppPalette.mentor.opacity(0.22), lineWidth: 1)
       )
     }
   }
@@ -1119,22 +1158,22 @@ private struct XRayLessonView: View {
     if selectedLanguage != .swift, let comparison = lesson.languageComparison {
       VStack(alignment: .leading, spacing: 9) {
         Label("MANTIK AYNI", systemImage: "equal.circle.fill")
-          .adaptiveFont(size: 11, weight: .bold, design: .rounded)
-          .foregroundStyle(AppPalette.mint)
+          .adaptiveFont(size: 11, weight: .bold, design: .default)
+          .foregroundStyle(AppPalette.accent)
 
         Text(comparison.invariant)
-          .adaptiveFont(size: 14, weight: .semibold, design: .rounded)
+          .adaptiveFont(size: 14, weight: .semibold, design: .default)
           .foregroundStyle(.white)
 
         if let difference = comparison.syntaxDifferences[selectedLanguage] {
           Text("Syntax farkı: \(difference)")
-            .adaptiveFont(size: 13, design: .rounded)
+            .adaptiveFont(size: 13, design: .default)
             .foregroundStyle(AppPalette.secondaryText)
         }
       }
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(16)
-      .background(AppPalette.mint.opacity(0.07), in: RoundedRectangle(cornerRadius: 18))
+      .background(AppPalette.accent.opacity(0.07), in: RoundedRectangle(cornerRadius: 18))
     }
   }
 
@@ -1143,31 +1182,31 @@ private struct XRayLessonView: View {
       stageMap
 
       Label("KONU ANLATIMI", systemImage: "book.pages.fill")
-        .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 12, weight: .bold, design: .default)
         .tracking(1)
-        .foregroundStyle(AppPalette.mint)
+        .foregroundStyle(AppPalette.accent)
 
       Text(journey.teachingContent.explanation)
-        .adaptiveFont(size: 20, weight: .semibold, design: .rounded)
+        .adaptiveFont(size: 20, weight: .semibold, design: .default)
         .foregroundStyle(.white)
         .fixedSize(horizontal: false, vertical: true)
 
       HStack(alignment: .top, spacing: 12) {
         Image(systemName: "lightbulb.max.fill")
-          .foregroundStyle(AppPalette.amber)
+          .foregroundStyle(AppPalette.highlight)
 
         VStack(alignment: .leading, spacing: 5) {
           Text("AKLINDA KALSIN")
-            .adaptiveFont(size: 11, weight: .bold, design: .rounded)
+            .adaptiveFont(size: 11, weight: .bold, design: .default)
             .tracking(0.8)
-            .foregroundStyle(AppPalette.amber)
+            .foregroundStyle(AppPalette.highlight)
           Text(journey.teachingContent.keyIdea)
-            .adaptiveFont(size: 15, weight: .semibold, design: .rounded)
+            .adaptiveFont(size: 15, weight: .semibold, design: .default)
             .foregroundStyle(.white)
         }
       }
       .padding(16)
-      .background(AppPalette.amber.opacity(0.09), in: RoundedRectangle(cornerRadius: 16))
+      .background(AppPalette.highlight.opacity(0.09), in: RoundedRectangle(cornerRadius: 16))
 
       Button {
         withAnimation(.snappy) {
@@ -1179,10 +1218,10 @@ private struct XRayLessonView: View {
           Spacer()
           Image(systemName: "arrow.right")
         }
-        .adaptiveFont(size: 16, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 16, weight: .bold, design: .default)
         .foregroundStyle(AppPalette.background)
         .padding(18)
-        .background(AppPalette.mint, in: RoundedRectangle(cornerRadius: 18))
+        .background(AppPalette.accent, in: RoundedRectangle(cornerRadius: 18))
       }
       .buttonStyle(.plain)
       .accessibilityHint("Rehberli kod örneğini açar")
@@ -1242,11 +1281,11 @@ private struct XRayLessonView: View {
     HStack(spacing: 6) {
       Text("\(number)")
         .frame(width: 22, height: 22)
-        .background(isActive ? AppPalette.mint : AppPalette.card, in: Circle())
+        .background(isActive ? AppPalette.accent : AppPalette.card, in: Circle())
         .foregroundStyle(isActive ? AppPalette.background : AppPalette.secondaryText)
       Text(title)
     }
-    .adaptiveFont(size: 11, weight: .bold, design: .rounded)
+    .adaptiveFont(size: 11, weight: .bold, design: .default)
     .foregroundStyle(isActive ? .white : AppPalette.secondaryText)
   }
 
@@ -1254,25 +1293,25 @@ private struct XRayLessonView: View {
     VStack(spacing: 16) {
       HStack(spacing: 12) {
         Image(systemName: "eye.fill")
-          .foregroundStyle(AppPalette.mint)
+          .foregroundStyle(AppPalette.accent)
           .frame(width: 32, height: 32)
-          .background(AppPalette.mint.opacity(0.12), in: Circle())
+          .background(AppPalette.accent.opacity(0.12), in: Circle())
 
         VStack(alignment: .leading, spacing: 3) {
           Text("KONU İLE İLGİLİ ÖRNEK")
-            .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+            .adaptiveFont(size: 12, weight: .bold, design: .default)
             .tracking(0.8)
-            .foregroundStyle(AppPalette.mint)
+            .foregroundStyle(AppPalette.accent)
           Text("Kodun nasıl çalıştığını adım adım birlikte izliyoruz.")
-            .adaptiveFont(size: 13, design: .rounded)
+            .adaptiveFont(size: 13, design: .default)
             .foregroundStyle(AppPalette.secondaryText)
         }
 
         Spacer()
 
         Text(exampleProgress)
-          .adaptiveFont(size: 12, weight: .semibold, design: .rounded)
-          .foregroundStyle(AppPalette.mint)
+          .adaptiveFont(size: 12, weight: .semibold, design: .default)
+          .foregroundStyle(AppPalette.accent)
       }
       .padding(16)
       .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 18))
@@ -1304,10 +1343,10 @@ private struct XRayLessonView: View {
           Spacer()
           Image(systemName: "arrow.right")
         }
-        .adaptiveFont(size: 16, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 16, weight: .bold, design: .default)
         .foregroundStyle(AppPalette.background)
         .padding(18)
-        .background(AppPalette.mint, in: RoundedRectangle(cornerRadius: 18))
+        .background(AppPalette.accent, in: RoundedRectangle(cornerRadius: 18))
       }
       .buttonStyle(.plain)
     }
@@ -1319,16 +1358,16 @@ private struct XRayLessonView: View {
       stageMap
 
       Label("SON ADIM · QUIZ", systemImage: "checkmark.diamond.fill")
-        .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 12, weight: .bold, design: .default)
         .tracking(1)
-        .foregroundStyle(AppPalette.indigo)
+        .foregroundStyle(AppPalette.mentor)
 
       Text("Şimdi sıra sende")
-        .adaptiveFont(size: 24, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 24, weight: .bold, design: .default)
         .foregroundStyle(.white)
 
       Text(quiz.prompt)
-        .adaptiveFont(size: 18, weight: .semibold, design: .rounded)
+        .adaptiveFont(size: 18, weight: .semibold, design: .default)
         .foregroundStyle(AppPalette.secondaryText)
         .fixedSize(horizontal: false, vertical: true)
 
@@ -1349,14 +1388,14 @@ private struct XRayLessonView: View {
       }
 
       Text("Önce konu, sonra örnek, şimdi bağımsız uygulama. Yanlış cevap da öğrenmenin parçası.")
-        .adaptiveFont(size: 13, design: .rounded)
+        .adaptiveFont(size: 13, design: .default)
         .foregroundStyle(AppPalette.tertiaryText)
     }
     .padding(20)
     .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 24))
     .overlay(
       RoundedRectangle(cornerRadius: 24)
-        .stroke(AppPalette.indigo.opacity(0.28), lineWidth: 1)
+        .stroke(AppPalette.mentor.opacity(0.28), lineWidth: 1)
     )
   }
 
@@ -1374,7 +1413,7 @@ private struct XRayLessonView: View {
         .background(AppPalette.card, in: RoundedRectangle(cornerRadius: 16))
         .overlay(
           RoundedRectangle(cornerRadius: 16)
-            .stroke(AppPalette.indigo.opacity(0.35), lineWidth: 1)
+            .stroke(AppPalette.mentor.opacity(0.35), lineWidth: 1)
         )
     }
     .buttonStyle(.plain)
@@ -1405,7 +1444,7 @@ private struct XRayLessonView: View {
       )
       .adaptiveFont(size: 20, weight: .bold)
       .foregroundStyle(
-        journey.isQuizAnswerCorrect == true ? AppPalette.mint : AppPalette.amber
+        journey.isQuizAnswerCorrect == true ? AppPalette.accent : AppPalette.highlight
       )
 
       VStack(alignment: .leading, spacing: 6) {
@@ -1413,11 +1452,11 @@ private struct XRayLessonView: View {
           journey.isQuizAnswerCorrect == true
             ? "Quiz cevabın doğru" : "Doğru cevap: \(journey.quiz.correctAnswer)"
         )
-        .adaptiveFont(size: 17, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 17, weight: .bold, design: .default)
         .foregroundStyle(.white)
 
         Text(journey.quiz.explanation)
-          .adaptiveFont(size: 14, design: .rounded)
+          .adaptiveFont(size: 14, design: .default)
           .foregroundStyle(AppPalette.secondaryText)
           .fixedSize(horizontal: false, vertical: true)
       }
@@ -1434,12 +1473,12 @@ private struct XRayLessonView: View {
   private func debugChallengePanel(_ current: DebugSession) -> some View {
     VStack(alignment: .leading, spacing: 16) {
       Label("HATA LENSİ", systemImage: "ladybug.fill")
-        .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 12, weight: .bold, design: .default)
         .tracking(0.8)
-        .foregroundStyle(AppPalette.amber)
+        .foregroundStyle(AppPalette.highlight)
 
       Text(current.challenge.prompt)
-        .adaptiveFont(size: 18, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 18, weight: .bold, design: .default)
         .foregroundStyle(.white)
 
       if current.phase == .hypothesizing {
@@ -1457,17 +1496,17 @@ private struct XRayLessonView: View {
         Button("Hipotezi kaydet ve satırı seç") {
           debugSession?.submitHypothesis(debugHypothesis)
         }
-        .adaptiveFont(size: 15, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 15, weight: .bold, design: .default)
         .frame(maxWidth: .infinity)
         .padding(16)
         .foregroundStyle(AppPalette.background)
-        .background(AppPalette.amber, in: RoundedRectangle(cornerRadius: 16))
+        .background(AppPalette.highlight, in: RoundedRectangle(cornerRadius: 16))
         .disabled(debugHypothesis.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
       } else {
         CodeCard(lines: current.challenge.code, activeLineNumber: nil)
 
         Text("Sorunu üreten satırı seç")
-          .adaptiveFont(size: 14, weight: .semibold, design: .rounded)
+          .adaptiveFont(size: 14, weight: .semibold, design: .default)
           .foregroundStyle(AppPalette.secondaryText)
 
         HStack(spacing: 8) {
@@ -1475,7 +1514,7 @@ private struct XRayLessonView: View {
             Button("Satır \(line.number)") {
               debugSession?.selectLine(line.number)
             }
-            .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+            .adaptiveFont(size: 12, weight: .bold, design: .default)
             .padding(.horizontal, 10)
             .padding(.vertical, 12)
             .foregroundStyle(.white)
@@ -1485,10 +1524,10 @@ private struct XRayLessonView: View {
       }
     }
     .padding(20)
-    .background(AppPalette.amber.opacity(0.08), in: RoundedRectangle(cornerRadius: 24))
+    .background(AppPalette.highlight.opacity(0.08), in: RoundedRectangle(cornerRadius: 24))
     .overlay(
       RoundedRectangle(cornerRadius: 24)
-        .stroke(AppPalette.amber.opacity(0.28), lineWidth: 1)
+        .stroke(AppPalette.highlight.opacity(0.28), lineWidth: 1)
     )
   }
 
@@ -1500,16 +1539,16 @@ private struct XRayLessonView: View {
           systemName: debugSession.isCorrect == true
             ? "checkmark.seal.fill" : "magnifyingglass.circle.fill"
         )
-        .foregroundStyle(debugSession.isCorrect == true ? AppPalette.mint : AppPalette.amber)
+        .foregroundStyle(debugSession.isCorrect == true ? AppPalette.accent : AppPalette.highlight)
 
         VStack(alignment: .leading, spacing: 5) {
           Text(
             debugSession.isCorrect == true ? "Hipotezin kanıtlandı" : "Kanıt yeni bir ipucu verdi"
           )
-          .adaptiveFont(size: 16, weight: .bold, design: .rounded)
+          .adaptiveFont(size: 16, weight: .bold, design: .default)
           .foregroundStyle(.white)
           Text(debugSession.evidence ?? "")
-            .adaptiveFont(size: 13, design: .rounded)
+            .adaptiveFont(size: 13, design: .default)
             .foregroundStyle(AppPalette.secondaryText)
         }
       }
@@ -1524,13 +1563,13 @@ private struct XRayLessonView: View {
     if !lesson.practiceChallenges.isEmpty {
       VStack(alignment: .leading, spacing: 16) {
         Label("EK PRATİK", systemImage: "brain.head.profile")
-          .adaptiveFont(size: 12, weight: .bold, design: .rounded)
-          .foregroundStyle(AppPalette.indigo)
+          .adaptiveFont(size: 12, weight: .bold, design: .default)
+          .foregroundStyle(AppPalette.mentor)
 
         ForEach(Array(lesson.practiceChallenges.enumerated()), id: \.offset) { index, challenge in
           VStack(alignment: .leading, spacing: 10) {
             Text(challenge.prompt)
-              .adaptiveFont(size: 15, weight: .bold, design: .rounded)
+              .adaptiveFont(size: 15, weight: .bold, design: .default)
               .foregroundStyle(.white)
 
             ForEach(challenge.choices, id: \.self) { choice in
@@ -1547,7 +1586,7 @@ private struct XRayLessonView: View {
                     )
                   }
                 }
-                .adaptiveFont(size: 13, weight: .semibold, design: .rounded)
+                .adaptiveFont(size: 13, weight: .semibold, design: .default)
                 .padding(12)
                 .foregroundStyle(.white)
                 .background(AppPalette.card, in: RoundedRectangle(cornerRadius: 12))
@@ -1557,7 +1596,7 @@ private struct XRayLessonView: View {
 
             if practiceAnswers[index] != nil {
               Text(challenge.explanation)
-                .adaptiveFont(size: 12, design: .rounded)
+                .adaptiveFont(size: 12, design: .default)
                 .foregroundStyle(AppPalette.secondaryText)
             }
           }
@@ -1573,13 +1612,13 @@ private struct XRayLessonView: View {
     if !lesson.assessmentTasks.isEmpty {
       VStack(alignment: .leading, spacing: 14) {
         Label("ÇIKIŞ DEĞERLENDİRMESİ", systemImage: "checklist.checked")
-          .adaptiveFont(size: 12, weight: .bold, design: .rounded)
-          .foregroundStyle(AppPalette.mint)
+          .adaptiveFont(size: 12, weight: .bold, design: .default)
+          .foregroundStyle(AppPalette.accent)
 
         ForEach(lesson.assessmentTasks, id: \.kind.rawValue) { task in
           VStack(alignment: .leading, spacing: 10) {
             Label(task.prompt, systemImage: task.kind.icon)
-              .adaptiveFont(size: 13, weight: .semibold, design: .rounded)
+              .adaptiveFont(size: 13, weight: .semibold, design: .default)
               .foregroundStyle(.white)
 
             TextField(
@@ -1598,12 +1637,12 @@ private struct XRayLessonView: View {
               let evaluation = task.rubric.evaluate(response)
               VStack(alignment: .leading, spacing: 5) {
                 Text("Rubrik puanı: \(Int((evaluation.score * 100).rounded()))%")
-                  .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+                  .adaptiveFont(size: 12, weight: .bold, design: .default)
                   .foregroundStyle(
-                    evaluation.score == 1 ? AppPalette.mint : AppPalette.amber
+                    evaluation.score == 1 ? AppPalette.accent : AppPalette.highlight
                   )
                 Text(evaluation.feedback)
-                  .adaptiveFont(size: 12, design: .rounded)
+                  .adaptiveFont(size: 12, design: .default)
                   .foregroundStyle(AppPalette.secondaryText)
               }
             }
@@ -1611,7 +1650,7 @@ private struct XRayLessonView: View {
         }
       }
       .padding(18)
-      .background(AppPalette.mint.opacity(0.07), in: RoundedRectangle(cornerRadius: 20))
+      .background(AppPalette.accent.opacity(0.07), in: RoundedRectangle(cornerRadius: 20))
     }
   }
 
@@ -1619,25 +1658,26 @@ private struct XRayLessonView: View {
     VStack(alignment: .leading, spacing: 14) {
       HStack {
         Label("SOKRATİK MENTOR", systemImage: "sparkles")
-          .adaptiveFont(size: 12, weight: .bold, design: .rounded)
-          .foregroundStyle(AppPalette.indigo)
+          .adaptiveFont(size: 12, weight: .bold, design: .default)
+          .foregroundStyle(AppPalette.mentor)
         Spacer()
         Text(OnDeviceMentor.isAvailable ? "Cihaz içi AI" : "Yerel rehber")
-          .adaptiveFont(size: 10, weight: .semibold, design: .rounded)
-          .foregroundStyle(OnDeviceMentor.isAvailable ? AppPalette.mint : AppPalette.secondaryText)
+          .adaptiveFont(size: 10, weight: .semibold, design: .default)
+          .foregroundStyle(
+            OnDeviceMentor.isAvailable ? AppPalette.accent : AppPalette.secondaryText)
         Text("\(mentorCoordinator.remainingTurns) tur")
-          .adaptiveFont(size: 11, weight: .semibold, design: .rounded)
+          .adaptiveFont(size: 11, weight: .semibold, design: .default)
           .foregroundStyle(AppPalette.secondaryText)
       }
 
       Text("Cevabı istemek yerine kodun neden böyle çalıştığını kendi cümlenle anlat.")
-        .adaptiveFont(size: 13, design: .rounded)
+        .adaptiveFont(size: 13, design: .default)
         .foregroundStyle(AppPalette.secondaryText)
 
       ForEach(Array(mentorResponses.enumerated()), id: \.offset) { _, response in
         Text(response.text)
-          .adaptiveFont(size: 13, weight: .semibold, design: .rounded)
-          .foregroundStyle(response.kind == .feedback ? AppPalette.mint : .white)
+          .adaptiveFont(size: 13, weight: .semibold, design: .default)
+          .foregroundStyle(response.kind == .feedback ? AppPalette.accent : .white)
           .padding(12)
           .frame(maxWidth: .infinity, alignment: .leading)
           .background(AppPalette.codeBackground, in: RoundedRectangle(cornerRadius: 12))
@@ -1661,40 +1701,40 @@ private struct XRayLessonView: View {
         }
         .frame(maxWidth: .infinity)
       }
-      .adaptiveFont(size: 14, weight: .bold, design: .rounded)
+      .adaptiveFont(size: 14, weight: .bold, design: .default)
       .padding(14)
       .foregroundStyle(.white)
-      .background(AppPalette.indigo, in: RoundedRectangle(cornerRadius: 14))
+      .background(AppPalette.mentor, in: RoundedRectangle(cornerRadius: 14))
       .disabled(
         isMentorResponding
           || mentorInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
       )
     }
     .padding(18)
-    .background(AppPalette.indigo.opacity(0.08), in: RoundedRectangle(cornerRadius: 20))
+    .background(AppPalette.mentor.opacity(0.08), in: RoundedRectangle(cornerRadius: 20))
   }
 
   private var lessonActions: some View {
     VStack(spacing: 14) {
       HStack(spacing: 12) {
         Image(systemName: "lightbulb.max.fill")
-          .foregroundStyle(AppPalette.amber)
+          .foregroundStyle(AppPalette.highlight)
         Text("Gerçek ders: \(lesson.takeaway)")
-          .adaptiveFont(size: 15, weight: .semibold, design: .rounded)
+          .adaptiveFont(size: 15, weight: .semibold, design: .default)
           .foregroundStyle(.white)
           .fixedSize(horizontal: false, vertical: true)
       }
       .frame(maxWidth: .infinity, alignment: .leading)
       .padding(18)
-      .background(AppPalette.amber.opacity(0.1), in: RoundedRectangle(cornerRadius: 18))
+      .background(AppPalette.highlight.opacity(0.1), in: RoundedRectangle(cornerRadius: 18))
 
       if !evidenceEvaluation.isReadyToComplete {
         Label(
           missingEvidenceMessage,
           systemImage: "lock.open.trianglebadge.exclamationmark"
         )
-        .adaptiveFont(size: 13, weight: .semibold, design: .rounded)
-        .foregroundStyle(AppPalette.amber)
+        .adaptiveFont(size: 13, weight: .semibold, design: .default)
+        .foregroundStyle(AppPalette.highlight)
         .frame(maxWidth: .infinity, alignment: .leading)
       }
 
@@ -1716,10 +1756,10 @@ private struct XRayLessonView: View {
           Spacer()
           Image(systemName: "checkmark")
         }
-        .adaptiveFont(size: 16, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 16, weight: .bold, design: .default)
         .foregroundStyle(AppPalette.background)
         .padding(18)
-        .background(AppPalette.mint, in: RoundedRectangle(cornerRadius: 18))
+        .background(AppPalette.accent, in: RoundedRectangle(cornerRadius: 18))
       }
       .buttonStyle(.plain)
       .disabled(!evidenceEvaluation.isReadyToComplete)
@@ -1731,7 +1771,7 @@ private struct XRayLessonView: View {
         }
       } label: {
         Label("Dersi yeniden çöz", systemImage: "arrow.counterclockwise")
-          .adaptiveFont(size: 15, weight: .bold, design: .rounded)
+          .adaptiveFont(size: 15, weight: .bold, design: .default)
           .frame(maxWidth: .infinity)
           .padding(16)
           .foregroundStyle(.white)
@@ -1848,104 +1888,87 @@ private struct CodeCard: View {
   let lines: [CodeLine]
   let activeLineNumber: Int?
   let languageLabel: String
+  let language: CodeLanguage
 
   init(
     lines: [CodeLine],
     activeLineNumber: Int?,
-    languageLabel: String = "SWIFT"
+    languageLabel: String = "SWIFT",
+    language: CodeLanguage = .swift
   ) {
     self.lines = lines
     self.activeLineNumber = activeLineNumber
     self.languageLabel = languageLabel
+    self.language = language
   }
 
   var body: some View {
     VStack(spacing: 0) {
-      HStack {
-        HStack(spacing: 7) {
-          Circle().fill(Color.red.opacity(0.8)).frame(width: 9, height: 9)
-          Circle().fill(AppPalette.amber.opacity(0.8)).frame(width: 9, height: 9)
-          Circle().fill(AppPalette.mint.opacity(0.8)).frame(width: 9, height: 9)
-        }
+      HStack(spacing: 7) {
+        Circle().fill(AppPalette.danger).frame(width: 8, height: 8)
+        Circle().fill(AppPalette.highlight).frame(width: 8, height: 8)
+        Circle().fill(AppPalette.successText).frame(width: 8, height: 8)
 
         Spacer()
 
         Text(languageLabel)
-          .adaptiveFont(size: 10, weight: .bold, design: .rounded)
-          .tracking(1.1)
+          .adaptiveFont(size: 10, weight: .bold, design: .monospaced)
+          .tracking(0.8)
           .foregroundStyle(AppPalette.secondaryText)
       }
-      .padding(.horizontal, 18)
-      .padding(.vertical, 14)
-      .background(Color.white.opacity(0.025))
+      .padding(.horizontal, 14)
+      .padding(.vertical, 10)
+      .background(AppPalette.card)
 
       ScrollView(.horizontal) {
-        VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: 0) {
           ForEach(lines, id: \.number) { line in
-            HStack(spacing: 14) {
-              Text("\(line.number)")
-                .adaptiveFont(size: 13, design: .monospaced)
-                .foregroundStyle(
-                  activeLineNumber == line.number
-                    ? AppPalette.mint
-                    : AppPalette.tertiaryText
-                )
-                .frame(width: 18, alignment: .trailing)
-
-              Text(highlightedCode(line.text))
-                .adaptiveFont(size: 15, weight: .medium, design: .monospaced)
-                .fixedSize(horizontal: true, vertical: false)
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 9)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-              activeLineNumber == line.number
-                ? AppPalette.mint.opacity(0.1)
-                : Color.clear
-            )
-            .overlay(alignment: .leading) {
-              if activeLineNumber == line.number {
-                RoundedRectangle(cornerRadius: 2)
-                  .fill(AppPalette.mint)
-                  .frame(width: 3)
-              }
-            }
+            codeRow(line)
           }
         }
-        .frame(minWidth: 320, alignment: .leading)
-        .padding(.vertical, 12)
+        .frame(minWidth: 300, alignment: .leading)
+        .padding(.vertical, 8)
       }
       .scrollIndicators(.visible)
     }
-    .background(AppPalette.codeBackground, in: RoundedRectangle(cornerRadius: 24))
-    .clipShape(RoundedRectangle(cornerRadius: 24))
+    .background(AppPalette.codeBackground)
+    .clipShape(RoundedRectangle(cornerRadius: 10))
     .overlay(
-      RoundedRectangle(cornerRadius: 24)
-        .stroke(
-          activeLineNumber == nil
-            ? AppPalette.border
-            : AppPalette.mint.opacity(0.35),
-          lineWidth: 1
-        )
+      RoundedRectangle(cornerRadius: 10)
+        .stroke(AppPalette.border, lineWidth: 1)
     )
-    .shadow(color: .black.opacity(0.25), radius: 30, y: 18)
   }
 
-  private func highlightedCode(_ code: String) -> AttributedString {
-    var result = AttributedString(code)
-    result.foregroundColor = .white
+  /// Satır numarası editördeki gutter'ı taklit eder; aktif satır hem zemin
+  /// rengiyle hem sol kenar çizgisiyle işaretlenir, yani yalnızca renge
+  /// dayanmaz.
+  private func codeRow(_ line: CodeLine) -> some View {
+    let isActive = activeLineNumber == line.number
+    return HStack(alignment: .top, spacing: 14) {
+      Text("\(line.number)")
+        .adaptiveFont(size: 13, design: .monospaced)
+        .foregroundStyle(isActive ? AppPalette.link : AppPalette.border)
+        .frame(width: 20, alignment: .trailing)
 
-    for keyword in [
-      "var", "let", "if", "else", "for", "in", "print", "func", "return", "class", "struct",
-      "def", "function",
-    ] {
-      if let range = result.range(of: keyword) {
-        result[range].foregroundColor = AppPalette.indigo
+      HighlightedCodeText(line: line.text, language: language)
+        .adaptiveFont(size: 14, weight: .medium, design: .monospaced)
+        .fixedSize(horizontal: true, vertical: false)
+    }
+    .padding(.horizontal, 12)
+    .padding(.vertical, 6)
+    .frame(maxWidth: .infinity, alignment: .leading)
+    .background(isActive ? AppPalette.accent.opacity(0.14) : Color.clear)
+    .overlay(alignment: .leading) {
+      if isActive {
+        Rectangle().fill(AppPalette.accent).frame(width: 3)
       }
     }
-
-    return result
+    .accessibilityElement(children: .ignore)
+    .accessibilityLabel(
+      isActive
+        ? "Çalışan satır \(line.number): \(line.text)"
+        : "Satır \(line.number): \(line.text)"
+    )
   }
 }
 
@@ -1956,17 +1979,17 @@ private struct TraceInspector: View {
     VStack(alignment: .leading, spacing: 18) {
       HStack {
         Label("SATIR \(step.lineNumber)", systemImage: "play.fill")
-          .adaptiveFont(size: 12, weight: .bold, design: .rounded)
+          .adaptiveFont(size: 12, weight: .bold, design: .default)
           .tracking(0.8)
-          .foregroundStyle(AppPalette.mint)
+          .foregroundStyle(AppPalette.accent)
         Spacer()
         Text("Şu an çalışıyor")
-          .adaptiveFont(size: 12, weight: .medium, design: .rounded)
+          .adaptiveFont(size: 12, weight: .medium, design: .default)
           .foregroundStyle(AppPalette.secondaryText)
       }
 
       Text(step.explanation)
-        .adaptiveFont(size: 17, weight: .semibold, design: .rounded)
+        .adaptiveFont(size: 17, weight: .semibold, design: .default)
         .foregroundStyle(.white)
         .fixedSize(horizontal: false, vertical: true)
 
@@ -1978,21 +2001,21 @@ private struct TraceInspector: View {
           title: "HAFIZA",
           icon: "memorychip",
           value: memoryDescription,
-          accent: AppPalette.indigo
+          accent: AppPalette.mentor
         )
 
         inspectorBox(
           title: "ÇIKTI",
           icon: "terminal",
           value: step.output ?? "—",
-          accent: step.output == nil ? AppPalette.tertiaryText : AppPalette.mint
+          accent: step.output == nil ? AppPalette.tertiaryText : AppPalette.accent
         )
       }
 
       if !step.callStack.isEmpty {
         VStack(alignment: .leading, spacing: 10) {
           Label("ÇAĞRI YIĞINI", systemImage: "square.3.layers.3d")
-            .adaptiveFont(size: 10, weight: .bold, design: .rounded)
+            .adaptiveFont(size: 10, weight: .bold, design: .default)
             .tracking(0.8)
             .foregroundStyle(AppPalette.secondaryText)
 
@@ -2000,9 +2023,9 @@ private struct TraceInspector: View {
             HStack(alignment: .top, spacing: 10) {
               Text("\(index + 1)")
                 .adaptiveFont(size: 11, weight: .bold, design: .monospaced)
-                .foregroundStyle(AppPalette.indigo)
+                .foregroundStyle(AppPalette.mentor)
                 .frame(width: 22, height: 22)
-                .background(AppPalette.indigo.opacity(0.12), in: Circle())
+                .background(AppPalette.mentor.opacity(0.12), in: Circle())
 
               VStack(alignment: .leading, spacing: 3) {
                 Text(frame.functionName)
@@ -2029,7 +2052,7 @@ private struct TraceInspector: View {
       if let architecture = step.architecture {
         VStack(alignment: .leading, spacing: 10) {
           Label("MİMARİ", systemImage: "point.3.connected.trianglepath.dotted")
-            .adaptiveFont(size: 10, weight: .bold, design: .rounded)
+            .adaptiveFont(size: 10, weight: .bold, design: .default)
             .tracking(0.8)
             .foregroundStyle(AppPalette.secondaryText)
 
@@ -2043,7 +2066,7 @@ private struct TraceInspector: View {
 
             HStack(spacing: 8) {
               Text(source)
-                .foregroundStyle(AppPalette.indigo)
+                .foregroundStyle(AppPalette.mentor)
               Image(systemName: "arrow.right")
                 .foregroundStyle(AppPalette.tertiaryText)
               Text(relation.label)
@@ -2051,9 +2074,9 @@ private struct TraceInspector: View {
               Image(systemName: "arrow.right")
                 .foregroundStyle(AppPalette.tertiaryText)
               Text(target)
-                .foregroundStyle(AppPalette.mint)
+                .foregroundStyle(AppPalette.accent)
             }
-            .adaptiveFont(size: 11, weight: .semibold, design: .rounded)
+            .adaptiveFont(size: 11, weight: .semibold, design: .default)
           }
         }
         .padding(14)
@@ -2083,7 +2106,7 @@ private struct TraceInspector: View {
   ) -> some View {
     VStack(alignment: .leading, spacing: 9) {
       Label(title, systemImage: icon)
-        .adaptiveFont(size: 10, weight: .bold, design: .rounded)
+        .adaptiveFont(size: 10, weight: .bold, design: .default)
         .tracking(0.8)
         .foregroundStyle(AppPalette.secondaryText)
 
@@ -2117,15 +2140,15 @@ extension CurriculumSection {
   fileprivate var accentColor: Color {
     switch self {
     case .fundamentals, .collections, .asynchronous:
-      AppPalette.mint
+      AppPalette.accent
     case .functions, .objects, .appArchitecture:
-      AppPalette.indigo
+      AppPalette.mentor
     case .debugging, .assessment:
-      AppPalette.amber
+      AppPalette.highlight
     case .softwareTesting:
-      AppPalette.mint
+      AppPalette.accent
     case .technicalAnalysis:
-      AppPalette.indigo
+      AppPalette.mentor
     }
   }
 }
@@ -2169,11 +2192,11 @@ extension CodeLens {
   fileprivate var accentColor: Color {
     switch self {
     case .error:
-      AppPalette.amber
+      AppPalette.highlight
     case .call, .architecture, .language:
-      AppPalette.indigo
+      AppPalette.mentor
     case .flow, .memory, .output:
-      AppPalette.mint
+      AppPalette.accent
     }
   }
 }
@@ -2209,59 +2232,6 @@ extension XRayLesson {
       ["değer", "akış", "satır"]
     }
   }
-}
-
-private struct ScaledFontModifier: ViewModifier {
-  @ScaledMetric private var scaledSize: CGFloat = 17
-  let weight: Font.Weight
-  let design: Font.Design
-
-  init(
-    size: CGFloat,
-    weight: Font.Weight,
-    design: Font.Design
-  ) {
-    let relativeStyle: Font.TextStyle =
-      if size >= 28 {
-        .largeTitle
-      } else if size >= 20 {
-        .title2
-      } else if size >= 15 {
-        .body
-      } else {
-        .caption
-      }
-    _scaledSize = ScaledMetric(wrappedValue: size, relativeTo: relativeStyle)
-    self.weight = weight
-    self.design = design
-  }
-
-  func body(content: Content) -> some View {
-    content.font(.system(size: scaledSize, weight: weight, design: design))
-  }
-}
-
-extension View {
-  fileprivate func adaptiveFont(
-    size: CGFloat,
-    weight: Font.Weight = .regular,
-    design: Font.Design = .default
-  ) -> some View {
-    modifier(ScaledFontModifier(size: size, weight: weight, design: design))
-  }
-}
-
-private enum AppPalette {
-  static let background = Color(red: 0.035, green: 0.043, blue: 0.07)
-  static let panel = Color(red: 0.07, green: 0.082, blue: 0.125)
-  static let card = Color(red: 0.095, green: 0.108, blue: 0.155)
-  static let codeBackground = Color(red: 0.045, green: 0.052, blue: 0.083)
-  static let border = Color.white.opacity(0.09)
-  static let mint = Color(red: 0.35, green: 0.93, blue: 0.68)
-  static let indigo = Color(red: 0.53, green: 0.55, blue: 1)
-  static let amber = Color(red: 1, green: 0.72, blue: 0.29)
-  static let secondaryText = Color.white.opacity(0.64)
-  static let tertiaryText = Color.white.opacity(0.36)
 }
 
 private struct ContentViewPreview: PreviewProvider {
