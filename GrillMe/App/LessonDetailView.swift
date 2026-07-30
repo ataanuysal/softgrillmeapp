@@ -62,7 +62,7 @@ struct XRayLessonView: View {
         .ignoresSafeArea()
 
       RadialGradient(
-        colors: [AppPalette.mentor.opacity(0.22), .clear],
+        colors: [AppPalette.accent.opacity(0.16), .clear],
         center: .topTrailing,
         startRadius: 20,
         endRadius: 380
@@ -114,7 +114,7 @@ struct XRayLessonView: View {
           Capsule()
             .fill(
               LinearGradient(
-                colors: [AppPalette.accent, AppPalette.mentor],
+                colors: [AppPalette.accent, AppPalette.link],
                 startPoint: .leading,
                 endPoint: .trailing
               )
@@ -241,7 +241,7 @@ struct XRayLessonView: View {
         Text("DİL KÖPRÜSÜ")
           .adaptiveFont(size: 11, weight: .bold, design: .default)
           .tracking(1)
-          .foregroundStyle(AppPalette.mentor)
+          .foregroundStyle(AppPalette.highlight)
 
         if dynamicTypeSize.isAccessibilitySize {
           Picker("Kod dili", selection: $selectedLanguage) {
@@ -263,7 +263,7 @@ struct XRayLessonView: View {
       .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 18))
       .overlay(
         RoundedRectangle(cornerRadius: 18)
-          .stroke(AppPalette.mentor.opacity(0.22), lineWidth: 1)
+          .stroke(AppPalette.border, lineWidth: 1)
       )
     }
   }
@@ -455,7 +455,7 @@ struct XRayLessonView: View {
     .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 24))
     .overlay(
       RoundedRectangle(cornerRadius: 24)
-        .stroke(AppPalette.mentor.opacity(0.28), lineWidth: 1)
+        .stroke(AppPalette.strongBorder, lineWidth: 1)
     )
   }
 
@@ -473,7 +473,7 @@ struct XRayLessonView: View {
         .background(AppPalette.card, in: RoundedRectangle(cornerRadius: 16))
         .overlay(
           RoundedRectangle(cornerRadius: 16)
-            .stroke(AppPalette.mentor.opacity(0.35), lineWidth: 1)
+            .stroke(AppPalette.accent.opacity(0.5), lineWidth: 1)
         )
     }
     .buttonStyle(.plain)
@@ -624,7 +624,7 @@ struct XRayLessonView: View {
       VStack(alignment: .leading, spacing: 16) {
         Label("EK PRATİK", systemImage: "brain.head.profile")
           .adaptiveFont(size: 12, weight: .bold, design: .default)
-          .foregroundStyle(AppPalette.mentor)
+          .foregroundStyle(AppPalette.link)
 
         ForEach(Array(lesson.practiceChallenges.enumerated()), id: \.offset) { index, challenge in
           VStack(alignment: .leading, spacing: 10) {

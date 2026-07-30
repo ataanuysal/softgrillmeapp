@@ -16,8 +16,9 @@ struct ContentView: View {
   @State private var progress = LessonProgress()
   @State private var persistenceNotice: String?
   @State private var isWorkspaceReady = false
-  /// Onboarding'den doğrudan açılacak ders.
-  @State private var pendingLessonID: String?
+  /// Yol Haritası sekmesinin gezinme yığını; onboarding buraya ilk dersi iterek
+  /// "İlk dersi aç" düğmesini gerçekten çalıştırır.
+  @State private var roadmapPath: [String] = []
 
   var body: some View {
     ZStack {
@@ -44,7 +45,9 @@ struct ContentView: View {
   private func finishOnboarding(dailyGoal: DailyGoal?, opensFirstLesson: Bool) {
     withAnimation(.easeInOut(duration: 0.3)) {
       progress.finishOnboarding(dailyGoal: dailyGoal)
-      pendingLessonID = opensFirstLesson ? catalog.lessons.first?.id : nil
+      if opensFirstLesson, let firstLessonID = catalog.lessons.first?.id {
+        roadmapPath = [firstLessonID]
+      }
     }
     save()
   }
@@ -76,9 +79,10 @@ struct ContentView: View {
 
   private var workspace: some View {
     TabView {
-      NavigationStack {
+      NavigationStack(path: $roadmapPath) {
         LessonMapView(
           items: catalog.items(completedLessonIDs: progress.completedLessonIDs),
+          allLessons: catalog.lessons,
           totalLessonCount: catalog.lessons.count,
           dashboard: LearningDashboardSnapshot(
             progress: progress,

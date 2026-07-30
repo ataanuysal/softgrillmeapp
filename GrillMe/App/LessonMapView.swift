@@ -4,6 +4,8 @@ import SwiftUI
 
 struct LessonMapView: View {
   let items: [LessonCatalogItem]
+  /// Gezinme yığınından gelen ders kimliğini çözebilmek için tüm katalog.
+  let allLessons: [XRayLesson]
   let totalLessonCount: Int
   let dashboard: LearningDashboardSnapshot
   let reviewItems: [ReviewItem]
@@ -16,7 +18,7 @@ struct LessonMapView: View {
         .ignoresSafeArea()
 
       RadialGradient(
-        colors: [AppPalette.mentor.opacity(0.24), .clear],
+        colors: [AppPalette.accent.opacity(0.18), .clear],
         center: .topTrailing,
         startRadius: 10,
         endRadius: 430
@@ -57,6 +59,15 @@ struct LessonMapView: View {
       .scrollIndicators(.hidden)
     }
     .navigationBarHidden(true)
+    .navigationDestination(for: String.self) { lessonID in
+      if let lesson = allLessons.first(where: { $0.id == lessonID }) {
+        XRayLessonView(
+          lesson: lesson,
+          totalLessonCount: totalLessonCount,
+          onComplete: onLessonCompleted
+        )
+      }
+    }
   }
 
   private var mapHeader: some View {
@@ -137,7 +148,7 @@ struct LessonMapView: View {
           Capsule()
             .fill(
               LinearGradient(
-                colors: [AppPalette.accent, AppPalette.mentor],
+                colors: [AppPalette.accent, AppPalette.link],
                 startPoint: .leading,
                 endPoint: .trailing
               )
@@ -189,7 +200,7 @@ struct LessonMapView: View {
         )
         .stroke(
           AngularGradient(
-            colors: [AppPalette.accent, AppPalette.mentor],
+            colors: [AppPalette.accent, AppPalette.link],
             center: .center
           ),
           style: StrokeStyle(lineWidth: 7, lineCap: .round)
@@ -308,7 +319,7 @@ struct LessonMapView: View {
   ) -> some View {
     VStack(spacing: 6) {
       Image(systemName: icon)
-        .foregroundStyle(AppPalette.mentor)
+        .foregroundStyle(AppPalette.link)
       Text(value)
         .adaptiveFont(size: 16, weight: .bold, design: .default)
         .foregroundStyle(.white)
@@ -359,7 +370,7 @@ struct LessonMapView: View {
             HStack(spacing: 12) {
               Image(systemName: review.reason == .incorrectLastTime ? "xmark.circle" : "clock")
                 .foregroundStyle(
-                  review.reason == .incorrectLastTime ? AppPalette.highlight : AppPalette.mentor
+                  review.reason == .incorrectLastTime ? AppPalette.highlight : AppPalette.link
                 )
               VStack(alignment: .leading, spacing: 2) {
                 Text(lesson.title)
@@ -416,9 +427,9 @@ struct LessonMapView: View {
     HStack(spacing: 14) {
       Image(systemName: "ellipsis")
         .adaptiveFont(size: 17, weight: .bold)
-        .foregroundStyle(AppPalette.mentor)
+        .foregroundStyle(AppPalette.link)
         .frame(width: 42, height: 42)
-        .background(AppPalette.mentor.opacity(0.12), in: Circle())
+        .background(AppPalette.accent.opacity(0.14), in: Circle())
 
       VStack(alignment: .leading, spacing: 4) {
         Text("Yolculuk devam edecek")
@@ -431,10 +442,10 @@ struct LessonMapView: View {
     }
     .frame(maxWidth: .infinity, alignment: .leading)
     .padding(18)
-    .background(AppPalette.mentor.opacity(0.06), in: RoundedRectangle(cornerRadius: 20))
+    .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 20))
     .overlay(
       RoundedRectangle(cornerRadius: 20)
-        .stroke(AppPalette.mentor.opacity(0.18), style: StrokeStyle(lineWidth: 1, dash: [5]))
+        .stroke(AppPalette.border, style: StrokeStyle(lineWidth: 1, dash: [5]))
     )
   }
 }
@@ -535,10 +546,11 @@ struct LessonRow: View {
 
   private var badgeColor: Color {
     switch item.status {
+    // Tamamlanan dosya sönükleşir, açık dosya editördeki gibi mavi kalır.
     case .completed:
-      AppPalette.accent
+      AppPalette.successText
     case .available:
-      AppPalette.highlight
+      AppPalette.link
     }
   }
 

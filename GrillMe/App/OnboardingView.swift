@@ -183,7 +183,7 @@ struct OnboardingView: View {
           .padding(.bottom, 10)
         (Text("Kodu ")
           + Text("okumayı").foregroundColor(CodeTokenKind.keyword.color)
-          + Text("\növren"))
+          + Text("\nöğren"))
           .adaptiveFont(size: 34, weight: .heavy)
           .foregroundStyle(.white)
           .multilineTextAlignment(.center)
