@@ -141,8 +141,10 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
   `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.
 - 29 Temmuz 2026: `swift test` (116/116), imzasız `xcodebuild` derlemesi ve
   `swift-format lint --strict` yerel makinede geçti.
-- `grillme-final-preview.png` son normal görünümü,
-  `grillme-dynamic-type-preview.png` erişilebilir boyutu gösterir.
+- `grillme-final-preview.png` ve `grillme-dynamic-type-preview.png` **IDE
+  temasından önceki** arayüzü gösterir; tema değiştiği için ikisi de eskidi ve
+  simülatörde yeniden yakalanmalı. Belgelerde atıf yapılmayan dört eski
+  önizleme görseli 30 Temmuz 2026'da silindi.
 
 ## İçerik kapsamının gerçek sayıları
 

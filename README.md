@@ -19,6 +19,9 @@ baştan erişilebilir tutar; Yol Haritası yeni başlayanlara önerilen sırayı
 
 ![GrillMe:Code 30 günlük öğrenme yolu](grillme-final-preview.png)
 
+> Ekran görüntüsü IDE temasından **önceki** arayüzü gösteriyor; yeni tema
+> simülatörde yakalanınca yenilenecek.
+
 ## Belgeler
 
 - [INTENT.md](INTENT.md): Ürün vizyonu, hedef kullanıcı ve kapsam sınırları
@@ -203,7 +206,7 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 - `CFBundleIconName = AppIcon` ve 1024×1024 kaynak ikon için paketleme testleri
 - Uygulama ve UI test kaynaklarında iOS 17 hedefli, uyarısız Swift tip kontrolü
 
-Önceki erişilebilir boyut kontrolü:
+Erişilebilir boyut kontrolü (IDE temasından önceki arayüz):
 
 ![GrillMe:Code Dynamic Type görünümü](grillme-dynamic-type-preview.png)
 
