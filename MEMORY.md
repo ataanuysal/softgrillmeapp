@@ -22,8 +22,9 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - Görsel dil VS Code Dark+ temelli "IDE teması"dır: editör paleti, sözdizimi
   renkleri, dosya adı gibi ders satırları ve mavi durum çubuğu.
 - Aktif proje `GrillMe.xcodeproj`, şema `GrillMe`, görünen ad `GrillMe:Code`,
-  bundle kimliği `com.grillme.learn` değeridir. Hedef ve şema adları teknik
-  kimliktir; ürün adı yalnızca `CFBundleDisplayName` üzerinden gelir.
+  bundle kimliği `com.grillme.learn`, sürüm `1.3` (build 4) değeridir. Hedef ve
+  şema adları teknik kimliktir; ürün adı yalnızca `CFBundleDisplayName`
+  üzerinden gelir.
 - Yol Haritası önerilen doğrusal sırayı gösterir; bütün dersler baştan
   erişilebilirdir ve tamamlanma yalnızca durum işareti olarak kullanılır.
 - İçindekiler kataloğunda 40 dersin tümü açıktır; bölüm filtresi ve Türkçe
