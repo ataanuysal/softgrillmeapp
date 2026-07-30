@@ -140,7 +140,8 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 ## Doğrulama durumu
 
 - 116 Swift Testing testi ve 25 test paketi geçmelidir.
-- 1 XCUITest duman testi uygulama açılışı, sekmeler ve derse girişi doğrular.
+- 1 XCUITest duman testi uygulama açılışı, onboarding atlamayı, sekmeleri ve
+  derse girişi doğrular; hem temiz kurulumda hem tekrar açılışta geçer.
 - Genel iOS Simulator build ve UI test adımları CI sözleşmesinde yer alır.
 - Release iOS arşivinde birincil ikon adı `AppIcon` ve
   `AppIcon60x60@2x.png` boyutu 120×120 olmalıdır.
