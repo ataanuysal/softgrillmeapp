@@ -16,11 +16,21 @@ struct ContentView: View {
   @State private var progress = LessonProgress()
   @State private var persistenceNotice: String?
   @State private var isWorkspaceReady = false
+  /// Onboarding'den doğrudan açılacak ders.
+  @State private var pendingLessonID: String?
 
   var body: some View {
     ZStack {
       workspace
-        .opacity(isWorkspaceReady ? 1 : 0)
+        .opacity(isWorkspaceReady && progress.hasFinishedOnboarding ? 1 : 0)
+
+      if isWorkspaceReady, !progress.hasFinishedOnboarding {
+        OnboardingView(
+          onFinish: finishOnboarding,
+          firstLesson: catalog.lessons.first
+        )
+        .transition(.opacity)
+      }
 
       if !isWorkspaceReady {
         SplashView(versionLabel: Self.versionLabel)
@@ -28,6 +38,15 @@ struct ContentView: View {
       }
     }
     .task(loadWorkspace)
+  }
+
+  /// İlk açılış akışı bittiğinde ritmi saklar ve istenirse ilk dersi açar.
+  private func finishOnboarding(dailyGoal: DailyGoal?, opensFirstLesson: Bool) {
+    withAnimation(.easeInOut(duration: 0.3)) {
+      progress.finishOnboarding(dailyGoal: dailyGoal)
+      pendingLessonID = opensFirstLesson ? catalog.lessons.first?.id : nil
+    }
+    save()
   }
 
   private static var versionLabel: String {
@@ -110,11 +129,15 @@ struct ContentView: View {
 
   private func complete(_ result: LessonRunResult) {
     progress.record(result)
+    save()
+  }
+
+  private func save() {
     do {
       try progressStore.save(progress)
     } catch {
       persistenceNotice =
-        "Ders tamamlandı ancak ilerleme cihaza kaydedilemedi. Uygulamayı kapatmadan önce tekrar dene. Hata: \(error.localizedDescription)"
+        "İlerleme cihaza kaydedilemedi. Uygulamayı kapatmadan önce tekrar dene. Hata: \(error.localizedDescription)"
     }
   }
 }
@@ -152,11 +175,11 @@ private struct LessonMapView: View {
             let sectionItems = items.filter { $0.lesson.section == section }
             if !sectionItems.isEmpty {
               VStack(alignment: .leading, spacing: 16) {
-                Text(section.displayName)
-                  .adaptiveFont(size: 12, weight: .bold, design: .default)
-                  .tracking(1.3)
-                  .foregroundStyle(section.accentColor)
-                  .frame(maxWidth: .infinity, alignment: .leading)
+                FolderHeader(
+                  name: section.folderName,
+                  count: sectionItems.count,
+                  tint: section.accentColor
+                )
 
                 ForEach(sectionItems, id: \.lesson.id) { item in
                   lessonDestination(for: item)
@@ -706,10 +729,11 @@ private struct LessonContentsView: View {
   private func lessonSection(_ group: LessonContentsSection) -> some View {
     VStack(alignment: .leading, spacing: 15) {
       HStack {
-        Text(group.section.displayName)
-          .adaptiveFont(size: 12, weight: .bold, design: .default)
-          .tracking(1.1)
-          .foregroundStyle(group.section.accentColor)
+        FolderHeader(
+          name: group.section.folderName,
+          count: group.items.count,
+          tint: group.section.accentColor
+        )
 
         Spacer()
 
@@ -788,53 +812,45 @@ private struct LessonRow: View {
         }
       }
     }
-    .padding(18)
-    .background(
-      item.status == .available
-        ? AppPalette.card
-        : AppPalette.panel,
-      in: RoundedRectangle(cornerRadius: 22)
-    )
+    .padding(13)
+    .frame(minHeight: 44)
+    .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 9))
     .overlay(
-      RoundedRectangle(cornerRadius: 22)
+      RoundedRectangle(cornerRadius: 9)
         .stroke(
-          item.status == .available ? AppPalette.accent.opacity(0.34) : AppPalette.border,
+          item.status == .completed ? AppPalette.border : AppPalette.accent,
           lineWidth: 1
         )
     )
+    .overlay(alignment: .leading) {
+      // Açık ders, editörde seçili dosya gibi sol kenardan işaretlenir.
+      if item.status == .available {
+        UnevenRoundedRectangle(topLeadingRadius: 9, bottomLeadingRadius: 9)
+          .fill(AppPalette.accent)
+          .frame(width: 3)
+      }
+    }
     .accessibilityElement(children: .combine)
     .accessibilityLabel(accessibilityDescription)
   }
 
   private var badge: some View {
-    ZStack {
-      Circle()
-        .fill(badgeColor.opacity(0.16))
-      Circle()
-        .stroke(badgeColor.opacity(0.45), lineWidth: 1)
-
-      if item.status == .completed {
-        Image(systemName: "checkmark")
-          .font(.system(size: 15, weight: .bold))
-      } else {
-        Text("\(item.lesson.order)")
-          .font(.system(size: 16, weight: .bold, design: .default))
-      }
-    }
-    .foregroundStyle(badgeColor)
-    .frame(width: 48, height: 48)
+    Image(systemName: item.status == .completed ? "checkmark" : "doc.text")
+      .adaptiveFont(size: 16, weight: .semibold)
+      .foregroundStyle(badgeColor)
+      .frame(width: 38, height: 38)
+      .background(badgeColor.opacity(0.16), in: RoundedRectangle(cornerRadius: 8))
   }
 
+  /// Dosya adı: `01_degerin_izini_sur.swift`. Uzantı metin renginde yazılır,
+  /// tıpkı editörde olduğu gibi.
   private var lessonDetails: some View {
-    VStack(alignment: .leading, spacing: 5) {
-      Text("DERS \(String(format: "%02d", item.lesson.order)) · \(item.lesson.topic)")
-        .adaptiveFont(size: 10, weight: .bold, design: .default)
-        .tracking(0.8)
-        .foregroundStyle(badgeColor)
-
-      Text(item.lesson.title)
-        .adaptiveFont(size: 18, weight: .bold, design: .default)
-        .foregroundStyle(.white)
+    VStack(alignment: .leading, spacing: 4) {
+      (Text(item.lesson.fileStem)
+        + Text(".swift").foregroundColor(CodeTokenKind.string.color))
+        .adaptiveFont(size: 12.5, weight: .bold, design: .monospaced)
+        .foregroundStyle(
+          item.status == .completed ? AppPalette.secondaryText : AppPalette.primaryText)
 
       Text(item.lesson.objective)
         .adaptiveFont(size: 12, design: .default)
@@ -849,7 +865,7 @@ private struct LessonRow: View {
           lessonMetadata
         }
       }
-      .adaptiveFont(size: 10, weight: .semibold, design: .default)
+      .adaptiveFont(size: 10, weight: .semibold, design: .monospaced)
       .foregroundStyle(AppPalette.tertiaryText)
     }
   }
@@ -1179,34 +1195,31 @@ private struct XRayLessonView: View {
 
   private var topicPanel: some View {
     VStack(alignment: .leading, spacing: 20) {
-      stageMap
+      JourneyStepper(currentStep: 0)
 
-      Label("KONU ANLATIMI", systemImage: "book.pages.fill")
-        .adaptiveFont(size: 12, weight: .bold, design: .default)
-        .tracking(1)
-        .foregroundStyle(AppPalette.accent)
+      Label("KONU_ANLATIMI.md", systemImage: "doc.richtext")
+        .adaptiveFont(size: 11, weight: .bold, design: .monospaced)
+        .foregroundStyle(AppPalette.link)
 
       Text(journey.teachingContent.explanation)
-        .adaptiveFont(size: 20, weight: .semibold, design: .default)
-        .foregroundStyle(.white)
+        .adaptiveFont(size: 17, weight: .semibold, design: .default)
+        .foregroundStyle(AppPalette.primaryText)
         .fixedSize(horizontal: false, vertical: true)
 
-      HStack(alignment: .top, spacing: 12) {
-        Image(systemName: "lightbulb.max.fill")
-          .foregroundStyle(AppPalette.highlight)
+      IDECallout(
+        title: "// AKLINDA KALSIN",
+        message: journey.teachingContent.keyIdea,
+        tint: AppPalette.highlight,
+        systemImage: "lightbulb.max.fill",
+        filled: true
+      )
 
-        VStack(alignment: .leading, spacing: 5) {
-          Text("AKLINDA KALSIN")
-            .adaptiveFont(size: 11, weight: .bold, design: .default)
-            .tracking(0.8)
-            .foregroundStyle(AppPalette.highlight)
-          Text(journey.teachingContent.keyIdea)
-            .adaptiveFont(size: 15, weight: .semibold, design: .default)
-            .foregroundStyle(.white)
-        }
-      }
-      .padding(16)
-      .background(AppPalette.highlight.opacity(0.09), in: RoundedRectangle(cornerRadius: 16))
+      IDECallout(
+        title: "// SIK HATA",
+        message: lesson.teaching.commonMistake,
+        tint: AppPalette.danger,
+        systemImage: "exclamationmark.triangle.fill"
+      )
 
       Button {
         withAnimation(.snappy) {
@@ -1234,63 +1247,11 @@ private struct XRayLessonView: View {
     )
   }
 
-  private var stageMap: some View {
-    Group {
-      if dynamicTypeSize.isAccessibilitySize {
-        VStack(alignment: .leading, spacing: 8) {
-          stageBadge(number: 1, title: "Konu", isActive: journey.phase == .topic)
-          Image(systemName: "chevron.down")
-            .foregroundStyle(AppPalette.tertiaryText)
-          exampleStageBadge
-          Image(systemName: "chevron.down")
-            .foregroundStyle(AppPalette.tertiaryText)
-          stageBadge(number: 3, title: "Quiz", isActive: journey.phase == .quiz)
-        }
-      } else {
-        HStack(spacing: 8) {
-          stageBadge(number: 1, title: "Konu", isActive: journey.phase == .topic)
-          Image(systemName: "chevron.right")
-            .foregroundStyle(AppPalette.tertiaryText)
-          exampleStageBadge
-          Image(systemName: "chevron.right")
-            .foregroundStyle(AppPalette.tertiaryText)
-          stageBadge(number: 3, title: "Quiz", isActive: journey.phase == .quiz)
-        }
-      }
-    }
-    .accessibilityElement(children: .combine)
-    .accessibilityLabel("Ders sırası: konu anlatımı, örnek, quiz")
-  }
-
-  private var exampleStageBadge: some View {
-    stageBadge(
-      number: 2,
-      title: "Örnek",
-      isActive: {
-        if case .example = journey.phase { return true }
-        return false
-      }()
-    )
-  }
-
-  private func stageBadge(
-    number: Int,
-    title: String,
-    isActive: Bool
-  ) -> some View {
-    HStack(spacing: 6) {
-      Text("\(number)")
-        .frame(width: 22, height: 22)
-        .background(isActive ? AppPalette.accent : AppPalette.card, in: Circle())
-        .foregroundStyle(isActive ? AppPalette.background : AppPalette.secondaryText)
-      Text(title)
-    }
-    .adaptiveFont(size: 11, weight: .bold, design: .default)
-    .foregroundStyle(isActive ? .white : AppPalette.secondaryText)
-  }
-
   private var examplePanel: some View {
     VStack(spacing: 16) {
+      JourneyStepper(currentStep: 1)
+        .frame(maxWidth: .infinity, alignment: .leading)
+
       HStack(spacing: 12) {
         Image(systemName: "eye.fill")
           .foregroundStyle(AppPalette.accent)
@@ -1355,7 +1316,7 @@ private struct XRayLessonView: View {
   private var quizPanel: some View {
     let quiz = journey.quiz
     return VStack(alignment: .leading, spacing: 18) {
-      stageMap
+      JourneyStepper(currentStep: 2)
 
       Label("SON ADIM · QUIZ", systemImage: "checkmark.diamond.fill")
         .adaptiveFont(size: 12, weight: .bold, design: .default)
@@ -1884,7 +1845,7 @@ private struct XRayLessonView: View {
   }
 }
 
-private struct CodeCard: View {
+struct CodeCard: View {
   let lines: [CodeLine]
   let activeLineNumber: Int?
   let languageLabel: String
@@ -2122,6 +2083,18 @@ private struct TraceInspector: View {
 }
 
 extension CurriculumSection {
+  /// Dosya gezgininde görünen klasör adı.
+  fileprivate var folderName: String {
+    displayName.lowercased(with: Locale(identifier: "tr_TR"))
+      .replacingOccurrences(of: " ", with: "_")
+      .replacingOccurrences(of: "ı", with: "i")
+      .replacingOccurrences(of: "ğ", with: "g")
+      .replacingOccurrences(of: "ş", with: "s")
+      .replacingOccurrences(of: "ç", with: "c")
+      .replacingOccurrences(of: "ö", with: "o")
+      .replacingOccurrences(of: "ü", with: "u")
+  }
+
   fileprivate var displayName: String {
     switch self {
     case .fundamentals: "TEMEL MEKANİK"
@@ -2154,7 +2127,7 @@ extension CurriculumSection {
 }
 
 extension CodeLanguage {
-  fileprivate var displayName: String {
+  var displayName: String {
     switch self {
     case .swift: "Swift"
     case .python: "Python"

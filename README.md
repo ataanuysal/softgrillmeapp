@@ -44,6 +44,9 @@ derinleştiğini olduğu gibi gösterir.
 - Quiz yapılmadan dersin tamamlanmasını engelleyen bitirme koşulu
 - Yanlış bilinen ve üzerinden zaman geçen dersleri geri getiren tekrar kartı
 - Tur bütçeli, cevabı vermeyen Sokratik mentor ve cevap sızıntısı filtresi
+- VS Code Dark+ temelli editör arayüzü: sözdizimi renkli kod, satır numaralı
+  gutter, dosya adı biçiminde ders satırları ve klasör başlıkları
+- İlk açılışta altı ekranlık tanıtım ve günlük ritim seçimi
 
 ### Bir kısım derste var
 
@@ -90,7 +93,7 @@ cevaplanabilir soru) ve bütün quizler dört seçenekli.
   metinli erişilebilir eylemler; büyük yazıda dikey kartlar, menü tipi dil
   seçimi ve yatay kaydırılabilir kod
 - Uygulama açılışı, iki ana sekme ve derse giriş için gerçek XCUITest hedefi
-- Format, 99 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
+- Format, 116 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
 
 ## Gereksinimler
 
@@ -150,6 +153,9 @@ GrillMe/
 │   ├── Assets.xcassets/
 │   ├── GrillMeApp.swift
 │   ├── ContentView.swift
+│   ├── IDETheme.swift
+│   ├── SplashView.swift
+│   ├── OnboardingView.swift
 │   └── OnDeviceMentor.swift
 └── Core/
     ├── GrillMeCore.swift
@@ -164,6 +170,9 @@ GrillMe/
     ├── SocraticMentor.swift
     ├── ConceptMatcher.swift
     ├── MentorCoordinator.swift
+    ├── CodeHighlighter.swift
+    ├── DailyGoal.swift
+    ├── ReviewQueue.swift
     ├── LessonJourney.swift
     ├── LessonEvidence.swift
     ├── LessonRun.swift
@@ -186,8 +195,8 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 ## Doğrulama
 
-- 99 Swift Testing testi
-- 22 çekirdek test paketi
+- 116 Swift Testing testi
+- 25 çekirdek test paketi
 - 1 XCUITest duman testi
 - GitHub Actions kalite hattı
 - CI içinde genel iOS Simulator derleme adımı

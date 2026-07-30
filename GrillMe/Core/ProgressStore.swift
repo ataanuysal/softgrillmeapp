@@ -121,15 +121,39 @@ public struct LessonProgress: Codable, Equatable, Sendable {
   public private(set) var completedLessonIDs: Set<String>
   public private(set) var attempts: [LessonAttempt]
   public private(set) var learningEvents: [LearningEvent]
+  /// İlk açılış akışı tamamlandı mı? Eski kayıtlarda bu alan yoktur.
+  public private(set) var hasFinishedOnboarding: Bool
+  /// Seçilen günlük ritim; seçilmediyse nil.
+  public private(set) var dailyGoal: DailyGoal?
 
   public init(
     completedLessonIDs: Set<String> = [],
     attempts: [LessonAttempt] = [],
-    learningEvents: [LearningEvent] = []
+    learningEvents: [LearningEvent] = [],
+    hasFinishedOnboarding: Bool = false,
+    dailyGoal: DailyGoal? = nil
   ) {
     self.completedLessonIDs = completedLessonIDs
     self.attempts = attempts
     self.learningEvents = learningEvents
+    self.hasFinishedOnboarding = hasFinishedOnboarding
+    self.dailyGoal = dailyGoal
+  }
+
+  /// İlk açılış akışını kapatır ve seçilen ritmi saklar.
+  public mutating func finishOnboarding(dailyGoal: DailyGoal?) {
+    hasFinishedOnboarding = true
+    self.dailyGoal = dailyGoal
+  }
+
+  /// Verilen gün içinde tamamlanan benzersiz ders sayısı.
+  public func completedLessonCount(
+    on date: Date,
+    calendar: Calendar = .current
+  ) -> Int {
+    let day = calendar.startOfDay(for: date)
+    let sameDay = attempts.filter { calendar.startOfDay(for: $0.completedAt) == day }
+    return Set(sameDay.map(\.lessonID)).count
   }
 
   public mutating func complete(_ lessonID: String) {
@@ -265,6 +289,8 @@ public struct LessonProgress: Codable, Equatable, Sendable {
     case completedLessonIDs
     case attempts
     case learningEvents
+    case hasFinishedOnboarding
+    case dailyGoal
   }
 
   public init(from decoder: Decoder) throws {
@@ -274,6 +300,12 @@ public struct LessonProgress: Codable, Equatable, Sendable {
     attempts = try container.decodeIfPresent([LessonAttempt].self, forKey: .attempts) ?? []
     learningEvents =
       try container.decodeIfPresent([LearningEvent].self, forKey: .learningEvents) ?? []
+    // Onboarding'den önceki kayıtlarda bu alanlar yoktur; eski kullanıcı akışı
+    // yeniden görmesin diye ilerlemesi olan kayıt tamamlanmış sayılır.
+    hasFinishedOnboarding =
+      try container.decodeIfPresent(Bool.self, forKey: .hasFinishedOnboarding)
+      ?? !attempts.isEmpty
+    dailyGoal = try container.decodeIfPresent(DailyGoal.self, forKey: .dailyGoal)
   }
 
   public func encode(to encoder: Encoder) throws {
@@ -281,6 +313,8 @@ public struct LessonProgress: Codable, Equatable, Sendable {
     try container.encode(completedLessonIDs, forKey: .completedLessonIDs)
     try container.encode(attempts, forKey: .attempts)
     try container.encode(learningEvents, forKey: .learningEvents)
+    try container.encode(hasFinishedOnboarding, forKey: .hasFinishedOnboarding)
+    try container.encodeIfPresent(dailyGoal, forKey: .dailyGoal)
   }
 }
 

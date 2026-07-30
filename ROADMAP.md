@@ -205,7 +205,7 @@ Kabul sonucu: 30 derslik temel yol korunuyor; 31–40. dersler Yol Haritası'nda
 
 - ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
 - ✅ 40 dersin veri sözleşmesi otomatik doğrulanıyor.
-- ✅ 99 Swift Testing testi ve 22 çekirdek test paketi tanımlı.
+- ✅ 116 Swift Testing testi ve 25 çekirdek test paketi tanımlı.
 - ✅ Uygulama açılışı, sekme geçişi ve derse girişi kapsayan XCUITest hedefi.
 - ✅ Paylaşılan Xcode şeması ve GitHub Actions kalite hattı.
 - ✅ Swift format/lint kontrolü yapılıyor.

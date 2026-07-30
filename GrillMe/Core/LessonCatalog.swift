@@ -25,6 +25,31 @@ public struct LessonContentsSection: Equatable, Sendable {
   }
 }
 
+extension XRayLesson {
+  /// Dersin dosya gezgininde görünen adı: `01_degerin_izini_sur`.
+  ///
+  /// Arayüz dersleri bir editör dosyası gibi listeler; ad Türkçe başlıktan
+  /// türetilir ve aksanlar sadeleşir çünkü dosya adları öyle yazılır.
+  public var fileStem: String {
+    // Aksan katlama Türkçede "ı" ve "İ" harflerini olduğu gibi bırakır; dosya
+    // adı ASCII kalsın diye bunlar açıkça karşılanır.
+    let transliterated = title.lowercased(with: Locale(identifier: "tr_TR"))
+      .replacingOccurrences(of: "ı", with: "i")
+      .replacingOccurrences(of: "ğ", with: "g")
+      .replacingOccurrences(of: "ş", with: "s")
+      .replacingOccurrences(of: "ç", with: "c")
+      .replacingOccurrences(of: "ö", with: "o")
+      .replacingOccurrences(of: "ü", with: "u")
+    let slug = transliterated.map { character -> Character in
+      character.isASCII && (character.isLetter || character.isNumber) ? character : "_"
+    }
+    let collapsed = String(slug)
+      .split(separator: "_", omittingEmptySubsequences: true)
+      .joined(separator: "_")
+    return String(format: "%02d_%@", order, collapsed)
+  }
+}
+
 public struct LessonCatalog: Equatable, Sendable {
   public let lessons: [XRayLesson]
 
