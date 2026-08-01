@@ -59,8 +59,9 @@ derinleştiğini olduğu gibi gösterir.
 
 ### Bilinen içerik borcu
 
-- Ders kodlarının ortanca uzunluğu 5 satırdır. 20 satırlık tek kod çıkış
-  değerlendirmesidir, yani o uzunluk sınavdan önce hiç çalışılmaz.
+- Ders kodunun ortanca uzunluğu 6, en kısası 4 satır. 20 satırlık çıkış
+  değerlendirmesine giden kademeli bir merdiven hâlâ yok; en uzun ara ders 13
+  satır.
 - Hata avcılığı yalnızca debugging bölümünde (6/40); diğer bölümlerde hata
   arama pratiği yok.
 - Dil karşılaştırması temeller dışındaki bölümlerde yok.
@@ -96,7 +97,7 @@ pratik sorusu var.
   metinli erişilebilir eylemler; büyük yazıda dikey kartlar, menü tipi dil
   seçimi ve yatay kaydırılabilir kod
 - Uygulama açılışı, iki ana sekme ve derse giriş için gerçek XCUITest hedefi
-- Format, 118 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
+- Format, 119 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
 
 ## Gereksinimler
 
@@ -203,7 +204,7 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 ## Doğrulama
 
-- 118 Swift Testing testi
+- 119 Swift Testing testi
 - 25 çekirdek test paketi
 - 1 XCUITest duman testi
 - GitHub Actions kalite hattı

@@ -449,9 +449,12 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let sayilar = [1, 2, 3]",
       "let ikiler = sayilar.map { $0 * 2 }",
       "print(ikiler)",
+      "print(sayilar)",
     ],
-    choices: ["[1, 2, 3]", "[2, 4, 6]", "[2, 3]", "6"],
-    answer: "[2, 4, 6]",
+    choices: [
+      "[2, 4, 6] → [1, 2, 3]", "[2, 4, 6] → [2, 4, 6]", "[1, 2, 3] → [2, 4, 6]", "[2, 4, 6]",
+    ],
+    answer: "[2, 4, 6] → [1, 2, 3]",
     steps: [
       Step(
         1, "Kaynak dizi üç elemanla bellekte oluşur.",
@@ -487,6 +490,13 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         memory: ["sayilar": "[1, 2, 3]", "ikiler": "[2, 4, 6]"],
         output: "[2, 4, 6]",
         callStack: [CallFrame(functionName: "program", locals: ["ikiler": "[2, 4, 6]"])]
+      ),
+      Step(
+        4,
+        "Kaynak dizi yazdırılır ve hiç değişmediği görülür: map dönüştürmez, yeni bir dizi üretir.",
+        memory: ["sayilar": "[1, 2, 3]", "ikiler": "[2, 4, 6]", "kaynak değişti mi": "hayır"],
+        output: "[2, 4, 6] → [1, 2, 3]",
+        callStack: [CallFrame(functionName: "program", locals: ["sayilar": "[1, 2, 3]"])]
       ),
     ],
     transferCode: [
@@ -536,9 +546,10 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       "let sayilar = [1, 2, 3, 4]",
       "let buyukler = sayilar.filter { $0 > 2 }",
       "print(buyukler)",
+      "print(buyukler.count)",
     ],
-    choices: ["[1, 2]", "[3, 4]", "[2, 3, 4]", "[false, false, true, true]"],
-    answer: "[3, 4]",
+    choices: ["[3, 4] → 2", "[3, 4] → 4", "[1, 2] → 2", "[3, 4]"],
+    answer: "[3, 4] → 2",
     steps: [
       Step(
         1, "Kaynak dizi dört elemanla oluşur.",
@@ -582,6 +593,12 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         memory: ["sayilar": "[1, 2, 3, 4]", "buyukler": "[3, 4]"],
         output: "[3, 4]",
         callStack: [CallFrame(functionName: "program", locals: ["buyukler": "[3, 4]"])]
+      ),
+      Step(
+        4, "Eleman sayısı dörtten ikiye düştü. map olsaydı bu sayı dört kalırdı.",
+        memory: ["kaynak sayısı": "4", "sonuç sayısı": "2", "buyukler": "[3, 4]"],
+        output: "[3, 4] → 2",
+        callStack: [CallFrame(functionName: "program", locals: ["buyukler.count": "2"])]
       ),
     ],
     transferCode: [
@@ -901,9 +918,11 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     code: [
       "class Kutu { var deger = 5 }",
       "let kutu = Kutu()",
-      "print(kutu.deger)",
+      "let ikinci = Kutu()",
+      "kutu.deger = 9",
+      "print(ikinci.deger)",
     ],
-    choices: ["Kutu", "0", "5", "nil"],
+    choices: ["5", "9", "0", "nil"],
     answer: "5",
     steps: [
       Step(
@@ -913,7 +932,7 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       ),
       Step(
         2, "Kutu() çağrısı şablonu kullanarak somut bir nesne üretir ve deger alanı 5 ile başlar.",
-        memory: ["Kutu": "şablon", "kutu": "Kutu nesnesi", "kutu.deger": "5"],
+        memory: ["Kutu": "şablon", "kutu.deger": "5"],
         architecture: objectSnapshot(
           className: "Kutu",
           instanceName: "kutu",
@@ -921,12 +940,26 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         )
       ),
       Step(
-        3, "Okunan değer şablonun değil, o nesnenin kendi alanıdır.",
-        memory: ["kutu": "Kutu nesnesi", "kutu.deger": "5"],
-        output: "5",
+        3,
+        "İkinci çağrı ayrı bir nesne üretir. Şablondaki 5 paylaşılmaz; her nesne kendi kopyasını alır.",
+        memory: ["kutu.deger": "5", "ikinci.deger": "5", "bellekteki nesne": "2"]
+      ),
+      Step(
+        4, "Yalnızca ilk nesnenin alanı değişir. İkincisine bu satırda dokunulmadı.",
+        memory: ["kutu.deger": "9", "ikinci.deger": "5", "bellekteki nesne": "2"],
         architecture: objectSnapshot(
           className: "Kutu",
           instanceName: "kutu",
+          valueLabel: "deger = 9"
+        )
+      ),
+      Step(
+        5, "Okunan değer şablonun değil, o nesnenin kendi alanıdır: ikinci hâlâ 5.",
+        memory: ["kutu.deger": "9", "ikinci.deger": "5"],
+        output: "5",
+        architecture: objectSnapshot(
+          className: "Kutu",
+          instanceName: "ikinci",
           valueLabel: "deger = 5"
         )
       ),
@@ -1494,29 +1527,33 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         "Kırmızı derleyici mesajı okumayı öğrenmek, çalışma anı çökmelerini ve mantık hatalarını ayrı yöntemlerle aramanın ilk adımıdır."
     ),
     code: [
-      "let puan =",
-      "print(puan)",
+      "func indirimliFiyat(_ fiyat: Int) -> Int {",
+      "    let oran =",
+      "    return fiyat - oran",
+      "}",
+      "let sonuc = indirimliFiyat(200)",
+      "print(sonuc)",
     ],
-    choices: ["Derlenmez", "0", "nil", "Boş satır"],
+    choices: ["Derlenmez", "200", "nil", "Boş satır"],
     answer: "Derlenmez",
     steps: [
       Step(
-        1,
-        "Derleyici satırı okur ve eşittir işaretinden sonra bir değer bekler; hiçbir şey bulamaz.",
-        memory: ["puan": "tür ve değer belirlenemedi"]
+        2,
+        "Derleyici ikinci satırı okur ve eşittir işaretinden sonra bir değer bekler; hiçbir şey bulamaz.",
+        memory: ["oran": "tür ve değer belirlenemedi"]
       ),
       Step(
-        1, "İfade tamamlanmadığı için puan'ın ne türü ne değeri oluşur. Derleme burada durur.",
-        memory: ["puan": "yok", "derleme": "başarısız"]
+        2, "İfade tamamlanmadığı için oran'ın ne türü ne değeri oluşur. Derleme burada durur.",
+        memory: ["oran": "yok", "derleme": "başarısız"]
       ),
       Step(
-        1,
-        "Aktif satır burada kalır: ikinci satır da dahil hiçbir satır çalışmaz. Syntax hatasında çalışma anı hiç başlamaz.",
+        2,
+        "Aktif satır burada kalır. Fonksiyon gövdesi, çağrı ve print dahil hiçbir satır çalışmaz; syntax hatasında çalışma anı hiç başlamaz.",
         memory: ["program durumu": "hiç başlamadı", "çalışan satır sayısı": "0"]
       ),
     ],
     debugKind: .syntax,
-    debugLine: 1,
+    debugLine: 2,
     expected: "bir başlangıç değeri",
     actual: "eksik ifade",
     practices: [
@@ -1533,10 +1570,12 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       )
     ],
     transferCode: [
-      "let ad: String",
-      "print(ad)",
+      "func selamla(ad: String) -> String {",
+      "    return \"Merhaba \" +",
+      "}",
+      "print(selamla(ad: \"Ada\"))",
     ],
-    transferChoices: ["Derlenmez", "Boş metin", "nil", "0"],
+    transferChoices: ["Derlenmez", "Merhaba Ada", "Merhaba", "nil"],
     transferAnswer: "Derlenmez",
     extraQuizzes: [
       Quiz(
@@ -1570,39 +1609,47 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         "İndirim, vergi ve puan hesaplarında işaret veya sıra hatası hep bu türdendir; testler tam olarak bunu yakalamak için yazılır."
     ),
     code: [
-      "let fiyat = 100",
-      "let indirimli = fiyat + 10",
-      "print(indirimli)",
+      "func odenecek(fiyat: Int, oran: Int) -> Int {",
+      "    let indirim = fiyat * oran / 100",
+      "    return fiyat + indirim",
+      "}",
+      "let tutar = odenecek(fiyat: 200, oran: 25)",
+      "print(tutar)",
     ],
-    choices: ["90", "100", "110", "10"],
-    answer: "110",
+    choices: ["250", "150", "200", "50"],
+    answer: "250",
     steps: [
       Step(
-        1, "Başlangıç fiyatı bellekte oluşur. Buraya kadar her şey beklendiği gibi.",
-        memory: ["fiyat": "100"]
+        5, "Fonksiyon 200 lira ve %25 indirimle çağrılır. Buraya kadar her şey beklendiği gibi.",
+        memory: ["fiyat": "200", "oran": "25"]
       ),
       Step(
-        2,
-        "Kod hatasız derlenir ve çalışır. Yazılan işlem `+` olduğu için değer artar: 100 + 10 = 110.",
-        memory: ["fiyat": "100", "indirimli": "110", "beklenen": "90"]
+        2, "İndirim tutarı doğru hesaplanır: 200 * 25 / 100 = 50.",
+        memory: ["fiyat": "200", "oran": "25", "indirim": "50"]
       ),
       Step(
-        3, "Program çökmeden 110 yazar. Hata ancak sonucu beklentiyle karşılaştırınca görünür.",
-        memory: ["indirimli": "110", "beklenen": "90", "fark": "20"],
-        output: "110"
+        3,
+        "Dönüş satırında `+` yazılmış. Kod hatasız derlenir ve çalışır ama indirim düşülmek yerine eklenir.",
+        memory: ["fiyat": "200", "indirim": "50", "dönen": "250", "beklenen": "150"]
+      ),
+      Step(
+        6, "Program çökmeden 250 yazar. Hata ancak sonucu beklentiyle karşılaştırınca görünür.",
+        memory: ["tutar": "250", "beklenen": "150", "fark": "100"],
+        output: "250"
       ),
     ],
     debugKind: .logic,
-    debugLine: 2,
-    expected: "90",
-    actual: "110",
+    debugLine: 3,
+    expected: "150",
+    actual: "250",
     transferCode: [
-      "let puan = 8",
-      "let yeniPuan = puan - 2",
-      "print(yeniPuan)",
+      "let sepet = 300",
+      "let kargo = 40",
+      "let toplam = sepet - kargo",
+      "print(toplam)",
     ],
-    transferChoices: ["6", "8", "10", "2"],
-    transferAnswer: "6",
+    transferChoices: ["260", "340", "300", "40"],
+    transferAnswer: "260",
     extraQuizzes: [
       Quiz(
         ["let toplam = 10", "let adet = 4", "let ortalama = toplam + adet", "print(ortalama)"],
@@ -1638,46 +1685,49 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         "Boş arama sonucu, ilk kez açılan hesap ve sıfır adetli sepet üçü de aynı sınıf sınır durumudur."
     ),
     code: [
-      "func ilk(_ sayilar: [Int]) -> Int {",
-      "    return sayilar[0]",
+      "struct Sepet {",
+      "    let fiyatlar: [Int]",
+      "    func enPahali() -> Int {",
+      "        fiyatlar.max()!",
+      "    }",
       "}",
-      "print(ilk([]))",
+      "let sepet = Sepet(fiyatlar: [])",
+      "print(sepet.enPahali())",
     ],
     choices: ["0", "nil", "Hata", "Boş dizi"],
     answer: "Hata",
     steps: [
       Step(
-        4, "Fonksiyon boş bir dizi ile çağrılır. Dolu listeyle aynı kod yolu izlenecek.",
-        memory: ["sayilar": "[]", "eleman sayısı": "0"],
+        7, "Sepet boş bir fiyat listesiyle kurulur. Dolu sepetle aynı kod yolu izlenecek.",
+        memory: ["sepet.fiyatlar": "[]", "eleman sayısı": "0"],
+        callStack: [CallFrame(functionName: "program", locals: [:])]
+      ),
+      Step(
+        8, "enPahali() çağrılır. Yürütme method gövdesine geçer; henüz sorun görünmüyor.",
+        memory: ["sepet.fiyatlar": "[]", "eleman sayısı": "0", "çağrılan": "enPahali()"],
         callStack: [
           CallFrame(functionName: "program", locals: [:]),
-          CallFrame(functionName: "ilk", locals: ["sayilar": "[]"]),
+          CallFrame(functionName: "Sepet.enPahali", locals: ["fiyatlar": "[]"]),
         ]
       ),
       Step(
-        2, "0 index'i istenir. Ama dizide hiç kutu yok: geçerli index aralığı boş.",
-        memory: ["sayilar": "[]", "istenen index": "0", "geçerli aralık": "yok"],
+        4,
+        "max() boş listede nil döner ve `!` bunu açmaya çalışır. Geçersiz erişim programı durdurur; return hiç tamamlanmaz.",
+        memory: ["max() sonucu": "nil", "program durumu": "çöktü", "üretilen çıktı": "yok"],
         callStack: [
           CallFrame(functionName: "program", locals: [:]),
-          CallFrame(functionName: "ilk", locals: ["sayilar": "[]", "istenen index": "0"]),
-        ]
-      ),
-      Step(
-        2, "Geçersiz erişim programı durdurur. return hiç çalışmaz ve çağırana değer dönmez.",
-        memory: ["program durumu": "çöktü", "üretilen çıktı": "yok"],
-        callStack: [
-          CallFrame(functionName: "program", locals: [:]),
-          CallFrame(functionName: "ilk", locals: ["durum": "index hatası"]),
+          CallFrame(functionName: "Sepet.enPahali", locals: ["durum": "nil açma hatası"]),
         ]
       ),
     ],
     debugKind: .edgeCase,
-    debugLine: 2,
-    expected: "boş listeyi güvenle ele almak",
-    actual: "index hatası",
+    debugLine: 4,
+    expected: "boş sepeti güvenle ele almak",
+    actual: "nil açma hatası",
     transferCode: [
-      "let sayilar: [Int] = []",
-      "print(sayilar.first ?? 0)",
+      "let fiyatlar: [Int] = []",
+      "let enPahali = fiyatlar.max() ?? 0",
+      "print(enPahali)",
     ],
     transferChoices: ["0", "nil", "Hata", "[]"],
     transferAnswer: "0",
@@ -1716,27 +1766,42 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         "Henüz yüklenmemiş profil, boş bırakılmış form alanı ve bulunamayan kayıt üçü de optional olarak gelir."
     ),
     code: [
-      "let ad: String? = nil",
-      "print(ad!)",
+      "struct Profil {",
+      "    let takmaAd: String?",
+      "}",
+      "func basligiYaz(_ profil: Profil) {",
+      "    print(profil.takmaAd!)",
+      "}",
+      "basligiYaz(Profil(takmaAd: nil))",
     ],
     choices: ["nil", "Boş", "Hata", "Optional(nil)"],
     answer: "Hata",
     steps: [
       Step(
-        1, "Türdeki soru işareti 'değer olmayabilir' demektir. Şu anda gerçekten değer yok.",
-        memory: ["ad": "nil", "ad'ın türü": "String?"]
+        2,
+        "Türdeki soru işareti 'değer olmayabilir' demektir. Bu bir olasılık değil, sözleşmenin parçası.",
+        memory: ["takmaAd'ın türü": "String?", "takmaAd": "henüz verilmedi"]
       ),
       Step(
-        2, "`!` işareti 'içinde kesin değer var' iddiasıdır ve hiçbir kontrol yapmadan uygulanır.",
-        memory: ["ad": "nil", "iddia": "değer var", "kontrol": "yapılmadı"]
+        7, "Profil takma ad olmadan kurulup fonksiyona verilir. Sözleşmenin izin verdiği durum.",
+        memory: ["profil.takmaAd": "nil", "çağrılan": "basligiYaz"],
+        callStack: [
+          CallFrame(functionName: "program", locals: [:]),
+          CallFrame(functionName: "basligiYaz", locals: ["profil.takmaAd": "nil"]),
+        ]
       ),
       Step(
-        2, "İddia yanlış çıkar. nil açılamadığı için program durur; print hiç çalışmaz.",
-        memory: ["program durumu": "çöktü", "üretilen çıktı": "yok"]
+        5,
+        "`!` hiçbir kontrol yapmadan 'içinde kesin değer var' der. İddia yanlış çıkar; nil açılamaz ve program durur.",
+        memory: ["iddia": "değer var", "gerçek": "nil", "program durumu": "çöktü"],
+        callStack: [
+          CallFrame(functionName: "program", locals: [:]),
+          CallFrame(functionName: "basligiYaz", locals: ["durum": "nil açma hatası"]),
+        ]
       ),
     ],
     debugKind: .optional,
-    debugLine: 2,
+    debugLine: 5,
     expected: "güvenli varsayılan",
     actual: "nil zorla açma",
     practices: [
@@ -1751,8 +1816,13 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       )
     ],
     transferCode: [
-      "let ad: String? = nil",
-      "print(ad ?? \"Misafir\")",
+      "struct Profil {",
+      "    let takmaAd: String?",
+      "}",
+      "func basligiYaz(_ profil: Profil) {",
+      "    print(profil.takmaAd ?? \"Misafir\")",
+      "}",
+      "basligiYaz(Profil(takmaAd: nil))",
     ],
     transferChoices: ["nil", "Misafir", "Hata", "Optional(\"Misafir\")"],
     transferAnswer: "Misafir",
@@ -1792,57 +1862,64 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         "Çökme raporlarında yığının tepesinden başlayıp kendi kodunun geçtiği ilk satırı bulmak standart yöntemdir."
     ),
     code: [
-      "func a() { b() }",
-      "func b() { c() }",
-      "func c() { fatalError(\"Boom\") }",
-      "a()",
+      "func ekranAc() { veriYukle() }",
+      "func veriYukle() { kayitCoz() }",
+      "func kayitCoz() {",
+      "    fatalError(\"Bozuk kayıt\")",
+      "}",
+      "ekranAc()",
     ],
-    choices: ["a()", "b()", "c()", "program"],
-    answer: "c()",
+    choices: ["kayitCoz()", "ekranAc()", "veriYukle()", "program"],
+    answer: "kayitCoz()",
     steps: [
       Step(
-        4, "Program a() ile başlar. Yığında tek çerçeve var.",
+        6, "Ekran açılır. Yığında tek çerçeve var.",
         memory: ["yığın derinliği": "1"],
-        callStack: [CallFrame(functionName: "a", locals: [:])]
+        callStack: [CallFrame(functionName: "ekranAc", locals: [:])]
       ),
       Step(
-        1, "a, b'yi çağırır. Yeni çerçeve öncekinin üstüne yığılır; a hâlâ bekliyor.",
-        memory: ["yığın derinliği": "2", "bekleyenler": "a"],
+        1, "ekranAc veriYukle'yi çağırır. Yeni çerçeve üste yığılır; ekranAc hâlâ bekliyor.",
+        memory: ["yığın derinliği": "2", "bekleyenler": "ekranAc"],
         callStack: [
-          CallFrame(functionName: "a", locals: [:]),
-          CallFrame(functionName: "b", locals: [:]),
+          CallFrame(functionName: "ekranAc", locals: [:]),
+          CallFrame(functionName: "veriYukle", locals: [:]),
         ]
       ),
       Step(
-        2, "b, c'yi çağırır. Yığın üç çerçeve derinliğinde ve hiçbiri henüz dönmedi.",
-        memory: ["yığın derinliği": "3", "bekleyenler": "a, b"],
+        2, "veriYukle kayitCoz'u çağırır. Yığın üç çerçeve derinliğinde ve hiçbiri dönmedi.",
+        memory: ["yığın derinliği": "3", "bekleyenler": "ekranAc, veriYukle"],
         callStack: [
-          CallFrame(functionName: "a", locals: [:]),
-          CallFrame(functionName: "b", locals: [:]),
-          CallFrame(functionName: "c", locals: [:]),
+          CallFrame(functionName: "ekranAc", locals: [:]),
+          CallFrame(functionName: "veriYukle", locals: [:]),
+          CallFrame(functionName: "kayitCoz", locals: [:]),
         ]
       ),
       Step(
-        3, "Hata en üstteki çerçevede oluşur. Trace'te c en üstte, a en altta görünür.",
-        memory: ["çöken çerçeve": "c", "trace sırası": "c → b → a", "program durumu": "çöktü"],
+        4,
+        "Hata en üstteki çerçevede oluşur. Trace'te kayitCoz en üstte, ekranAc en altta görünür.",
+        memory: [
+          "çöken çerçeve": "kayitCoz", "trace sırası": "kayitCoz → veriYukle → ekranAc",
+          "program durumu": "çöktü",
+        ],
         callStack: [
-          CallFrame(functionName: "a", locals: [:]),
-          CallFrame(functionName: "b", locals: [:]),
-          CallFrame(functionName: "c", locals: ["durum": "fatalError"]),
+          CallFrame(functionName: "ekranAc", locals: [:]),
+          CallFrame(functionName: "veriYukle", locals: [:]),
+          CallFrame(functionName: "kayitCoz", locals: ["durum": "fatalError"]),
         ]
       ),
     ],
     debugKind: .stackTrace,
-    debugLine: 3,
+    debugLine: 4,
     expected: "normal dönüş",
     actual: "fatalError",
     transferCode: [
-      "func yukle() { parse() }",
-      "func parse() { fatalError(\"Bozuk veri\") }",
-      "yukle()",
+      "func indir() { ac() }",
+      "func ac() { oku() }",
+      "func oku() { fatalError(\"Bozuk veri\") }",
+      "indir()",
     ],
-    transferChoices: ["yukle()", "parse()", "program", "fatalError()"],
-    transferAnswer: "parse()",
+    transferChoices: ["oku()", "indir()", "ac()", "program"],
+    transferAnswer: "oku()",
     extraQuizzes: [
       Quiz(
         ["func x() { y() }", "func y() { fatalError(\"Dur\") }", "x()"],
@@ -1876,36 +1953,48 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         "Hata kaydı incelemesi 'şunu bekliyordum, şu oldu, sebebi şu olabilir' cümlesiyle başlar; bu cümle bir hipotezdir."
     ),
     code: [
-      "let sayilar = [1, 2, 3]",
-      "print(sayilar[3])",
+      "func ortalama(_ notlar: [Int]) -> Int {",
+      "    let toplam = notlar.reduce(0, +)",
+      "    return toplam / notlar.count",
+      "}",
+      "let bosSinif: [Int] = []",
+      "print(ortalama(bosSinif))",
     ],
-    choices: ["3", "nil", "Hata", "0"],
+    choices: ["Hata", "0", "nil", "1"],
     answer: "Hata",
     steps: [
       Step(
-        1, "Dizi üç eleman taşır. Geçerli index'ler 0, 1 ve 2'dir.",
-        memory: ["sayilar": "[1, 2, 3]", "eleman sayısı": "3", "geçerli index": "0...2"]
+        5, "Sınıf listesi boş. Fonksiyon dolu listeyle çalışıyordu, aynı yol izlenecek.",
+        memory: ["bosSinif": "[]", "eleman sayısı": "0"]
       ),
       Step(
-        2,
-        "Hipotez: '3 yazarsam üçüncü elemanı alırım.' Bu, sayma ile index'i karıştıran bir varsayım.",
-        memory: ["istenen index": "3", "hipotez": "üçüncü elemanı verir"]
+        6,
+        "Hipotez: 'boş listenin ortalaması 0 çıkar.' Bu, bölmenin bölenine bakmayan bir varsayım.",
+        memory: ["hipotez": "sonuç 0 olur", "eleman sayısı": "0"]
       ),
       Step(
-        2, "Gözlem hipotezi çürütür: 3 geçerli aralığın dışında ve program durur.",
-        memory: ["istenen index": "3", "geçerli index": "0...2", "program durumu": "çöktü"]
+        2, "Toplam sorunsuz hesaplanır: boş listede reduce başlangıç değerini döndürür.",
+        memory: ["toplam": "0", "eleman sayısı": "0"]
+      ),
+      Step(
+        3,
+        "Gözlem hipotezi çürütür: bölen sıfır olduğu için bölme yapılamaz ve program durur.",
+        memory: ["toplam": "0", "bölen": "0", "program durumu": "çöktü"]
       ),
     ],
     debugKind: .runtime,
-    debugLine: 2,
-    expected: "son eleman",
-    actual: "index sınır dışı",
+    debugLine: 3,
+    expected: "boş sınıfta güvenli sonuç",
+    actual: "sıfıra bölme",
     transferCode: [
-      "let sayilar = [1, 2, 3]",
-      "print(sayilar[2])",
+      "func ortalama(_ notlar: [Int]) -> Int {",
+      "    guard !notlar.isEmpty else { return 0 }",
+      "    return notlar.reduce(0, +) / notlar.count",
+      "}",
+      "print(ortalama([]))",
     ],
-    transferChoices: ["2", "3", "Hata", "nil"],
-    transferAnswer: "3",
+    transferChoices: ["0", "Hata", "nil", "1"],
+    transferAnswer: "0",
     extraQuizzes: [
       Quiz(
         ["let harfler = [\"a\", \"b\"]", "print(harfler[1])"],

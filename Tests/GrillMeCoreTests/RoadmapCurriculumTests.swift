@@ -345,6 +345,24 @@ struct RoadmapCurriculumTests {
     #expect(wrapped.code == first.code)
   }
 
+  @Test("Hiçbir ders okunacak koddan yoksun kalmaz")
+  func everyLessonOffersEnoughCodeToRead() {
+    // İki satırlık bir örnekte okunacak bir akış yoktur; hata avcılığı ise
+    // içinde arama yapılacak kadar kod ister.
+    for lesson in LessonCatalog.standard.lessons {
+      #expect(
+        lesson.code.count >= 4,
+        Comment(rawValue: "\(lesson.id): \(lesson.code.count) satır")
+      )
+      if lesson.debugChallenge != nil {
+        #expect(
+          lesson.code.count >= 6,
+          Comment(rawValue: "\(lesson.id) hata avı: \(lesson.code.count) satır")
+        )
+      }
+    }
+  }
+
   @Test("Her bölümde en az bir ders pratik sorusu taşır")
   func everySectionOffersPractice() {
     for section in CurriculumSection.allCases {
