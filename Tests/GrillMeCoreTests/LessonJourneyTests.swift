@@ -8,6 +8,13 @@ struct LessonJourneyTests {
   func enforcesTeachingBeforeQuiz() {
     var journey = LessonJourney(lesson: .introduction)
 
+    // Ders bir tahmin adımı taşıdığı için akış oradan başlar.
+    #expect(journey.phase == .predict)
+
+    journey.submitQuizAnswer("6")
+    #expect(journey.selectedQuizAnswer == nil)
+
+    journey.skipPrediction()
     #expect(journey.phase == .topic)
 
     journey.submitQuizAnswer("6")

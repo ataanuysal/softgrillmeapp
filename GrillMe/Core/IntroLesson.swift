@@ -144,7 +144,27 @@ extension XRayLesson {
       commonMistake:
         "`puan = puan + 2` satırını matematikteki gibi bir eşitlik sanmak. Bu satır bir denklem değil, 'sağdakini hesapla ve sola yaz' komutudur.",
       realWorldUse:
-        "Sepet tutarı, kalan hak ve okunmamış bildirim sayısı gibi ekranda gördüğün her sayı böyle güncellenir."
+        "Sepet tutarı, kalan hak ve okunmamış bildirim sayısı gibi ekranda gördüğün her sayı böyle güncellenir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "var puan = 10"),
+          CodeLine(number: 2, text: "puan = puan + 2"),
+          CodeLine(number: 3, text: "print(puan)"),
+        ],
+        choices: ["12", "10", "2", "puan"],
+        correctAnswer: "12",
+        reveal:
+          "Aynı ad, yeni değer: ikinci satır eskisinin üzerine yazdı."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "var sayac = 0"),
+          CodeLine(number: 2, text: "sayac = sayac + 1"),
+        ],
+        note:
+          "sayac artık 1. Adı değişmedi; değişen, adın taşıdığı değer."
+      )
     )
   )
 
@@ -303,7 +323,31 @@ extension XRayLesson {
       commonMistake:
         "İki kolu da okuyup ikisinin de çalıştığını düşünmek. Bir çalıştırmada yalnızca tek kol çalışır; diğeri hiç görülmez.",
       realWorldUse:
-        "Giriş yapmış kullanıcıya farklı, yapmamışa farklı ekran göstermek aynı çatalın gerçek uygulamadaki hâlidir."
+        "Giriş yapmış kullanıcıya farklı, yapmamışa farklı ekran göstermek aynı çatalın gerçek uygulamadaki hâlidir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let yas = 15"),
+          CodeLine(number: 2, text: "if yas >= 18 {"),
+          CodeLine(number: 3, text: "    print(\"Girebilir\")"),
+          CodeLine(number: 4, text: "}"),
+        ],
+        choices: ["Çıktı yok", "Girebilir", "15", "true"],
+        correctAnswer: "Çıktı yok",
+        reveal:
+          "Koşul yanlışsa blok hiç çalışmaz; else yoksa program sessizce devam eder."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "if 3 > 5 {"),
+          CodeLine(number: 2, text: "    print(\"olmaz\")"),
+          CodeLine(number: 3, text: "}"),
+        ],
+        note:
+          "Koşul yanlış olduğu için print satırı hiç çalışmaz."
+      ),
+      connection:
+        "1. derste değerin nasıl değiştiğini izledin; burada o değer hangi yolun çalışacağına karar veriyor."
     )
   )
 }

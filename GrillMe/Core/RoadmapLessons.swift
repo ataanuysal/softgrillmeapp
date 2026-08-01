@@ -243,7 +243,30 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Fonksiyon içinde aynı adla tanımlanan değerin dıştakini güncellediğini sanmak; oysa yeni ve ayrı bir değer oluşur.",
       realWorldUse:
-        "Ekran modelinde geçici hesaplar yerelde tutulur, kalıcı durum dışarıda yaşar. İkisini karıştırmak 'değer neden eski kaldı' hatasının en sık kaynağıdır."
+        "Ekran modelinde geçici hesaplar yerelde tutulur, kalıcı durum dışarıda yaşar. İkisini karıştırmak 'değer neden eski kaldı' hatasının en sık kaynağıdır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let x = 1"),
+          CodeLine(number: 2, text: "func f() { let x = 9 }"),
+          CodeLine(number: 3, text: "f()"),
+          CodeLine(number: 4, text: "print(x)"),
+        ],
+        choices: ["1", "9", "0", "Hata"],
+        correctAnswer: "1",
+        reveal:
+          "Fonksiyon kendi x'ini yarattı; dıştaki hiç değişmedi."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "func f() { let ad = \"iç\" }"),
+          CodeLine(number: 2, text: "// ad buradan görünmez"),
+        ],
+        note:
+          "Fonksiyon içinde tanımlanan ad, fonksiyon bitince bellekten silinir."
+      ),
+      connection:
+        "6. derste fonksiyona giren değeri izledin; burada fonksiyonun kendi içindeki adları ayırıyorsun."
     ),
     code: [
       "let puan = 10",
@@ -360,7 +383,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Dönüş değeri olmayan fonksiyonu 'hiçbir şey yapmıyor' saymak; oysa asıl işi dışarıdaki durumu değiştirmektir.",
       realWorldUse:
-        "Saf hesaplama fonksiyonları tek satırla test edilir. Ağa giden, dosyaya yazan veya global durumu değiştiren fonksiyonlar için test double gerekir."
+        "Saf hesaplama fonksiyonları tek satırla test edilir. Ağa giden, dosyaya yazan veya global durumu değiştiren fonksiyonlar için test double gerekir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "var n = 0"),
+          CodeLine(number: 2, text: "func art() { n += 1 }"),
+          CodeLine(number: 3, text: "print(n)"),
+        ],
+        choices: ["0", "1", "n", "Hata"],
+        correctAnswer: "0",
+        reveal:
+          "art() hiç çağrılmadı; dış durum olduğu gibi kaldı."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "func kare(_ x: Int) -> Int { x * x }")
+        ],
+        note:
+          "Bu fonksiyon dışarıda hiçbir şeye dokunmaz: aynı girdi her zaman aynı sonucu verir."
+      ),
+      connection:
+        "8. derste kapsam değerin nerede görüldüğünü belirliyordu; burada bir fonksiyonun dışarıyı değiştirip değiştirmediğini ayırıyorsun."
     ),
     code: [
       "func ikiKat(_ x: Int) -> Int { x * 2 }",
@@ -463,7 +507,29 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "map'in kaynak diziyi değiştirdiğini sanmak. map yeni bir dizi üretir; kaynak olduğu gibi kalır.",
       realWorldUse:
-        "Sunucudan gelen ham kayıtları ekranda gösterilecek modellere çevirmek neredeyse her uygulamada bir map adımıdır."
+        "Sunucudan gelen ham kayıtları ekranda gösterilecek modellere çevirmek neredeyse her uygulamada bir map adımıdır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let a = [1, 2]"),
+          CodeLine(number: 2, text: "let b = a.map { $0 + 1 }"),
+          CodeLine(number: 3, text: "print(b)"),
+        ],
+        choices: ["[2, 3]", "[1, 2]", "[3]", "3"],
+        correctAnswer: "[2, 3]",
+        reveal:
+          "Her eleman ayrı ayrı dönüştü ve sonuç yeni bir dizi oldu."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let harfler = [\"a\", \"b\"]"),
+          CodeLine(number: 2, text: "let buyuk = harfler.map { $0.uppercased() }"),
+        ],
+        note:
+          "buyuk yeni bir dizidir; harfler olduğu gibi kalır."
+      ),
+      connection:
+        "3. derste döngü her eleman için tekrar ediyordu; map aynı işi tek satırda yapar."
     ),
     code: [
       "let sayilar = [1, 2, 3]",
@@ -560,7 +626,29 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Sınır değerini yanlış saymak: `> 2` koşulunda 2'nin kendisi elenir, `>= 2` olsaydı kalırdı.",
       realWorldUse:
-        "Arama sonuçlarını daraltmak, okunmamış bildirimleri ayıklamak ve süresi geçmiş kayıtları elemek hep filter adımıdır."
+        "Arama sonuçlarını daraltmak, okunmamış bildirimleri ayıklamak ve süresi geçmiş kayıtları elemek hep filter adımıdır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let a = [1, 5, 9]"),
+          CodeLine(number: 2, text: "let b = a.filter { $0 > 4 }"),
+          CodeLine(number: 3, text: "print(b.count)"),
+        ],
+        choices: ["2", "3", "1", "0"],
+        correctAnswer: "2",
+        reveal:
+          "Koşulu geçmeyen elendi; eleman sayısı üçten ikiye düştü."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let sayilar = [2, 4]"),
+          CodeLine(number: 2, text: "let tekler = sayilar.filter { $0 % 2 == 1 }"),
+        ],
+        note:
+          "Hiçbiri koşulu geçmez; tekler boş bir dizi olur, hata oluşmaz."
+      ),
+      connection:
+        "10. derste map eleman sayısını koruyordu; filter tam tersine sayıyı azaltır."
     ),
     code: [
       "let sayilar = [1, 2, 3, 4]",
@@ -663,7 +751,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Son elemana `renkler[renkler.count]` ile ulaşmaya çalışmak. O index dizinin dışındadır ve program çöker.",
       realWorldUse:
-        "Listenin son satırını seçmek, sayfalamada son sayfayı bulmak ve döngü sınırı yazmak hep count - 1 hesabına dayanır."
+        "Listenin son satırını seçmek, sayfalamada son sayfayı bulmak ve döngü sınırı yazmak hep count - 1 hesabına dayanır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let a = [\"x\", \"y\"]"),
+          CodeLine(number: 2, text: "print(a[0])"),
+        ],
+        choices: ["x", "y", "0", "Hata"],
+        correctAnswer: "x",
+        reveal:
+          "Sayma sıfırdan başlar; ilk kutunun index'i 0'dır."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let a = [10, 20, 30]"),
+          CodeLine(number: 2, text: "print(a.count - 1)"),
+        ],
+        note:
+          "Son index eleman sayısının bir eksiğidir: burada 2."
+      ),
+      connection:
+        "10. derste koleksiyonu bütün olarak dönüştürdün; burada tek bir elemanı adresliyorsun."
     ),
     code: [
       "let renkler = [\"Kırmızı\", \"Mavi\", \"Yeşil\"]",
@@ -763,7 +872,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Her aramaya `!` koyup değerin kesin var olduğunu varsaymak. Key yoksa bu satır programı düşürür.",
       realWorldUse:
-        "Ayar okuma, çeviri sözlüğü ve API cevabındaki alanlar hep key ile aranır ve hepsinde 'ya yoksa' sorusunun cevabı gerekir."
+        "Ayar okuma, çeviri sözlüğü ve API cevabındaki alanlar hep key ile aranır ve hepsinde 'ya yoksa' sorusunun cevabı gerekir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let d = [\"a\": 1]"),
+          CodeLine(number: 2, text: "print(d[\"b\"] == nil)"),
+        ],
+        choices: ["true", "false", "1", "Hata"],
+        correctAnswer: "true",
+        reveal:
+          "Olmayan key hata üretmez; arama sonucu nil olur."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let d = [\"tr\": \"Ankara\"]"),
+          CodeLine(number: 2, text: "print(d[\"tr\"] ?? \"bilinmiyor\")"),
+        ],
+        note:
+          "Key varsa değeri, yoksa sağdaki varsayılan yazılır."
+      ),
+      connection:
+        "12. derste elemana konumla eriştin; burada anlamlı bir anahtarla erişiyorsun."
     ),
     code: [
       "let baskentler = [\"TR\": \"Ankara\", \"FR\": \"Paris\"]",
@@ -838,7 +968,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Zinciri tek bir işlem sanıp filter'ın elediği elemanların reduce'a hâlâ girdiğini düşünmek.",
       realWorldUse:
-        "Sepet toplamı, aylık rapor ve istatistik ekranları neredeyse her zaman filtrele-dönüştür-topla zinciriyle hesaplanır."
+        "Sepet toplamı, aylık rapor ve istatistik ekranları neredeyse her zaman filtrele-dönüştür-topla zinciriyle hesaplanır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let a = [1, 2, 3]"),
+          CodeLine(number: 2, text: "print(a.reduce(0, +))"),
+        ],
+        choices: ["6", "3", "0", "[1, 2, 3]"],
+        correctAnswer: "6",
+        reveal:
+          "reduce bütün elemanları tek bir değere indirir."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let a = [1, 2, 3, 4]"),
+          CodeLine(number: 2, text: "let c = a.filter { $0 > 2 }.reduce(0, +)"),
+        ],
+        note:
+          "Önce eleme, sonra toplama: c değeri 7 olur."
+      ),
+      connection:
+        "10 ve 11. derslerdeki map ve filter burada reduce ile aynı zincire giriyor."
     ),
     code: [
       "let sayilar = [1, 2, 3, 4]",
@@ -944,7 +1095,30 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Class tanımındaki başlangıç değerini tüm nesnelerin paylaştığı tek bir değer sanmak. Her instance kendi kopyasını alır.",
       realWorldUse:
-        "Kullanıcı, sipariş ve ayar gibi kavramlar bir kez class olarak tanımlanır, uygulama boyunca yüzlerce instance üretilir."
+        "Kullanıcı, sipariş ve ayar gibi kavramlar bir kez class olarak tanımlanır, uygulama boyunca yüzlerce instance üretilir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "class K { var d = 1 }"),
+          CodeLine(number: 2, text: "let a = K()"),
+          CodeLine(number: 3, text: "print(a.d)"),
+        ],
+        choices: ["1", "0", "K", "nil"],
+        correctAnswer: "1",
+        reveal:
+          "Şablondaki başlangıç değeri her yeni nesneye kopyalanır."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "class K { var d = 1 }"),
+          CodeLine(number: 2, text: "let a = K()"),
+          CodeLine(number: 3, text: "let b = K()"),
+        ],
+        note:
+          "İki ayrı nesne oluştu; her biri kendi d alanını taşır."
+      ),
+      connection:
+        "13. derste veriyi anahtarla saklıyordun; class veriyi davranışıyla birlikte saklar."
     ),
     code: [
       "class Kutu { var deger = 5 }",
@@ -1034,7 +1208,33 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Method'un dönüş değeri olmadığı için 'bir şey yapmadığını' düşünmek; oysa değişiklik nesnenin içinde kalır.",
       realWorldUse:
-        "Sepete ürün eklemek, okundu işaretlemek ve sayaç arttırmak hep nesnenin kendi durumunu değiştiren method çağrılarıdır."
+        "Sepete ürün eklemek, okundu işaretlemek ve sayaç arttırmak hep nesnenin kendi durumunu değiştiren method çağrılarıdır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "class S {"),
+          CodeLine(number: 2, text: "    var d = 0"),
+          CodeLine(number: 3, text: "    func art() { d += 1 }"),
+          CodeLine(number: 4, text: "}"),
+          CodeLine(number: 5, text: "let s = S()"),
+          CodeLine(number: 6, text: "print(s.d)"),
+        ],
+        choices: ["0", "1", "S", "Hata"],
+        correctAnswer: "0",
+        reveal:
+          "Method hiç çağrılmadı; alan başlangıç değerinde kaldı."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let s = S()"),
+          CodeLine(number: 2, text: "s.art()"),
+          CodeLine(number: 3, text: "print(s.d)"),
+        ],
+        note:
+          "Çağrı bittikten sonra bile değişiklik nesnenin içinde kalır: 1."
+      ),
+      connection:
+        "15. derste nesnenin verisi vardı; burada o veriyi değiştiren davranışı ekliyorsun."
     ),
     code: [
       "class Sayac {",
@@ -1135,7 +1335,29 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "`self.ad = ad` satırındaki iki adı aynı şey sanmak. Soldaki nesnenin alanı, sağdaki initializer'a gelen parametredir.",
       realWorldUse:
-        "Bir ekran modelinin hangi servisle çalışacağı, bir siparişin hangi kullanıcıya ait olduğu genelde initializer'da verilir."
+        "Bir ekran modelinin hangi servisle çalışacağı, bir siparişin hangi kullanıcıya ait olduğu genelde initializer'da verilir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "struct U { let ad: String }"),
+          CodeLine(number: 2, text: "let u = U(ad: \"Ada\")"),
+          CodeLine(number: 3, text: "print(u.ad)"),
+        ],
+        choices: ["Ada", "U", "ad", "Boş metin"],
+        correctAnswer: "Ada",
+        reveal:
+          "Argüman initializer üzerinden nesnenin kendi alanına yazıldı."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "struct U { let ad: String }"),
+          CodeLine(number: 2, text: "// U() yazılamaz"),
+        ],
+        note:
+          "Initializer, ad verilmeden nesne kurulmasını engeller: eksik nesne oluşamaz."
+      ),
+      connection:
+        "16. derste alanlar sabit bir başlangıç değeri alıyordu; burada değeri dışarıdan sen veriyorsun."
     ),
     code: [
       "class Kullanici {",
@@ -1234,7 +1456,33 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "`b = a` satırını her zaman 'aynı şeyi işaret etsinler' diye okumak. Struct'ta bu satır bağımsız bir kopya üretir.",
       realWorldUse:
-        "Bir formu düzenlerken taslak kopya üzerinde çalışıp iptalde orijinali korumak tam olarak bu davranışa dayanır."
+        "Bir formu düzenlerken taslak kopya üzerinde çalışıp iptalde orijinali korumak tam olarak bu davranışa dayanır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "struct N { var x = 1 }"),
+          CodeLine(number: 2, text: "var a = N()"),
+          CodeLine(number: 3, text: "var b = a"),
+          CodeLine(number: 4, text: "b.x = 9"),
+          CodeLine(number: 5, text: "print(a.x)"),
+        ],
+        choices: ["1", "9", "0", "Hata"],
+        correctAnswer: "1",
+        reveal:
+          "Struct atamada kopyalanır; a'ya bu satırlarda hiç dokunulmadı."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "class N { var x = 1 }"),
+          CodeLine(number: 2, text: "let a = N()"),
+          CodeLine(number: 3, text: "let b = a"),
+          CodeLine(number: 4, text: "b.x = 9"),
+        ],
+        note:
+          "Class olsaydı a.x de 9 olurdu: ikisi aynı nesneyi işaret eder."
+      ),
+      connection:
+        "17. derste nesneyi kurdun; burada onu başkasına verince ne olduğunu izliyorsun."
     ),
     code: [
       "struct Nokta { var x: Int }",
@@ -1321,7 +1569,29 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "İçerilen parçanın dıştaki türün bir çeşidi olduğunu sanmak. Araba bir Motor değildir; bir Motor'a sahiptir.",
       realWorldUse:
-        "Ekran modelinin bir servise, servisin bir veri deposuna sahip olması aynı kalıptır ve her parçayı ayrı ayrı değiştirilebilir kılar."
+        "Ekran modelinin bir servise, servisin bir veri deposuna sahip olması aynı kalıptır ve her parçayı ayrı ayrı değiştirilebilir kılar.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "struct M { let g = 5 }"),
+          CodeLine(number: 2, text: "struct A { let m: M }"),
+          CodeLine(number: 3, text: "print(A(m: M()).m.g)"),
+        ],
+        choices: ["5", "M", "A", "0"],
+        correctAnswer: "5",
+        reveal:
+          "Zincir dıştan içe okunur: A → m → g."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "struct Pil { let seviye = 80 }"),
+          CodeLine(number: 2, text: "struct Telefon { let pil: Pil }"),
+        ],
+        note:
+          "Telefon bir pil değildir; bir pile sahiptir. Parça ayrı ayrı da var olabilir."
+      ),
+      connection:
+        "17. derste nesneyi kurdun; burada bir nesne başka bir nesneyi içeriyor."
     ),
     code: [
       "struct Motor { let tur = \"Elektrik\" }",
@@ -1402,7 +1672,30 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "`let hayvan: Hayvan` yazdığı için Hayvan'daki gövdenin çalışacağını sanmak. Karar çalışma anında nesneye göre verilir.",
       realWorldUse:
-        "Aynı arayüzü uygulayan farklı ödeme veya bildirim sağlayıcıları bu sayede tek bir çağrı noktasından kullanılabilir."
+        "Aynı arayüzü uygulayan farklı ödeme veya bildirim sağlayıcıları bu sayede tek bir çağrı noktasından kullanılabilir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "class H { func s() -> String { \"?\" } }"),
+          CodeLine(number: 2, text: "class K: H {}"),
+          CodeLine(number: 3, text: "print(K().s())"),
+        ],
+        choices: ["?", "K", "H", "Hata"],
+        correctAnswer: "?",
+        reveal:
+          "Kedi override etmedi; üst class'tan miras aldığı gövde çalıştı."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "class K: H {"),
+          CodeLine(number: 2, text: "    override func s() -> String { \"Miyav\" }"),
+          CodeLine(number: 3, text: "}"),
+        ],
+        note:
+          "override yazıldığı anda çağrı bu gövdeye gider; üsttteki artık çalışmaz."
+      ),
+      connection:
+        "19. derste nesne bir parçaya sahipti; burada nesne bir türün özel hâli oluyor."
     ),
     code: [
       "class Hayvan { func ses() -> String { \"?\" } }",
@@ -1492,7 +1785,29 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Zinciri yukarıdan aşağı kurulmuş sanmak. Kurulum en içteki parçadan dışa doğru ilerler, okuma ise ters yönde.",
       realWorldUse:
-        "View → ViewModel → Repository zincirinde yanlış görünen bir sayının hangi katmanda bozulduğu tam olarak böyle aranır."
+        "View → ViewModel → Repository zincirinde yanlış görünen bir sayının hangi katmanda bozulduğu tam olarak böyle aranır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "struct D { let p = 3 }"),
+          CodeLine(number: 2, text: "struct S { let d: D }"),
+          CodeLine(number: 3, text: "print(S(d: D()).d.p)"),
+        ],
+        choices: ["3", "D", "S", "0"],
+        correctAnswer: "3",
+        reveal:
+          "Veriyi tutan en alttaki katman; üsttekiler yalnızca yol."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "struct Servis { let depo: Depo }"),
+          CodeLine(number: 2, text: "// Servis veriyi kendi tutmaz"),
+        ],
+        note:
+          "Sorulduğunda servis kendi cevabını üretmez, deposuna sorar."
+      ),
+      connection:
+        "19. derste sahiplik iki katmandı; burada üç katman ve gerçek bir uygulama şekli var."
     ),
     code: [
       "struct Depo { let puan = 3 }",
@@ -1569,7 +1884,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Derleyici hatasını 'kod çalıştı ama yanlış sonuç verdi' sanıp değişken değerlerini aramak.",
       realWorldUse:
-        "Kırmızı derleyici mesajı okumayı öğrenmek, çalışma anı çökmelerini ve mantık hatalarını ayrı yöntemlerle aramanın ilk adımıdır."
+        "Kırmızı derleyici mesajı okumayı öğrenmek, çalışma anı çökmelerini ve mantık hatalarını ayrı yöntemlerle aramanın ilk adımıdır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let sayi: Int = \"beş\""),
+          CodeLine(number: 2, text: "print(sayi)"),
+        ],
+        choices: ["Derlenmez", "beş", "5", "nil"],
+        correctAnswer: "Derlenmez",
+        reveal:
+          "Tür uyuşmazlığı çalışmadan önce, derleme anında yakalanır."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let a = [1, 2]"),
+          CodeLine(number: 2, text: "print(a[5])"),
+        ],
+        note:
+          "Bu satır derlenir ama çalışırken çöker: hata türü farklı, arama yöntemi de farklı."
+      ),
+      connection:
+        "Buraya kadar bütün dersler çalışan kodu okudu; bu bölüm çalışmayan kodu okumayı öğretiyor."
     ),
     code: [
       "func indirimliFiyat(_ fiyat: Int) -> Int {",
@@ -1651,7 +1987,30 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Kod çalıştığı ve hata vermediği için doğru kabul etmek. Doğruluk ölçüsü çalışması değil, beklenen sonucu vermesidir.",
       realWorldUse:
-        "İndirim, vergi ve puan hesaplarında işaret veya sıra hatası hep bu türdendir; testler tam olarak bunu yakalamak için yazılır."
+        "İndirim, vergi ve puan hesaplarında işaret veya sıra hatası hep bu türdendir; testler tam olarak bunu yakalamak için yazılır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let f = 100"),
+          CodeLine(number: 2, text: "let s = f + 10"),
+          CodeLine(number: 3, text: "print(s)"),
+        ],
+        choices: ["110", "90", "100", "10"],
+        correctAnswer: "110",
+        reveal:
+          "Kod hatasız çalıştı; sorun sonucun beklenenden farklı olması."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let toplam = 10"),
+          CodeLine(number: 2, text: "let adet = 4"),
+          CodeLine(number: 3, text: "let ortalama = toplam + adet"),
+        ],
+        note:
+          "Bölme yerine toplama yazılmış: program çökmez, sadece yanlış sayıyı üretir."
+      ),
+      connection:
+        "22. derste program hiç başlamıyordu; burada sorunsuz çalışıyor ama yanlış cevap veriyor."
     ),
     code: [
       "func odenecek(fiyat: Int, oran: Int) -> Int {",
@@ -1727,7 +2086,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Fonksiyonu yazarken yalnızca dolu listeyi hayal etmek ve boş listeyi 'olmaz' diye geçmek.",
       realWorldUse:
-        "Boş arama sonucu, ilk kez açılan hesap ve sıfır adetli sepet üçü de aynı sınıf sınır durumudur."
+        "Boş arama sonucu, ilk kez açılan hesap ve sıfır adetli sepet üçü de aynı sınıf sınır durumudur.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let a: [Int] = []"),
+          CodeLine(number: 2, text: "print(a.count)"),
+        ],
+        choices: ["0", "Hata", "nil", "1"],
+        correctAnswer: "0",
+        reveal:
+          "Boş dizinin uzunluğunu sormak güvenli; çöken şey olmayan elemana erişmek."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let a: [Int] = []"),
+          CodeLine(number: 2, text: "print(a.first ?? 0)"),
+        ],
+        note:
+          "first boş listede nil döner; ?? ile karşılandığı için program çökmez."
+      ),
+      connection:
+        "23. derste hata yanlış sonuçtu; burada hata yalnızca sınır durumunda ortaya çıkıyor."
     ),
     code: [
       "struct Sepet {",
@@ -1808,7 +2188,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Derleyici şikâyet ettiği için `!` eklemek. Bu, hatayı çözmez; yalnızca derleme anından çalışma anına erteler.",
       realWorldUse:
-        "Henüz yüklenmemiş profil, boş bırakılmış form alanı ve bulunamayan kayıt üçü de optional olarak gelir."
+        "Henüz yüklenmemiş profil, boş bırakılmış form alanı ve bulunamayan kayıt üçü de optional olarak gelir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let ad: String? = \"Ada\""),
+          CodeLine(number: 2, text: "print(ad ?? \"Misafir\")"),
+        ],
+        choices: ["Ada", "Misafir", "nil", "Hata"],
+        correctAnswer: "Ada",
+        reveal:
+          "Değer varken ?? sağdaki varsayılana hiç bakmaz."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let yas: Int? = nil"),
+          CodeLine(number: 2, text: "if let k = yas { print(k) } else { print(\"yok\") }"),
+        ],
+        note:
+          "if let değeri güvenle açar; yoksa çökmek yerine else koluna geçer."
+      ),
+      connection:
+        "24. derste sınır durumu boş listeydi; burada sınır durumu değerin hiç olmaması."
     ),
     code: [
       "struct Profil {",
@@ -1904,7 +2305,29 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Listenin en altındaki ilk çağrıyı suçlu sanmak. Hata en üstteki çerçevede oluşur; alttakiler yalnızca yoldur.",
       realWorldUse:
-        "Çökme raporlarında yığının tepesinden başlayıp kendi kodunun geçtiği ilk satırı bulmak standart yöntemdir."
+        "Çökme raporlarında yığının tepesinden başlayıp kendi kodunun geçtiği ilk satırı bulmak standart yöntemdir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "func a() { b() }"),
+          CodeLine(number: 2, text: "func b() { print(\"tamam\") }"),
+          CodeLine(number: 3, text: "a()"),
+        ],
+        choices: ["tamam", "Hata", "a()", "Çıktı yok"],
+        correctAnswer: "tamam",
+        reveal:
+          "Zincir sorunsuz tamamlandı; yığın geri sarıldı ve trace hiç oluşmadı."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "func x() { y() }"),
+          CodeLine(number: 2, text: "func y() { fatalError(\"Dur\") }"),
+        ],
+        note:
+          "Hata y'de oluşur; x yalnızca oraya giden yoldur. Trace'in tepesi suçluyu gösterir."
+      ),
+      connection:
+        "25. derste hatanın oluştuğu satırı biliyordun; burada hataya nereden gelindiğini okuyorsun."
     ),
     code: [
       "func ekranAc() { veriYukle() }",
@@ -1995,7 +2418,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Aynı anda birden fazla şeyi değiştirmek. Sonuç düzelse bile hangi değişikliğin işe yaradığı bilinmez.",
       realWorldUse:
-        "Hata kaydı incelemesi 'şunu bekliyordum, şu oldu, sebebi şu olabilir' cümlesiyle başlar; bu cümle bir hipotezdir."
+        "Hata kaydı incelemesi 'şunu bekliyordum, şu oldu, sebebi şu olabilir' cümlesiyle başlar; bu cümle bir hipotezdir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let a = [1, 2]"),
+          CodeLine(number: 2, text: "print(a[1])"),
+        ],
+        choices: ["2", "1", "Hata", "nil"],
+        correctAnswer: "2",
+        reveal:
+          "İki elemanlı dizide geçerli index'ler 0 ve 1; hipotez burada doğrulandı."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "// Hipotez: 'index 2 üçüncü elemanı verir'"),
+          CodeLine(number: 2, text: "print(a[2])"),
+        ],
+        note:
+          "Hipotezi yazmak, çürüdüğünde neyi öğrendiğini de belirler."
+      ),
+      connection:
+        "22–26. derslerdeki hata türlerini burada tek bir yöntemle arıyorsun: hipotez kur, kanıt ara."
     ),
     code: [
       "func ortalama(_ notlar: [Int]) -> Int {",
@@ -2071,7 +2515,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Kodu yukarıdan aşağı okuyup Task içindeki satırın hemen orada çalıştığını sanmak.",
       realWorldUse:
-        "Ağdan veri gelirken arayüzü göstermek ve veri geldiğinde ekranı tazelemek tam olarak bu sıralamadır."
+        "Ağdan veri gelirken arayüzü göstermek ve veri geldiğinde ekranı tazelemek tam olarak bu sıralamadır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let t = Task { \"B\" }"),
+          CodeLine(number: 2, text: "print(\"A\")"),
+        ],
+        choices: ["A", "B", "A → B", "B → A"],
+        correctAnswer: "A",
+        reveal:
+          "Task planlandı ama beklenmedi; senkron satır kesintisiz çalıştı."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let t = Task { \"Geç\" }"),
+          CodeLine(number: 2, text: "print(await t.value)"),
+        ],
+        note:
+          "await açık bir bekleme noktasıdır: akış burada durur ve sonucu alır."
+      ),
+      connection:
+        "Buraya kadar her satır yazıldığı sırada çalışıyordu; burada başlatma sırası ile bitiş sırası ayrılıyor."
     ),
     code: [
       "let task = Task { \"B\" }",
@@ -2168,7 +2633,29 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "ViewModel'i verinin sahibi sanmak. ViewModel yalnızca ister ve gelen sonucu ekranın anlayacağı biçime çevirir.",
       realWorldUse:
-        "Yenile düğmesine basıldığında istek aşağı iner, veri yukarı döner; bu döngü hemen her uygulamanın omurgasıdır."
+        "Yenile düğmesine basıldığında istek aşağı iner, veri yukarı döner; bu döngü hemen her uygulamanın omurgasıdır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "struct R { func y() -> Int { 4 } }"),
+          CodeLine(number: 2, text: "print(R().y())"),
+        ],
+        choices: ["4", "R", "0", "nil"],
+        correctAnswer: "4",
+        reveal:
+          "Veriyi tutan katmana doğrudan sorulduğunda ara katman devreye girmez."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "struct VM { let r: R"),
+          CodeLine(number: 2, text: "    func yenile() -> Int { r.y() }"),
+          CodeLine(number: 3, text: "}"),
+        ],
+        note:
+          "ViewModel veriyi kendi üretmez; isteği aşağı iletir ve gelen sonucu ekrana taşır."
+      ),
+      connection:
+        "21. derste sahiplik zincirini okudun; burada aynı zincir bir kullanıcı eyleminin yolu oluyor."
     ),
     code: [
       "struct Repository { func yukle() -> Int { 4 } }",

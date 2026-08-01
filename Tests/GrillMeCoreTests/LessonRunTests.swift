@@ -10,6 +10,7 @@ struct LessonRunTests {
     let startedAt = Date(timeIntervalSince1970: 100)
     let completedAt = Date(timeIntervalSince1970: 412)
     var journey = LessonJourney(lesson: .introduction)
+    journey.skipPrediction()
     journey.startExample()
     for _ in journey.lesson.trace {
       journey.advanceExample()
@@ -69,6 +70,7 @@ struct LessonRunTests {
     let startedAt = Date(timeIntervalSince1970: 100)
     let completedAt = Date(timeIntervalSince1970: 220)
     var journey = LessonJourney(lesson: .introduction)
+    journey.skipPrediction()
     journey.startExample()
     for _ in journey.lesson.trace {
       journey.advanceExample()
@@ -101,6 +103,7 @@ struct LessonRunTests {
     let startedAt = Date(timeIntervalSince1970: 100)
     let completedAt = Date(timeIntervalSince1970: 220)
     var journey = LessonJourney(lesson: .introduction)
+    journey.skipPrediction()
     journey.startExample()
     for _ in journey.lesson.trace {
       journey.advanceExample()
@@ -130,6 +133,7 @@ struct LessonRunTests {
   func recordsIndependentEvidence() {
     let lesson = LessonCatalog.standard.lessons.first { $0.id == "capstone" }!
     var journey = LessonJourney(lesson: lesson)
+    journey.skipPrediction()
     journey.startExample()
     for _ in lesson.trace {
       journey.advanceExample()

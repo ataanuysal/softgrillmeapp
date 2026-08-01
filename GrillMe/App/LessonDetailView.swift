@@ -179,6 +179,9 @@ struct XRayLessonView: View {
   @ViewBuilder
   private var lessonStage: some View {
     switch journey.phase {
+    case .predict:
+      predictionPanel
+
     case .topic:
       topicPanel
 
@@ -205,6 +208,8 @@ struct XRayLessonView: View {
 
   private var stageInstruction: String {
     switch journey.phase {
+    case .predict:
+      "Önce tahmin et. Yanlış tahmin de öğrenmenin parçası; anlatım tahminden sonra gelir."
     case .topic:
       "Önce konuyu anlayalım. Soru çözmeden önce sağlam bir zihinsel model kur."
     case .example:
@@ -292,9 +297,114 @@ struct XRayLessonView: View {
     }
   }
 
+  /// Anlatımdan önceki tahmin ekranı.
+  ///
+  /// Cevap ölçüme girmez; amacı öğrencinin varsayımını görünür kılmak.
+  @ViewBuilder
+  private var predictionPanel: some View {
+    if let hook = lesson.teaching.hook {
+      VStack(alignment: .leading, spacing: 18) {
+        JourneyStepper(currentStep: 0)
+
+        Label("TAHMİN", systemImage: "questionmark.circle")
+          .adaptiveFont(size: 11, weight: .bold, design: .monospaced)
+          .foregroundStyle(AppPalette.highlight)
+
+        Text(hook.question)
+          .adaptiveFont(size: 20, weight: .bold)
+          .foregroundStyle(.white)
+          .fixedSize(horizontal: false, vertical: true)
+
+        CodeCard(lines: hook.code, activeLineNumber: nil)
+
+        VStack(spacing: 9) {
+          ForEach(hook.choices, id: \.self) { choice in
+            Button {
+              withAnimation(.snappy) { journey.submitPrediction(choice) }
+            } label: {
+              Text(choice)
+                .adaptiveFont(size: 16, weight: .bold, design: .monospaced)
+                .foregroundStyle(AppPalette.primaryText)
+                .frame(maxWidth: .infinity, minHeight: 48)
+                .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 9))
+                .overlay(
+                  RoundedRectangle(cornerRadius: 9)
+                    .stroke(AppPalette.strongBorder, lineWidth: 1)
+                )
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint("Tahmininizi seçer ve konu anlatımını açar")
+          }
+        }
+
+        Button("Tahmin etmeden geç") {
+          withAnimation(.snappy) { journey.skipPrediction() }
+        }
+        .adaptiveFont(size: 13, weight: .semibold)
+        .foregroundStyle(AppPalette.secondaryText)
+        .frame(maxWidth: .infinity, minHeight: 44)
+      }
+      .padding(20)
+      .background(AppPalette.panel, in: RoundedRectangle(cornerRadius: 12))
+      .overlay(
+        RoundedRectangle(cornerRadius: 12).stroke(AppPalette.border, lineWidth: 1)
+      )
+    }
+  }
+
+  /// Tahmin verildiyse anlatımın başında hatırlatılır.
+  @ViewBuilder
+  private var predictionRecall: some View {
+    if let hook = lesson.teaching.hook, let answer = journey.predictionAnswer {
+      IDECallout(
+        title: journey.isPredictionCorrect == true ? "// TAHMİNİN DOĞRUYDU" : "// TAHMİNİN",
+        message: journey.isPredictionCorrect == true
+          ? "\(answer) dedin ve doğruydu. \(hook.reveal)"
+          : "\(answer) dedin, doğrusu \(hook.correctAnswer). \(hook.reveal)",
+        tint: journey.isPredictionCorrect == true ? AppPalette.successText : AppPalette.highlight,
+        systemImage: journey.isPredictionCorrect == true
+          ? "checkmark.circle" : "arrow.triangle.branch",
+        filled: true
+      )
+    }
+  }
+
+  /// Anlatımın içindeki küçük gösterim.
+  @ViewBuilder
+  private var microExamplePanel: some View {
+    if let micro = lesson.teaching.microExample {
+      VStack(alignment: .leading, spacing: 10) {
+        Text("// KÜÇÜK ÖRNEK")
+          .adaptiveFont(size: 10, weight: .bold, design: .monospaced)
+          .foregroundStyle(AppPalette.link)
+        CodeCard(lines: micro.code, activeLineNumber: nil)
+        Text(micro.note)
+          .adaptiveFont(size: 13)
+          .foregroundStyle(AppPalette.secondaryText)
+          .fixedSize(horizontal: false, vertical: true)
+      }
+    }
+  }
+
+  /// Önceki derse bağ.
+  @ViewBuilder
+  private var connectionPanel: some View {
+    if let connection = lesson.teaching.connection {
+      IDECallout(
+        title: "// ÖNCEKİ DERSTEN",
+        message: connection,
+        tint: AppPalette.link,
+        systemImage: "arrow.turn.up.right"
+      )
+    }
+  }
+
   private var topicPanel: some View {
     VStack(alignment: .leading, spacing: 20) {
       JourneyStepper(currentStep: 0)
+
+      predictionRecall
+      connectionPanel
 
       Label("KONU_ANLATIMI.md", systemImage: "doc.richtext")
         .adaptiveFont(size: 11, weight: .bold, design: .monospaced)
@@ -312,6 +422,8 @@ struct XRayLessonView: View {
         systemImage: "lightbulb.max.fill",
         filled: true
       )
+
+      microExamplePanel
 
       IDECallout(
         title: "// SIK HATA",

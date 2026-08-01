@@ -37,6 +37,8 @@ public struct LessonQuiz: Equatable, Sendable {
 }
 
 public enum LessonJourneyPhase: Equatable, Sendable {
+  /// Anlatımdan önceki tahmin. Ders bir `TeachingHook` taşımıyorsa atlanır.
+  case predict
   case topic
   case example(step: Int)
   case quiz
@@ -51,13 +53,35 @@ public struct LessonJourney: Equatable, Sendable {
   /// Tekrar denemede bu değer artar; böylece öğrenci aynı cevabı hatırlamak
   /// yerine aynı kavramı yeni bir kodda uygulamak zorunda kalır.
   public let questionIndex: Int
-  public private(set) var phase: LessonJourneyPhase = .topic
+  public private(set) var phase: LessonJourneyPhase
   public private(set) var selectedQuizAnswer: String?
   public private(set) var isQuizAnswerCorrect: Bool?
+
+  /// Tahmin adımında verilen cevap. Ölçüme girmez; yalnızca öğrencinin kendi
+  /// varsayımını anlatım sırasında hatırlatmak için tutulur.
+  public private(set) var predictionAnswer: String?
+  public private(set) var isPredictionCorrect: Bool?
 
   public init(lesson: XRayLesson, questionIndex: Int = 0) {
     self.lesson = lesson
     self.questionIndex = questionIndex
+    phase = lesson.teaching.hook == nil ? .topic : .predict
+  }
+
+  /// Tahmini kaydeder ve anlatıma geçer.
+  ///
+  /// Yanlış tahmin engel değil, anlatımın başlangıç noktasıdır.
+  public mutating func submitPrediction(_ answer: String) {
+    guard phase == .predict, let hook = lesson.teaching.hook else { return }
+    predictionAnswer = answer
+    isPredictionCorrect = answer == hook.correctAnswer
+    phase = .topic
+  }
+
+  /// Tahmin adımı cevaplanmadan anlatıma geçilebilir.
+  public mutating func skipPrediction() {
+    guard phase == .predict else { return }
+    phase = .topic
   }
 
   public var teachingContent: LessonTeachingContent {

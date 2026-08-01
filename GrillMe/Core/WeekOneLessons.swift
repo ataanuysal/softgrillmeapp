@@ -155,7 +155,29 @@ extension XRayLesson {
       commonMistake:
         "Koşullardan birinin doğru olmasını yeterli saymak. `&&` hepsini, `||` ise en az birini ister.",
       realWorldUse:
-        "Bir düğmenin aktif olması genelde birden çok şarta bağlıdır: form dolu, kullanıcı giriş yapmış ve istek sürmüyor."
+        "Bir düğmenin aktif olması genelde birden çok şarta bağlıdır: form dolu, kullanıcı giriş yapmış ve istek sürmüyor.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let stok = true"),
+          CodeLine(number: 2, text: "let aktif = false"),
+          CodeLine(number: 3, text: "print(stok && aktif)"),
+        ],
+        choices: ["false", "true", "stok", "Hata"],
+        correctAnswer: "false",
+        reveal:
+          "`&&` tek bir yanlışta bütün ifadeyi yanlış yapar."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "print(true && false)"),
+          CodeLine(number: 2, text: "print(true || false)"),
+        ],
+        note:
+          "İlki false, ikincisi true: `&&` hepsini ister, `||` en az birini."
+      ),
+      connection:
+        "2. derste tek bir koşul karar veriyordu; burada iki koşul aynı kararı paylaşıyor."
     )
   )
 
@@ -279,7 +301,28 @@ extension XRayLesson {
       commonMistake:
         "Fonksiyon tanımını gördüğü yerde çalıştığını sanmak. Tanım beklemede durur; yalnızca çağrıldığında çalışır.",
       realWorldUse:
-        "Bir düğmeye basıldığında çalışan her işlem, ekranın çağırdığı ve sonucu ekrana dönen bir fonksiyondur."
+        "Bir düğmeye basıldığında çalışan her işlem, ekranın çağırdığı ve sonucu ekrana dönen bir fonksiyondur.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "func selam() { print(\"Merhaba\") }"),
+          CodeLine(number: 2, text: "print(\"Başla\")"),
+        ],
+        choices: ["Başla", "Merhaba", "Başla → Merhaba", "Çıktı yok"],
+        correctAnswer: "Başla",
+        reveal:
+          "Tanım kendiliğinden çalışmaz; selam() hiç çağrılmadı."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "func bip() { print(\"Bip\") }"),
+          CodeLine(number: 2, text: "bip()"),
+        ],
+        note:
+          "Gövde yalnızca çağrı satırında çalışır; tanım beklemede durur."
+      ),
+      connection:
+        "3. derste döngü aynı kodu tekrarlıyordu; fonksiyon aynı kodu istediğin yerden çağırmanı sağlar."
     )
   )
 
@@ -383,7 +426,29 @@ extension XRayLesson {
       commonMistake:
         "return satırından sonra gövdedeki kodun çalışmaya devam ettiğini sanmak. return fonksiyonu o anda bitirir.",
       realWorldUse:
-        "Fiyat hesaplama, doğrulama ve biçimlendirme fonksiyonları hep girdi alıp sonuç döndürerek çalışır."
+        "Fiyat hesaplama, doğrulama ve biçimlendirme fonksiyonları hep girdi alıp sonuç döndürerek çalışır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "func iki(_ x: Int) -> Int { x * 2 }"),
+          CodeLine(number: 2, text: "let sonuc = iki(5)"),
+          CodeLine(number: 3, text: "print(sonuc)"),
+        ],
+        choices: ["10", "5", "2", "x"],
+        correctAnswer: "10",
+        reveal:
+          "Argüman içeri girdi, sonuç çağrının yerine geçerek dışarı döndü."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "func kare(_ x: Int) -> Int { x * x }"),
+          CodeLine(number: 2, text: "print(kare(3))"),
+        ],
+        note:
+          "3 parametreye kopyalanır, 9 çağrının yerine geçer."
+      ),
+      connection:
+        "5. derste fonksiyon yalnızca çalışıyordu; burada veri alıp sonuç döndürüyor."
     )
   )
 
@@ -565,7 +630,30 @@ extension XRayLesson {
       commonMistake:
         "Fonksiyonun içindeki döngüyü bitirmeden dışarıdaki koşula atlamak. Dıştaki karar, içteki hesap bitmeden verilemez.",
       realWorldUse:
-        "Bir raporu hesaplayıp sonucuna göre farklı ekran göstermek tam olarak bu iç içe yapıdır."
+        "Bir raporu hesaplayıp sonucuna göre farklı ekran göstermek tam olarak bu iç içe yapıdır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "func topla(_ n: Int) -> Int {"),
+          CodeLine(number: 2, text: "    (1...n).reduce(0, +)"),
+          CodeLine(number: 3, text: "}"),
+          CodeLine(number: 4, text: "print(topla(3))"),
+        ],
+        choices: ["6", "3", "1", "0"],
+        correctAnswer: "6",
+        reveal:
+          "1 + 2 + 3 = 6; fonksiyon, döngü ve dönüş değeri birlikte çalıştı."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let sonuc = topla(2)"),
+          CodeLine(number: 2, text: "if sonuc > 5 { print(\"çok\") }"),
+        ],
+        note:
+          "Fonksiyonun dönüşü doğrudan koşulun girdisi olur; iki kavram burada birleşir."
+      ),
+      connection:
+        "1–6. derslerdeki değişken, koşul, döngü ve fonksiyon burada tek akışta buluşuyor."
     )
   )
 }

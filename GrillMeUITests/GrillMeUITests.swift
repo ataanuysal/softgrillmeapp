@@ -30,6 +30,11 @@ final class GrillMeUITests: XCTestCase {
     XCTAssertTrue(firstLesson.waitForExistence(timeout: 5), "İlk ders satırı bulunamadı")
     firstLesson.tap()
 
+    // Ders artık anlatımdan önce bir tahmin adımıyla açılıyor.
+    let skipPrediction = app.buttons["Tahmin etmeden geç"]
+    XCTAssertTrue(skipPrediction.waitForExistence(timeout: 5), "Tahmin adımı görünmedi")
+    skipPrediction.tap()
+
     XCTAssertTrue(app.staticTexts["KONU_ANLATIMI.md"].waitForExistence(timeout: 5))
     XCTAssertTrue(app.buttons["Konu ile ilgili örneğe geç"].exists)
   }

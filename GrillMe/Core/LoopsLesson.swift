@@ -169,7 +169,30 @@ extension XRayLesson {
       commonMistake:
         "Döngü değişkeninin son değerine bakıp ara turları atlamak. Hata genellikle ilk veya son turda saklanır.",
       realWorldUse:
-        "Listedeki her satırı çizmek, her siparişi toplamak ve her dosyayı işlemek aynı tur mantığıyla çalışır."
+        "Listedeki her satırı çizmek, her siparişi toplamak ve her dosyayı işlemek aynı tur mantığıyla çalışır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "var t = 0"),
+          CodeLine(number: 2, text: "for s in 1...2 { t = t + s }"),
+          CodeLine(number: 3, text: "print(t)"),
+        ],
+        choices: ["3", "2", "1", "0"],
+        correctAnswer: "3",
+        reveal:
+          "İki tur döndü: önce 1, sonra 2 eklendi."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "for s in 1...3 {"),
+          CodeLine(number: 2, text: "    print(s)"),
+          CodeLine(number: 3, text: "}"),
+        ],
+        note:
+          "Aynı satır üç kez çalışır ve her turda s farklı bir değer taşır."
+      ),
+      connection:
+        "2. derste koşul tek bir yolu seçiyordu; döngü aynı yolu birden çok kez çalıştırır."
     )
   )
 }

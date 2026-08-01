@@ -55,6 +55,51 @@ public struct TransferChallenge: Equatable, Sendable {
   }
 }
 
+/// Anlatımdan önce sorulan tahmin.
+///
+/// Öğrenci önce küçük bir kodu tahmin eder, sonra açıklamayı okur. Sıra
+/// bilerek böyle: tahmin etmeden okumak pasif okumadır ve ürünün vaadi
+/// öğrenciyi pasif izleyicilikten çıkarmaktır.
+///
+/// Tahmin bir ölçüm değildir. Doğru ya da yanlış olması derse kaydedilmez;
+/// amacı öğrencinin kendi varsayımını görünür kılmaktır.
+public struct TeachingHook: Equatable, Sendable {
+  public let question: String
+  public let code: [CodeLine]
+  public let choices: [String]
+  public let correctAnswer: String
+  /// Cevaptan sonra gösterilen tek cümlelik açılış.
+  public let reveal: String
+
+  public init(
+    question: String = "Sence bu kod ne yazar?",
+    code: [CodeLine],
+    choices: [String],
+    correctAnswer: String,
+    reveal: String
+  ) {
+    self.question = question
+    self.code = code
+    self.choices = choices
+    self.correctAnswer = correctAnswer
+    self.reveal = reveal
+  }
+}
+
+/// Anlatımın içine işlenmiş küçük örnek.
+///
+/// Anlatım yalnızca iddia etmesin diye: iki üç satır kod ve o kodda neyin
+/// değiştiğini söyleyen tek cümle.
+public struct MicroExample: Equatable, Sendable {
+  public let code: [CodeLine]
+  public let note: String
+
+  public init(code: [CodeLine], note: String) {
+    self.code = code
+    self.note = note
+  }
+}
+
 /// Dersin kendi konu anlatımı.
 ///
 /// Bölüm başına yazılmış ortak metin, aynı bölümdeki yedi dersi birbirinin
@@ -64,15 +109,30 @@ public struct LessonTeaching: Equatable, Sendable {
   public let whyItMatters: String
   public let commonMistake: String
   public let realWorldUse: String
+  /// Anlatımdan önceki tahmin adımı.
+  public let hook: TeachingHook?
+  /// Anlatımın içindeki küçük gösterim.
+  public let microExample: MicroExample?
+  /// Önceki bir derse tek cümlelik bağ.
+  ///
+  /// Kırk ders birbirine değmezse öğrencinin kafasında ağ değil, ayrı kartlar
+  /// oluşur.
+  public let connection: String?
 
   public init(
     whyItMatters: String,
     commonMistake: String,
-    realWorldUse: String
+    realWorldUse: String,
+    hook: TeachingHook? = nil,
+    microExample: MicroExample? = nil,
+    connection: String? = nil
   ) {
     self.whyItMatters = whyItMatters
     self.commonMistake = commonMistake
     self.realWorldUse = realWorldUse
+    self.hook = hook
+    self.microExample = microExample
+    self.connection = connection
   }
 }
 
