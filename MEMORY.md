@@ -139,7 +139,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 
 ## Doğrulama durumu
 
-- 119 Swift Testing testi ve 25 test paketi geçmelidir.
+- 121 Swift Testing testi ve 25 test paketi geçmelidir.
 - 1 XCUITest duman testi uygulama açılışı, onboarding atlamayı, sekmeleri ve
   derse girişi doğrular; hem temiz kurulumda hem tekrar açılışta geçer.
 - Genel iOS Simulator build ve UI test adımları CI sözleşmesinde yer alır.
@@ -165,7 +165,7 @@ Belgelerin özellik listesi ile müfredatın kapsama derinliği aynı şey deği
 | Dört seçenekli quiz | 40 |
 | Üç soruluk quiz havuzu | 40 |
 | Tekrar kuyruğuna girebilen ders | 40 |
-| Hata avcılığı görevi | 6 |
+| Hata avcılığı görevi | 11 |
 | Pratik sorusu | 18 |
 | Değerlendirme görevi ve rubrik | 2 |
 | Dil varyantı ve dil lensi | 5 |
@@ -173,7 +173,7 @@ Belgelerin özellik listesi ile müfredatın kapsama derinliği aynı şey deği
 Diğer ölçümler: ders kodunun ortanca uzunluğu 6, en kısası 4 satırdır (test ile
 korunuyor; hata avı taşıyan dersler en az 6 satır). 20 satırlık tek ders çıkış
 değerlendirmesidir. Kurstaki toplam cevaplanabilir soru sayısı 60'tan
-156'ya çıktı; gelişim raporu artık örneklem boyutunu taşıyor ve üç çıkış quizi
+161'e çıktı; gelişim raporu artık örneklem boyutunu taşıyor ve üç çıkış quizi
 tamamlanmadan yüzde göstermiyor.
 
 Bu tablo bir hata listesi değil, içerik borcunun envanteridir; yeni ders

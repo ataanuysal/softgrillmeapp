@@ -64,6 +64,11 @@ private struct RoadmapBlueprint {
   let answer: String
   let steps: [Step]
   let debugKind: DebugErrorKind?
+  /// Hata avı için ayrı, kasıtlı olarak bozuk bir varyant.
+  ///
+  /// Debugging bölümü dışındaki derslerin kendi kodu doğrudur; içinde
+  /// aranacak hata yoktur. Bu alan verilmezse ders kodu kullanılır.
+  let debugCode: [String]
   let debugLine: Int
   let expected: String
   let actual: String
@@ -91,6 +96,7 @@ private struct RoadmapBlueprint {
     answer: String,
     steps: [Step],
     debugKind: DebugErrorKind? = nil,
+    debugCode: [String] = [],
     debugLine: Int = 1,
     expected: String = "",
     actual: String = "",
@@ -117,6 +123,7 @@ private struct RoadmapBlueprint {
     self.answer = answer
     self.steps = steps
     self.debugKind = debugKind
+    self.debugCode = debugCode
     self.debugLine = debugLine
     self.expected = expected
     self.actual = actual
@@ -196,7 +203,7 @@ private struct RoadmapBlueprint {
     return DebugChallenge(
       kind: debugKind,
       prompt: "Önce bir hipotez kur, sonra sorunu üreten satırı seç.",
-      code: source,
+      code: debugCode.isEmpty ? source : numbered(debugCode),
       correctLineNumber: debugLine,
       expected: expected,
       actual: actual.isEmpty ? answer : actual,
@@ -294,6 +301,19 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         callStack: [CallFrame(functionName: "program", locals: ["puan": "10"])]
       ),
     ],
+    debugKind: .logic,
+    debugCode: [
+      "var toplam = 0",
+      "func ekle(_ x: Int) {",
+      "    var toplam = 0",
+      "    toplam = toplam + x",
+      "}",
+      "ekle(5)",
+      "print(toplam)",
+    ],
+    debugLine: 3,
+    expected: "5",
+    actual: "0",
     transferCode: [
       "let ad = \"Dış\"",
       "func yaz() {",
@@ -679,6 +699,17 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         output: "Mavi → Yeşil"
       ),
     ],
+    debugKind: .logic,
+    debugCode: [
+      "let renkler = [\"Kırmızı\", \"Mavi\", \"Yeşil\"]",
+      "func ikinciRengi(_ liste: [String]) -> String {",
+      "    return liste[2]",
+      "}",
+      "print(ikinciRengi(renkler))",
+    ],
+    debugLine: 3,
+    expected: "Mavi",
+    actual: "Yeşil",
     practices: [
       PracticeChallenge(
         kind: .concept,
@@ -1237,6 +1268,20 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         architecture: valueCopySnapshot()
       ),
     ],
+    debugKind: .logic,
+    debugCode: [
+      "struct Ayar { var ses: Int }",
+      "func sessizeAl(_ ayar: Ayar) {",
+      "    var kopya = ayar",
+      "    kopya.ses = 0",
+      "}",
+      "var ayar = Ayar(ses: 7)",
+      "sessizeAl(ayar)",
+      "print(ayar.ses)",
+    ],
+    debugLine: 3,
+    expected: "0",
+    actual: "7",
     transferCode: [
       "var ilk = Nokta(x: 2)",
       "var ikinci = ilk",
@@ -2615,6 +2660,16 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         output: "true"
       ),
     ],
+    debugKind: .logic,
+    debugCode: [
+      "func kayitOlabilir(yas: Int) -> Bool {",
+      "    yas > 18",
+      "}",
+      "print(kayitOlabilir(yas: 18))",
+    ],
+    debugLine: 2,
+    expected: "true",
+    actual: "false",
     practices: [
       PracticeChallenge(
         kind: .concept,
@@ -2875,6 +2930,17 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         output: "true"
       ),
     ],
+    debugKind: .logic,
+    debugCode: [
+      "func kargoUcreti(sepet: Int) -> Int {",
+      "    sepet > 500 ? 0 : 50",
+      "}",
+      "let kriterSaglandi = kargoUcreti(sepet: 500) == 0",
+      "print(kriterSaglandi)",
+    ],
+    debugLine: 2,
+    expected: "true",
+    actual: "false",
     practices: [
       PracticeChallenge(
         kind: .concept,

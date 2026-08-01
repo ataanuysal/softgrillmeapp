@@ -205,7 +205,7 @@ Kabul sonucu: 30 derslik temel yol korunuyor; 31–40. dersler Yol Haritası'nda
 
 - ✅ Yeni iş davranışları önce başarısız testlerle tanımlandı.
 - ✅ 40 dersin veri sözleşmesi otomatik doğrulanıyor.
-- ✅ 119 Swift Testing testi ve 25 çekirdek test paketi tanımlı.
+- ✅ 121 Swift Testing testi ve 25 çekirdek test paketi tanımlı.
 - ✅ Uygulama açılışı, sekme geçişi ve derse girişi kapsayan XCUITest hedefi.
 - ✅ Paylaşılan Xcode şeması ve GitHub Actions kalite hattı.
 - ✅ Swift format/lint kontrolü yapılıyor.
@@ -240,9 +240,9 @@ Bu aşama yeni özellik değil, mevcut vaatlerin kapsama derinliğidir.
   hata avcılığı bölümü 2–4 satırdan 6–8 satıra taşındı. Kademeli merdiven
   (bölüm ilerledikçe artan uzunluk) henüz yok.
 - ✅ Dil karşılaştırması temeller bölümünün tamamında (5 ders, dört dil).
-- 🚧 Pratik ve hata avcılığı görevlerini bölüm başına en az bir derse koymak —
-  pratik 10 bölümün tamamında (18/40 ders, testle korunuyor); hata avcılığı
-  hâlâ yalnızca debugging bölümünde (6/40)
+- ✅ Pratik bölüm başına en az bir derste (18/40 ders, testle korunuyor).
+- 🚧 Hata avcılığı altı bölüme yayıldı (11/40); asenkron, uygulama mimarisi ve
+  temeller bölümlerinde hâlâ yok.
 - ⏳ Gelişim raporunu tek soruluk çıkış ölçümünden çıkarmak
 
 Kabul ölçütü: kapsama sayıları testle korunur, belgeye elle yazılmaz.

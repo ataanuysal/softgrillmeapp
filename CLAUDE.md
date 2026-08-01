@@ -102,6 +102,9 @@ testi de günceller. Aynı paket üç içerik sözleşmesini de zorunlu kılar:
 - Her ders kendi `LessonTeaching` metnini taşır; iki ders aynı "sık hata" veya
   "gerçek projede" cümlesini paylaşamaz.
 - Birden fazla değer izleyen her ders en az üç farklı bellek durumundan geçer.
+- Hiçbir ders 4 satırdan kısa değildir; debugging bölümü en az 6 satır taşır.
+  Doğru çalışan bir derse hata avı eklerken `debugCode` ile ayrı bir bozuk
+  varyant yaz — dersin kendi kodunda aranacak hata yoktur.
 - Gelişim raporunun karşılaştırdığı dersler (`variables`, `conditions`, `loops`,
   `capstone`) en az dört seçenek taşır.
 

@@ -347,19 +347,55 @@ struct RoadmapCurriculumTests {
 
   @Test("Hiçbir ders okunacak koddan yoksun kalmaz")
   func everyLessonOffersEnoughCodeToRead() {
-    // İki satırlık bir örnekte okunacak bir akış yoktur; hata avcılığı ise
-    // içinde arama yapılacak kadar kod ister.
+    // İki satırlık bir örnekte okunacak bir akış yoktur; hata avı ise içinde
+    // arama yapılacak kadar kod ister. Aranan kod dersin kendi kodu olmak
+    // zorunda değil: doğru çalışan bir dersin hata avı ayrı bozuk bir varyant
+    // kullanır.
     for lesson in LessonCatalog.standard.lessons {
       #expect(
         lesson.code.count >= 4,
         Comment(rawValue: "\(lesson.id): \(lesson.code.count) satır")
       )
-      if lesson.debugChallenge != nil {
+      if let debug = lesson.debugChallenge {
         #expect(
-          lesson.code.count >= 6,
-          Comment(rawValue: "\(lesson.id) hata avı: \(lesson.code.count) satır")
+          debug.code.count >= 4,
+          Comment(rawValue: "\(lesson.id) hata avı: \(debug.code.count) satır")
+        )
+        #expect(
+          debug.code.contains { $0.number == debug.correctLineNumber },
+          Comment(rawValue: "\(lesson.id): hatalı satır kodda yok")
         )
       }
+      if lesson.section == .debugging {
+        #expect(
+          lesson.code.count >= 6,
+          Comment(rawValue: "\(lesson.id) debugging dersi: \(lesson.code.count) satır")
+        )
+      }
+    }
+  }
+
+  @Test("Hata avcılığı tek bölüme sıkışmaz")
+  func debugPracticeReachesBeyondTheDebuggingUnit() {
+    let withDebug = LessonCatalog.standard.lessons.filter { $0.debugChallenge != nil }
+    let sections = Set(withDebug.map(\.section))
+
+    #expect(withDebug.count >= 10, Comment(rawValue: "\(withDebug.count) derste hata avı var"))
+    #expect(
+      sections.count >= 5,
+      Comment(rawValue: "yalnızca \(sections.count) bölümde hata avı var")
+    )
+  }
+
+  @Test("Bozuk varyant dersin kendi kodunu tekrar etmez")
+  func debugVariantsDifferFromWorkingCode() {
+    for lesson in LessonCatalog.standard.lessons {
+      guard let debug = lesson.debugChallenge, lesson.section != .debugging else { continue }
+      // Doğru çalışan bir dersin hata avı, ayrı bir bozuk kod göstermeli.
+      #expect(
+        debug.code.map(\.text) != lesson.code.map(\.text),
+        Comment(rawValue: "\(lesson.id): hata avı dersin kendi kodunu kullanıyor")
+      )
     }
   }
 
