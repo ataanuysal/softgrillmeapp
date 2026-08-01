@@ -25,12 +25,13 @@ struct LessonRunTests {
 
     #expect(result.attempt.durationSeconds == 312)
     #expect(result.attempt.quizCorrect == false)
-    #expect(result.attempt.practiceAccuracy == nil)
+    #expect(result.attempt.practiceAccuracy == 1)
     #expect(result.attempt.assessmentScore == nil)
     #expect(
       result.events.map(\.name) == [
         .lessonStarted,
         .quizSubmitted,
+        .practiceSubmitted,
         .lessonCompleted,
       ]
     )
@@ -83,12 +84,13 @@ struct LessonRunTests {
 
     #expect(result.attempt.durationSeconds == 120)
     #expect(result.attempt.quizCorrect == true)
-    #expect(result.attempt.practiceAccuracy == nil)
+    #expect(result.attempt.practiceAccuracy == 1)
     #expect(result.attempt.assessmentScore == nil)
     #expect(
       result.events.map(\.name) == [
         .lessonStarted,
         .quizSubmitted,
+        .practiceSubmitted,
         .lessonCompleted,
       ]
     )
@@ -112,12 +114,13 @@ struct LessonRunTests {
         completedAt: completedAt
       )!
 
-    #expect(result.attempt.practiceAccuracy == nil)
+    #expect(result.attempt.practiceAccuracy == 1)
     #expect(result.attempt.assessmentScore == nil)
     #expect(
       result.events.map(\.name.rawValue) == [
         "lesson_started",
         "quiz_submitted",
+        "practice_submitted",
         "lesson_completed",
       ]
     )
@@ -198,10 +201,19 @@ struct LessonRunTests {
     utcCalendar.date(from: DateComponents(year: year, month: month, day: day))!
   }
 
+  /// Dersin bütün pratik sorularını doğru cevaplamış bir kanıt üretir.
+  ///
+  /// Kanıt kapısı eksik pratik yanıtında tamamlamayı kapatır; bu yardımcı
+  /// testin ölçmek istediği şeye (quiz sonucu ve süre) odaklanmasını sağlar.
   private func evidence(for journey: LessonJourney) -> LessonEvidenceEvaluation {
-    LessonEvidence(
+    let practiceAnswers = Dictionary(
+      uniqueKeysWithValues: journey.lesson.practiceChallenges.enumerated().map {
+        ($0.offset, $0.element.correctAnswer)
+      }
+    )
+    return LessonEvidence(
       quizAnswer: journey.selectedQuizAnswer,
-      practiceAnswers: [:],
+      practiceAnswers: practiceAnswers,
       assessmentResponses: [:],
       debugCompleted: journey.lesson.debugChallenge == nil
     ).evaluate(for: journey.lesson)

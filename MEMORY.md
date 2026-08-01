@@ -22,7 +22,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - Görsel dil VS Code Dark+ temelli "IDE teması"dır: editör paleti, sözdizimi
   renkleri, dosya adı gibi ders satırları ve mavi durum çubuğu.
 - Aktif proje `GrillMe.xcodeproj`, şema `GrillMe`, görünen ad `GrillMe:Code`,
-  bundle kimliği `com.grillme.learn`, sürüm `1.3` (build 4) değeridir. Hedef ve
+  bundle kimliği `com.grillme.learn`, sürüm `1.4` (build 5) değeridir. Hedef ve
   şema adları teknik kimliktir; ürün adı yalnızca `CFBundleDisplayName`
   üzerinden gelir.
 - Yol Haritası önerilen doğrusal sırayı gösterir; bütün dersler baştan
@@ -139,7 +139,7 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 
 ## Doğrulama durumu
 
-- 116 Swift Testing testi ve 25 test paketi geçmelidir.
+- 118 Swift Testing testi ve 25 test paketi geçmelidir.
 - 1 XCUITest duman testi uygulama açılışı, onboarding atlamayı, sekmeleri ve
   derse girişi doğrular; hem temiz kurulumda hem tekrar açılışta geçer.
 - Genel iOS Simulator build ve UI test adımları CI sözleşmesinde yer alır.
@@ -166,13 +166,13 @@ Belgelerin özellik listesi ile müfredatın kapsama derinliği aynı şey deği
 | Üç soruluk quiz havuzu | 40 |
 | Tekrar kuyruğuna girebilen ders | 40 |
 | Hata avcılığı görevi | 6 |
-| Pratik sorusu | 5 |
+| Pratik sorusu | 18 |
 | Değerlendirme görevi ve rubrik | 2 |
 | Dil varyantı ve dil lensi | 5 |
 
 Diğer ölçümler: ders kodunun ortanca uzunluğu 5 satırdır ve 20 satırlık tek ders
 çıkış değerlendirmesidir. Kurstaki toplam cevaplanabilir soru sayısı 60'tan
-140'a çıktı; gelişim raporu artık örneklem boyutunu taşıyor ve üç çıkış quizi
+156'ya çıktı; gelişim raporu artık örneklem boyutunu taşıyor ve üç çıkış quizi
 tamamlanmadan yüzde göstermiyor.
 
 Bu tablo bir hata listesi değil, içerik borcunun envanteridir; yeni ders

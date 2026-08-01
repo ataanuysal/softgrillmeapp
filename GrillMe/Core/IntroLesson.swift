@@ -78,6 +78,26 @@ extension XRayLesson {
         explanation: "İkinci atama eskisinin üzerine yazar; değişkende yalnızca son değer kalır."
       ),
     ],
+    practiceChallenges: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "`puan = puan + 2` satırı ne yapar?",
+        choices: [
+          "Sağı hesaplar, sonucu puan'a yazar", "İki değerin eşit olduğunu söyler",
+          "Yeni bir puan değişkeni açar", "puan'ı 2 yapar",
+        ],
+        correctAnswer: "Sağı hesaplar, sonucu puan'a yazar",
+        explanation:
+          "Atama bir denklem değil komuttur: önce sağ taraf hesaplanır, sonra sola yazılır."
+      ),
+      PracticeChallenge(
+        kind: .naming,
+        prompt: "Sepetteki ürün sayısını tutan değişken için en iyi ad hangisi?",
+        choices: ["urunSayisi", "n", "temp", "deger1"],
+        correctAnswer: "urunSayisi",
+        explanation: "Ad, değişkenin neyi saydığını okuyana tek bakışta söylemeli."
+      ),
+    ],
     languageVariants: [
       CodeVariant(
         language: .python,

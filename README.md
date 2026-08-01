@@ -53,7 +53,7 @@ derinleştiğini olduğu gibi gösterir.
 | Yetenek | Ders sayısı |
 | --- | ---: |
 | Hipotez zorunlu hata avcılığı | 6 / 40 |
-| Pratik soruları | 5 / 40 |
+| Pratik soruları | 18 / 40 (her bölümde en az bir ders) |
 | Rubrikli açık uçlu değerlendirme | 2 / 40 |
 | Swift, Python, JavaScript ve Java karşılaştırması | 5 / 40 (temeller bölümünün tamamı) |
 
@@ -61,12 +61,15 @@ derinleştiğini olduğu gibi gösterir.
 
 - Ders kodlarının ortanca uzunluğu 5 satırdır. 20 satırlık tek kod çıkış
   değerlendirmesidir, yani o uzunluk sınavdan önce hiç çalışılmaz.
-- Dil karşılaştırması, pratik ve hata avcılığı hâlâ birkaç derste.
+- Hata avcılığı yalnızca debugging bölümünde (6/40); diğer bölümlerde hata
+  arama pratiği yok.
+- Dil karşılaştırması temeller dışındaki bölümlerde yok.
 
 Kapanan borç: yürütme izleri şablondan üretilmiyor (40 dersin 38'i en az üç
 farklı bellek durumundan geçiyor), konu anlatımı ders başına yazılıyor (40
-farklı "sık hata" metni), her ders üç soruluk quiz havuzu taşıyor (toplam 140
-cevaplanabilir soru) ve bütün quizler dört seçenekli.
+farklı "sık hata" metni), her ders üç soruluk quiz havuzu taşıyor (toplam 156
+cevaplanabilir soru), bütün quizler dört seçenekli ve on bölümün tamamında
+pratik sorusu var.
 
 ### Konu kapsamı
 
@@ -93,7 +96,7 @@ cevaplanabilir soru) ve bütün quizler dört seçenekli.
   metinli erişilebilir eylemler; büyük yazıda dikey kartlar, menü tipi dil
   seçimi ve yatay kaydırılabilir kod
 - Uygulama açılışı, iki ana sekme ve derse giriş için gerçek XCUITest hedefi
-- Format, 116 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
+- Format, 118 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
 
 ## Gereksinimler
 
@@ -200,7 +203,7 @@ modeline erişir. `Assets.xcassets`, App Store dağıtımı için `AppIcon` seti
 
 ## Doğrulama
 
-- 116 Swift Testing testi
+- 118 Swift Testing testi
 - 25 çekirdek test paketi
 - 1 XCUITest duman testi
 - GitHub Actions kalite hattı

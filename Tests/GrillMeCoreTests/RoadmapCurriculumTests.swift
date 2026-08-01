@@ -345,6 +345,37 @@ struct RoadmapCurriculumTests {
     #expect(wrapped.code == first.code)
   }
 
+  @Test("Her bölümde en az bir ders pratik sorusu taşır")
+  func everySectionOffersPractice() {
+    for section in CurriculumSection.allCases {
+      let lessons = LessonCatalog.standard.lessons.filter { $0.section == section }
+      let withPractice = lessons.filter { !$0.practiceChallenges.isEmpty }
+
+      #expect(
+        !withPractice.isEmpty,
+        Comment(rawValue: "\(section.rawValue) bölümünde hiç pratik sorusu yok")
+      )
+    }
+  }
+
+  @Test("Pratik soruları da tahmin edilemeyecek kadar seçenek taşır")
+  func practiceChallengesLimitGuessing() {
+    for lesson in LessonCatalog.standard.lessons {
+      for (index, practice) in lesson.practiceChallenges.enumerated() {
+        let label = "\(lesson.id) pratik \(index)"
+        #expect(practice.choices.count >= 3, Comment(rawValue: label))
+        #expect(
+          Set(practice.choices).count == practice.choices.count,
+          Comment(rawValue: "\(label): tekrar eden seçenek")
+        )
+        #expect(
+          practice.choices.contains(practice.correctAnswer),
+          Comment(rawValue: "\(label): cevap seçenekler arasında değil")
+        )
+      }
+    }
+  }
+
   @Test("Her rubrik kendi örnek cevabını tam puanla değerlendirir")
   func modelAnswersSatisfyTheirOwnRubric() {
     for lesson in LessonCatalog.standard.lessons {

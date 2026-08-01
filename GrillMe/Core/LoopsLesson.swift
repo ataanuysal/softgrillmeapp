@@ -107,6 +107,22 @@ extension XRayLesson {
         explanation: "İlk tur 10 - 1 = 9, ikinci tur 9 - 2 = 7."
       ),
     ],
+    practiceChallenges: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "`1...3` aralığı kaç tur çalışır?",
+        choices: ["3", "2", "4", "1"],
+        correctAnswer: "3",
+        explanation: "Swift'te `...` üst sınırı da kapsar; 1, 2 ve 3 için birer tur döner."
+      ),
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "Döngüdeki hata en çok nerede saklanır?",
+        choices: ["İlk ve son turda", "Ortadaki turlarda", "Döngüden sonra", "Değişken adında"],
+        correctAnswer: "İlk ve son turda",
+        explanation: "Sınır turları, sayaç ve birikim hatalarının en sık ortaya çıktığı yerdir."
+      ),
+    ],
     languageVariants: [
       CodeVariant(
         language: .python,

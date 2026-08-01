@@ -662,6 +662,22 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         output: "Mavi → Yeşil"
       ),
     ],
+    practices: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "Üç elemanlı bir dizide son elemanın index'i kaçtır?",
+        choices: ["2", "3", "1", "0"],
+        correctAnswer: "2",
+        explanation: "Sayma sıfırdan başladığı için son index eleman sayısının bir eksiğidir."
+      ),
+      PracticeChallenge(
+        kind: .naming,
+        prompt: "Kullanıcı adlarını tutan bir dizi için en açıklayıcı ad hangisi?",
+        choices: ["kullaniciAdlari", "arr", "liste", "d"],
+        correctAnswer: "kullaniciAdlari",
+        explanation: "İyi bir ad neyin saklandığını okuyana söyler; tür bilgisini tekrarlamaz."
+      ),
+    ],
     transferCode: [
       "let harfler = [\"A\", \"B\", \"C\", \"D\"]",
       "print(harfler[0])",
@@ -728,6 +744,15 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         memory: ["bilinmeyen": "nil", "bilinmeyen == nil": "true"],
         output: "Ankara → true"
       ),
+    ],
+    practices: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "Sözlükte olmayan bir key arandığında ne olur?",
+        choices: ["nil döner", "Program çöker", "Boş metin döner", "Sıfır döner"],
+        correctAnswer: "nil döner",
+        explanation: "Arama sonucu optional'dır; yokluk hata değil, ayrı bir durumdur."
+      )
     ],
     transferCode: [
       "let puanlar = [\"Ada\": 9, \"Can\": 7]",
@@ -818,6 +843,18 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         memory: ["ciftler": "[2, 4]", "toplam": "6"],
         output: "6"
       ),
+    ],
+    practices: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "filter'ın elediği elemanlar reduce'a girer mi?",
+        choices: [
+          "Hayır, zincirden çıkarlar", "Evet, hepsi girer", "Yalnızca ilki girer",
+          "Reduce onları sıfır sayar",
+        ],
+        correctAnswer: "Hayır, zincirden çıkarlar",
+        explanation: "Her adım bir sonrakine yalnızca kendi sonucunu verir."
+      )
     ],
     transferCode: [
       "let sayilar = [2, 3, 5]",
@@ -1085,6 +1122,15 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
           valueLabel: "ad = Ada"
         )
       ),
+    ],
+    practices: [
+      PracticeChallenge(
+        kind: .naming,
+        prompt: "Bir siparişin ürün sayısını tutan alan için en iyi ad hangisi?",
+        choices: ["adet", "x", "sayi2", "veri"],
+        correctAnswer: "adet",
+        explanation: "Ad, alanın ne saydığını çağrı noktasında açıklamalı."
+      )
     ],
     transferCode: [
       "let kisi = Kullanici(ad: \"Can\")",
@@ -1473,6 +1519,19 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     debugLine: 1,
     expected: "bir başlangıç değeri",
     actual: "eksik ifade",
+    practices: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "Derleyici hatası ile çalışma anı hatası arasındaki fark nedir?",
+        choices: [
+          "Derleyici hatasında program hiç başlamaz", "İkisi de programı yarıda keser",
+          "Çalışma anı hatası daha önce oluşur", "Fark yalnızca mesajın rengidir",
+        ],
+        correctAnswer: "Derleyici hatasında program hiç başlamaz",
+        explanation:
+          "Syntax hatasında hiçbir satır çalışmaz; çalışma anı hatası ise akış sırasında oluşur."
+      )
+    ],
     transferCode: [
       "let ad: String",
       "print(ad)",
@@ -1680,6 +1739,17 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
     debugLine: 2,
     expected: "güvenli varsayılan",
     actual: "nil zorla açma",
+    practices: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "Optional bir değeri güvenle kullanmanın yolu hangisidir?",
+        choices: [
+          "`if let` ile açmak", "`!` ile zorlamak", "Türü değiştirmek", "Değeri metne çevirmek",
+        ],
+        correctAnswer: "`if let` ile açmak",
+        explanation: "`if let` değer varsa açar, yoksa çökmek yerine diğer kola geçer."
+      )
+    ],
     transferCode: [
       "let ad: String? = nil",
       "print(ad ?? \"Misafir\")",
@@ -1905,6 +1975,19 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         ]
       ),
     ],
+    practices: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "Bir işi önce başlatmak, önce bitmesini garanti eder mi?",
+        choices: [
+          "Hayır, bitme sırası ayrıdır", "Evet, sıra korunur",
+          "Yalnızca tek çekirdekte garanti eder", "Task kullanılmazsa garanti eder",
+        ],
+        correctAnswer: "Hayır, bitme sırası ayrıdır",
+        explanation:
+          "Başlatma sırası ile tamamlanma sırası farklı olabilir; sonucu await beklediğin yerde alırsın."
+      )
+    ],
     transferCode: [
       "let task = Task { \"Yüklendi\" }",
       "print(\"Başla\")",
@@ -2005,6 +2088,17 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         callStack: [CallFrame(functionName: "View", locals: ["gösterilen": "4"])],
         architecture: appFlowSnapshot()
       ),
+    ],
+    practices: [
+      PracticeChallenge(
+        kind: .architecture,
+        prompt: "Ekranda yanlış bir sayı görünüyor. İlk nereye bakarsın?",
+        choices: [
+          "Veriyi üreten katmana", "Ekranın rengine", "Uygulama ikonuna", "Kullanıcının ayarlarına",
+        ],
+        correctAnswer: "Veriyi üreten katmana",
+        explanation: "Veri aşağıdan yukarı gelir; hatalı değer kaynağında ya da yolda bozulmuştur."
+      )
     ],
     transferCode: [
       "let repository = Repository()",
@@ -2349,6 +2443,18 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         output: "true"
       ),
     ],
+    practices: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "Bir unit test kırıldığında en büyük faydası nedir?",
+        choices: [
+          "Hatanın yerini daraltması", "Uygulamayı hızlandırması", "Kodu otomatik düzeltmesi",
+          "Kullanıcıyı uyarması",
+        ],
+        correctAnswer: "Hatanın yerini daraltması",
+        explanation: "İzole test kırıldığında şüpheli tek bir davranış kalır."
+      )
+    ],
     transferCode: [
       "let sonuc = indirimliFiyat(70)",
       "print(sonuc == 50)",
@@ -2680,6 +2786,15 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         output: "true"
       ),
     ],
+    practices: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "\"500 ve üzeri\" ifadesi hangi karşılaştırmaya karşılık gelir?",
+        choices: [">=", ">", "<", "<="],
+        correctAnswer: ">=",
+        explanation: "\"ve üzeri\" sınırın kendisini de kapsar; bu yüzden eşitlik dahil edilir."
+      )
+    ],
     transferCode: [
       "print(kargoUcreti(sepet: 499) == 50)"
     ],
@@ -2849,6 +2964,19 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
         memory: ["kullanici.ad": "nil", "başlık": "\"Misafir\""],
         output: "Misafir"
       ),
+    ],
+    practices: [
+      PracticeChallenge(
+        kind: .concept,
+        prompt: "Sözleşmede bir alan boş gelebilir diyorsa istemci ne yapmalı?",
+        choices: [
+          "Yokluk durumunu karşılamalı", "`!` ile açmalı", "Alanı yok saymalı",
+          "Sunucudan düzeltmesini beklemeli",
+        ],
+        correctAnswer: "Yokluk durumunu karşılamalı",
+        explanation:
+          "Sözleşme boşluğa izin veriyorsa o durum bir gün gelir; karşılanmamışsa çökme olur."
+      )
     ],
     transferCode: [
       "print(baslik(KullaniciDTO(ad: \"Ada\")))"
