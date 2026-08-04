@@ -14,6 +14,13 @@ struct ContentView: View {
       .appendingPathComponent("grillme-progress.json")
   )
   @State private var progress = LessonProgress()
+  /// Markdown kavram dersleri; paketten okunur, Swift koduna kopyalanmaz.
+  @State private var readingCourse = ReadingCourse(
+    id: ReadingLibrary.courseID,
+    title: ReadingLibrary.courseTitle,
+    summary: ReadingLibrary.courseSummary,
+    modules: []
+  )
   @State private var persistenceNotice: String?
   @State private var isWorkspaceReady = false
   /// Yol Haritası sekmesinin gezinme yığını; onboarding buraya ilk dersi iterek
@@ -65,13 +72,18 @@ struct ContentView: View {
     async let loaded = Task.detached(priority: .userInitiated) {
       store.loadRecovering()
     }.value
+    async let reading = Task.detached(priority: .userInitiated) {
+      ReadingLibrary.loadRecovering()
+    }.value
     async let floor: Void? = try? await Task.sleep(for: Self.minimumSplashDuration)
 
     let result = await loaded
+    let readingResult = await reading
     _ = await floor
 
     progress = result.progress
-    persistenceNotice = result.notice
+    readingCourse = readingResult.course
+    persistenceNotice = result.notice ?? readingResult.notice
     withAnimation(.easeOut(duration: 0.3)) {
       isWorkspaceReady = true
     }
@@ -101,7 +113,10 @@ struct ContentView: View {
         LessonContentsView(
           catalog: catalog,
           completedLessonIDs: progress.completedLessonIDs,
-          onLessonCompleted: complete
+          onLessonCompleted: complete,
+          readingCourse: readingCourse,
+          progress: progress,
+          onReadingLessonCompleted: completeReading
         )
       }
       .tabItem {
@@ -133,6 +148,13 @@ struct ContentView: View {
 
   private func complete(_ result: LessonRunResult) {
     progress.record(result)
+    save()
+  }
+
+  /// Kavram dersi tamamlandığında ayrı sayaca yazar; kod okuma ölçümlerine
+  /// dokunmaz.
+  private func completeReading(_ lessonID: String) {
+    progress.completeReading(lessonID)
     save()
   }
 

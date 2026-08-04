@@ -247,6 +247,30 @@ Bu aşama yeni özellik değil, mevcut vaatlerin kapsama derinliğidir.
 
 Kabul ölçütü: kapsama sayıları testle korunur, belgeye elle yazılmaz.
 
+## Aşama 10 — Kavram Kitaplığı (okuma katmanı) 🚧
+
+Amaç: Kod okuma pratiğinin altındaki kavramsal zemini vermek. Kod okuma "ne
+oluyor" sorusunu cevaplıyordu; bu katman "neden böyle" sorusunu cevaplar.
+
+- ✅ Markdown içerik ağacı `GrillMe/Core/Learning` altında; SwiftPM kaynağı ve
+  Xcode klasör referansı olarak paketleniyor, Swift koduna kopyalanmıyor.
+- ✅ Front matter ayrıştırma ve içerik doğrulama: eksik alan, yinelenen `id` ve
+  çözümlenemeyen `prerequisites` yüklemeyi kırıyor.
+- ✅ Markdown render: başlık, paragraf, madde/numaralı liste, tablo, kod bloğu,
+  uyarı kutusu ve alıntı.
+- ✅ Katalog → modül → ders → okuma → alıştırma → tamamla → sonraki ders akışı;
+  alıştırmalar görülmeden ders kapanmıyor.
+- ✅ İlerleme kararlı ders kimliğine bağlı ve ayrı sayaçta; kod okuma ölçümleri
+  etkilenmiyor.
+- ✅ Yayında iki modül: Yönelim (3 ders) ve Hesaplamalı Düşünme (5 ders).
+- 🚧 02–14 arası 13 modül yalnızca kapsam beyanı taşıyor ve `comingSoon`
+  durumunda; dersleri yazılmadı.
+- ⏳ Okuma katmanının kod okuma dersleriyle çapraz bağlanması (bir kavram
+  dersinden ilgili kod okuma dersine geçiş).
+
+Kabul ölçütü: yalnızca `status: published` içerik kullanıcıya görünür ve içerik
+sözleşmeleri testle korunur.
+
 ## MVP sonrasına bırakılanlar
 
 Bu maddeler tamamlanan roadmap'in parçası değildir; gerçek kullanıcı sinyali

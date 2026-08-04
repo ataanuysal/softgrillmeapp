@@ -65,6 +65,12 @@ Katman kuralı: `Core` SwiftUI'yı import etmez; ders verisi, durum makineleri,
 ölçüm ve kalıcılık oradadır. `App` yalnızca bağlama, yerleşim ve sistem model
 erişimi yapar.
 
+`GrillMe/Core/Learning` Markdown içerik ağacıdır ve **kaynak dosyadır, kod
+değildir**. SwiftPM'de `resources: [.copy("Learning")]`, Xcode'da klasör
+referansı olarak paketlenir; ağaç yapısı modül eşlemesinin kaynağıdır, bu yüzden
+klasör adları (`00-orientation`, `01-…`) korunur. Yeni Markdown dosyası eklemek
+pbxproj değişikliği gerektirmez — klasör referansı bütün ağacı taşır.
+
 `App` ekran başına bölünmüştür: `ContentView` yalnızca açılış zincirini
 (splash → onboarding → sekmeler) kurar; ekranlar `LessonMapView`,
 `LessonContentsView`, `LessonDetailView` dosyalarındadır. Paylaşılan parçalar
@@ -87,6 +93,28 @@ Ders = `XRayLesson`. Üç üretim yolu var:
   karşılamıyor demektir.
 - `LessonCatalog.standard`: yayınlanan sıra; yeni ders buraya eklenmeden
   görünmez
+
+### Kavram dersleri (okuma katmanı)
+
+Markdown dersler `GrillMe/Core/Learning/<NN-modül>/<NN-ders>.md` altındadır.
+Her modül klasörü bir `README.md` ile tanımlanır; `templates/` gibi numarasız
+klasörler içerik sayılmaz.
+
+- Ders front matter'ı zorunlu alanlar taşır: `id`, `module`, `moduleOrder`,
+  `lessonOrder`, `section`, `title`, `description`, `estimatedMinutes`,
+  `status`. Eksik ya da geçersiz alan yüklemeyi kırar.
+- **`id` değişmezdir.** Kullanıcı ilerlemesi dosya yoluna değil bu kimliğe
+  bağlıdır; başlık veya dosya adı serbestçe değişebilir, `id` değişirse o dersi
+  okumuş herkesin ilerlemesi kaybolur.
+- Yinelenen `id` ve var olmayan `prerequisites` referansı `ReadingLibrary`
+  yüklemesinde hata verir; `ReadingCurriculumTests` bunu zorunlu kılar.
+- Yalnızca `status: published` içerik gösterilir. `draft` hiç görünmez,
+  `comingSoon` modül "Yakında" satırı olur ve açılamaz.
+- `ReadingSession`: anlatım → alıştırmalar → tamamlandı. Alıştırmalar
+  görülmeden ders tamamlanamaz.
+- Okuma ilerlemesi `LessonProgress.readingCompletions` içinde **ayrı sayaçta**
+  durur. `attempts`, `completedLessonIDs`, `quizCorrect`, `practiceAccuracy` ve
+  `assessmentScore` bundan etkilenmez; iki ölçüm birbirine karıştırılmaz.
 
 `LessonValidator` her yayınlanan dersi doğrular ve testler bunu zorunlu kılar:
 kod ve seçenekler dolu, doğru cevap seçenekler içinde, en az bir trace adımı,

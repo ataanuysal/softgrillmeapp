@@ -60,6 +60,21 @@ public struct LessonAttempt: Codable, Equatable, Sendable {
   }
 }
 
+/// Bir kavram dersinin okunup tamamlandığı kaydı.
+///
+/// Okuma dersleri quiz, pratik ve rubrik taşımaz; bu yüzden `LessonAttempt`
+/// içine karıştırılmaz. Karıştırılsaydı `quizCorrect` için uydurma bir değer
+/// üretmek gerekir ve gelişim raporu şişerdi.
+public struct ReadingCompletion: Codable, Equatable, Sendable {
+  public let lessonID: String
+  public let completedAt: Date
+
+  public init(lessonID: String, completedAt: Date) {
+    self.lessonID = lessonID
+    self.completedAt = completedAt
+  }
+}
+
 public struct WeeklySummary: Equatable, Sendable {
   public let completedLessonCount: Int
   public let practiceSeconds: Int
@@ -125,19 +140,39 @@ public struct LessonProgress: Codable, Equatable, Sendable {
   public private(set) var hasFinishedOnboarding: Bool
   /// Seçilen günlük ritim; seçilmediyse nil.
   public private(set) var dailyGoal: DailyGoal?
+  /// Okunup tamamlanan kavram dersleri — kod okuma ölçümünden ayrı sayaç.
+  public private(set) var readingCompletions: [ReadingCompletion]
 
   public init(
     completedLessonIDs: Set<String> = [],
     attempts: [LessonAttempt] = [],
     learningEvents: [LearningEvent] = [],
     hasFinishedOnboarding: Bool = false,
-    dailyGoal: DailyGoal? = nil
+    dailyGoal: DailyGoal? = nil,
+    readingCompletions: [ReadingCompletion] = []
   ) {
     self.completedLessonIDs = completedLessonIDs
     self.attempts = attempts
     self.learningEvents = learningEvents
     self.hasFinishedOnboarding = hasFinishedOnboarding
     self.dailyGoal = dailyGoal
+    self.readingCompletions = readingCompletions
+  }
+
+  /// Tamamlanan okuma derslerinin kimlikleri.
+  ///
+  /// İlerleme dosya yoluna değil kimliğe bağlanır; dersin başlığı ya da
+  /// dosyası değişse bile tamamlanma korunur.
+  public var completedReadingLessonIDs: Set<String> {
+    Set(readingCompletions.map(\.lessonID))
+  }
+
+  /// Bir kavram dersini tamamlanmış olarak işaretler.
+  ///
+  /// Aynı ders yeniden okunursa kayıt çoğaltılmaz, tarihi tazelenir.
+  public mutating func completeReading(_ lessonID: String, at date: Date = Date()) {
+    readingCompletions.removeAll { $0.lessonID == lessonID }
+    readingCompletions.append(ReadingCompletion(lessonID: lessonID, completedAt: date))
   }
 
   /// İlk açılış akışını kapatır ve seçilen ritmi saklar.
@@ -291,6 +326,7 @@ public struct LessonProgress: Codable, Equatable, Sendable {
     case learningEvents
     case hasFinishedOnboarding
     case dailyGoal
+    case readingCompletions
   }
 
   public init(from decoder: Decoder) throws {
@@ -306,6 +342,10 @@ public struct LessonProgress: Codable, Equatable, Sendable {
       try container.decodeIfPresent(Bool.self, forKey: .hasFinishedOnboarding)
       ?? !attempts.isEmpty
     dailyGoal = try container.decodeIfPresent(DailyGoal.self, forKey: .dailyGoal)
+    // Okuma katmanından önceki kayıtlarda bu alan yoktur; eksikliği boş liste
+    // demektir, hata değil.
+    readingCompletions =
+      try container.decodeIfPresent([ReadingCompletion].self, forKey: .readingCompletions) ?? []
   }
 
   public func encode(to encoder: Encoder) throws {
@@ -315,6 +355,7 @@ public struct LessonProgress: Codable, Equatable, Sendable {
     try container.encode(learningEvents, forKey: .learningEvents)
     try container.encode(hasFinishedOnboarding, forKey: .hasFinishedOnboarding)
     try container.encodeIfPresent(dailyGoal, forKey: .dailyGoal)
+    try container.encode(readingCompletions, forKey: .readingCompletions)
   }
 }
 

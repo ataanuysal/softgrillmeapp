@@ -25,7 +25,7 @@ Uygulama iki tamamlayıcı giriş biçimi sunar:
 
 1. **Yol Haritası:** 40 açık ders, on bölüm, önerilen sıra ve süre
 2. **İçindekiler:** tüm derslere serbest erişim, bölüm filtresi ve Türkçe
-   karakterlerden bağımsız kavram araması
+   karakterlerden bağımsız kavram araması; başında Kavram Kitaplığı girişi
 3. **İlerleme özeti:** seri, tamamlanan ders, haftalık süre ve doğruluklar
 4. **Konu anlatımı:** hedefi ve kalıcı zihinsel modeli sade Türkçeyle öğretme
 5. **Kod Röntgeni örneği:** aktif satır, bellek, çıktı ve bağlamsal lensler
@@ -33,6 +33,25 @@ Uygulama iki tamamlayıcı giriş biçimi sunar:
 7. **Hata avcılığı:** hipotez, satır seçimi ve kanıt
 8. **Pratik/değerlendirme:** isimlendirme, kavram, mimari ve capstone görevleri
 9. **Sokratik mentor:** cevabı vermeden öğrencinin açıklamasını ilerletme
+10. **Kavram Kitaplığı:** kod okumanın altındaki kavramları anlatan okuma
+    katmanı — modül listesi, ders listesi ve Markdown ders ekranı
+
+### Kavram Kitaplığı akışı
+
+```text
+İçindekiler → kurs kartı → modül listesi → ders listesi
+            → Markdown ders ekranı → alıştırmalar → tamamla → sonraki ders
+```
+
+İkinci bir kurs sistemi kurulmadı: aynı katalog sekmesinden açılır, aynı
+ilerleme dosyasına yazar ve aynı `CurriculumSection` sözlüğünü kullanır. Ayrılan
+tek şey ölçümdür — okuma bir sayaçtır, sınav değildir. Bu yüzden okunan ders
+`quizCorrect` üretmez ve gelişim raporunu etkilemez.
+
+İçerik Markdown olarak `GrillMe/Core/Learning` altında durur. Ayrıştırma
+(`MarkdownDocument`) `Core` tarafındadır ve blok üretir; `App` yalnızca blok
+başına yerleşim yapar. Kod ve tablo blokları kendi içinde yatay kaydırılır,
+erişilebilir yazı boyutlarında tablo tek sütunlu kartlara döner.
 
 ## Müfredat yapısı
 
@@ -212,6 +231,7 @@ flowchart TD
 - Lens, dil, debugging ve görev modelleri
 - Deneme, seri, haftalık özet, gelişim ve olay sözleşmesi
 - Yerel Sokratik mentor, güvenli istem ve cevap filtresi
+- Markdown ayrıştırma, kavram dersi modeli, içerik doğrulama ve okuma oturumu
 - JSON kalıcılığı
 - Bozuk kayıt yedeği ve görünür kayıt hatası
 

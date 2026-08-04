@@ -2,6 +2,8 @@ import Foundation
 import ImageIO
 import Testing
 
+@testable import GrillMeCore
+
 @Suite("App Store paketleme")
 struct AppPackagingTests {
   @Test("Depoda yalnızca aktif GrillMe uygulama projesi bulunur")
@@ -65,6 +67,24 @@ struct AppPackagingTests {
     #expect(project.contains("Assets.xcassets in Resources"))
     #expect(project.contains("ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;"))
     #expect(project.contains("INFOPLIST_KEY_CFBundleIconName = AppIcon;"))
+  }
+
+  @Test("Kavram dersleri hem SwiftPM hem uygulama paketine kopyalanır")
+  func packagesReadingContentForBothTargets() throws {
+    let manifest = try String(
+      contentsOf: repositoryRoot.appendingPathComponent("Package.swift"),
+      encoding: .utf8
+    )
+    #expect(manifest.contains(#"resources: [.copy("Learning")]"#))
+
+    // Xcode tarafında klasör referansıdır: ağaç yapısı korunmalı, aksi hâlde
+    // modül/ders eşlemesi paket içinde düzleşir.
+    let project = try projectFile()
+    #expect(project.contains("lastKnownFileType = folder; path = Learning;"))
+    #expect(project.contains("Learning in Resources"))
+
+    let contentRoot = try #require(ReadingLibrary.contentRootURL)
+    #expect(FileManager.default.fileExists(atPath: contentRoot.path))
   }
 
   @Test("Uygulama kaynaklarının tamamı Xcode hedefinde derlenir")

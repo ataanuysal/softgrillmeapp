@@ -17,6 +17,11 @@ Sokratik mentor döngüsüyle sunar. Yol Haritası ve İçindekiler bütün ders
 baştan erişilebilir tutar; Yol Haritası yeni başlayanlara önerilen sırayı,
 İçindekiler ise bölüm ve arama üzerinden serbest gezinmeyi sunar.
 
+Bunun yanında **Kavram Kitaplığı** adında bir okuma katmanı vardır: kod okuma
+pratiğinin altındaki kavramsal zemini Markdown dersler hâlinde anlatır. İki
+katman birbirinin yerine geçmez — kod okuma "ne oluyor", kavram dersleri "neden
+böyle" sorusunu cevaplar ve ilerlemeleri ayrı sayılır.
+
 ![GrillMe:Code yol haritası](grillme-final-preview.png)
 
 ## Belgeler
@@ -47,6 +52,22 @@ derinleştiğini olduğu gibi gösterir.
 - VS Code Dark+ temelli editör arayüzü: sözdizimi renkli kod, satır numaralı
   gutter, dosya adı biçiminde ders satırları ve klasör başlıkları
 - İlk açılışta altı ekranlık tanıtım ve günlük ritim seçimi
+
+### Kavram Kitaplığı (okuma katmanı)
+
+| Modül | Ders | Durum |
+| --- | ---: | --- |
+| 00 · Yönelim ve Çalışma Yöntemi | 3 | Yayında |
+| 01 · Hesaplamalı Düşünme | 5 | Yayında |
+| 02–14 (temeller, tasarım, veri yapıları, mimari, işletim sistemleri, veritabanları, ağlar, mühendislik, test, güvenlik, dağıtık sistemler, bitirme) | — | Yakında |
+
+- İçerik `GrillMe/Core/Learning` altında Markdown olarak durur; Swift koduna
+  kopyalanmaz, uygulama paketine klasör olarak kopyalanır
+- Her ders sabit bir `id` taşır; ilerleme dosya yoluna değil bu kimliğe bağlıdır
+- Ders akışı anlatım → alıştırmalar → tamamla → sonraki ders; alıştırmalar
+  görülmeden ders kapanmaz
+- Yalnızca `status: published` içerik gösterilir; yazılmamış modüller "Yakında"
+  satırı olarak görünür ve açılamaz
 
 ### Bir kısım derste var
 
@@ -94,8 +115,12 @@ pratik sorusu var.
 - Dynamic Type erişilebilirlik boyutlarına uyarlanan SwiftUI arayüzü ve
   metinli erişilebilir eylemler; büyük yazıda dikey kartlar, menü tipi dil
   seçimi ve yatay kaydırılabilir kod
-- Uygulama açılışı, iki ana sekme ve derse giriş için gerçek XCUITest hedefi
-- Format, 121 çekirdek test, uygulama derlemesi ve UI duman testini çalıştıran CI
+- Kavram dersi okuma ilerlemesi ayrı sayaçta tutulur; quiz doğruluğu, pratik
+  yüzdesi ve rubrik puanı bundan etkilenmez
+- Uygulama açılışı, iki ana sekme, derse giriş ve kavram kitaplığı akışı için
+  gerçek XCUITest hedefi
+- Format, 159 çekirdek test, uygulama derlemesi ve UI duman testlerini
+  çalıştıran CI
 
 ## Gereksinimler
 

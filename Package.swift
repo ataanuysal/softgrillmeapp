@@ -14,7 +14,10 @@ let package = Package(
   targets: [
     .target(
       name: "GrillMeCore",
-      path: "GrillMe/Core"
+      path: "GrillMe/Core",
+      // Kavram dersleri Markdown olarak kalır ve pakete olduğu gibi kopyalanır;
+      // ağaç yapısı modül/ders eşlemesinin kaynağıdır.
+      resources: [.copy("Learning")]
     ),
     .testTarget(
       name: "GrillMeCoreTests",

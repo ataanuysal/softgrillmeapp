@@ -1,6 +1,6 @@
 # Proje Hafızası
 
-Son güncelleme: 29 Temmuz 2026
+Son güncelleme: 4 Ağustos 2026
 
 Bu dosya, yeni bir çalışma oturumunda projeye hızla devam edebilmek için kalıcı
 kararları ve güncel teknik durumu tutar.
@@ -29,6 +29,14 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
   erişilebilirdir ve tamamlanma yalnızca durum işareti olarak kullanılır.
 - İçindekiler kataloğunda 40 dersin tümü açıktır; bölüm filtresi ve Türkçe
   karakterlerden bağımsız arama serbest gezinme sağlar.
+- Kod okuma derslerinin yanında bir **okuma katmanı** vardır: Kavram Kitaplığı.
+  İçeriği `GrillMe/Core/Learning` altında Markdown olarak durur, Swift'e
+  kopyalanmaz ve aynı İçindekiler sekmesinden açılır — paralel bir kurs sistemi
+  kurulmadı. İlk yayında iki modül açıktır (Yönelim 3 ders, Hesaplamalı Düşünme
+  5 ders); 02–14 arası modüller `comingSoon`.
+- Okuma ilerlemesi ayrı sayaçtır (`readingCompletions`). Kod okuma ölçümlerine
+  (quiz doğruluğu, pratik yüzdesi, rubrik puanı) ve "40 ders" toplamına
+  karışmaz.
 - Swift ilk dildir. Dil lensi aynı zihinsel modeli Python, JavaScript ve Java ile
   karşılaştırır.
 - Yanlış cevap ceza değil, görünür yürütme ve açıklama için başlangıçtır.

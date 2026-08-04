@@ -6,6 +6,10 @@ struct LessonContentsView: View {
   let catalog: LessonCatalog
   let completedLessonIDs: Set<String>
   let onLessonCompleted: (LessonRunResult) -> Void
+  /// Markdown kavram dersleri; kod okuma kataloğunun ikinci katmanı.
+  let readingCourse: ReadingCourse
+  let progress: LessonProgress
+  let onReadingLessonCompleted: (String) -> Void
   @State private var searchQuery = ""
   @State private var selectedSection: CurriculumSection?
 
@@ -38,6 +42,7 @@ struct LessonContentsView: View {
       ScrollView {
         VStack(alignment: .leading, spacing: 24) {
           contentsIntro
+          readingCourseEntry
           sectionPicker
 
           if sections.isEmpty {
@@ -102,6 +107,29 @@ struct LessonContentsView: View {
       RoundedRectangle(cornerRadius: 24)
         .stroke(AppPalette.border, lineWidth: 1)
     )
+  }
+
+  /// Kavram kitaplığının girişi.
+  ///
+  /// İçerik yüklenemediyse ya da hiç yayınlanmış ders yoksa kart hiç
+  /// görünmez; kullanıcıya boş bir kurs açtırılmaz.
+  @ViewBuilder
+  private var readingCourseEntry: some View {
+    if !readingCourse.publishedLessons.isEmpty {
+      NavigationLink {
+        ReadingModuleListView(
+          course: readingCourse,
+          progress: progress,
+          onLessonCompleted: onReadingLessonCompleted
+        )
+      } label: {
+        ReadingCourseCard(
+          course: readingCourse,
+          completedCount: readingCourse.completedCount(in: progress)
+        )
+      }
+      .buttonStyle(.plain)
+    }
   }
 
   @ViewBuilder

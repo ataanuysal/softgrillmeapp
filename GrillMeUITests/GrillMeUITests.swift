@@ -39,6 +39,59 @@ final class GrillMeUITests: XCTestCase {
     XCTAssertTrue(app.buttons["Konu ile ilgili örneğe geç"].exists)
   }
 
+  func testReadingLibraryFlowFromCatalogToLessonCompletion() {
+    let app = XCUIApplication()
+    app.launch()
+
+    dismissOnboardingIfPresent(in: app)
+
+    app.tabBars.buttons["İçindekiler"].tap()
+
+    let courseCard = app.buttons
+      .containing(NSPredicate(format: "label CONTAINS %@", "Yazılım Mühendisliği Temelleri"))
+      .firstMatch
+    XCTAssertTrue(courseCard.waitForExistence(timeout: 10), "Kavram kitaplığı kartı bulunamadı")
+    courseCard.tap()
+
+    // Modül listesi: yayındaki modül açılır, yazılmamış modül "Yakında" der.
+    let module = app.buttons
+      .containing(NSPredicate(format: "label CONTAINS %@", "Yönelim ve Çalışma Yöntemi"))
+      .firstMatch
+    XCTAssertTrue(module.waitForExistence(timeout: 5), "Modül satırı bulunamadı")
+    XCTAssertTrue(
+      app.staticTexts
+        .containing(NSPredicate(format: "label CONTAINS %@", "Yakında"))
+        .firstMatch.exists,
+      "Yazılmamış modüller yakında olarak işaretlenmeli"
+    )
+    module.tap()
+
+    let lesson = app.buttons
+      .containing(NSPredicate(format: "label CONTAINS %@", "Yazılım nedir?"))
+      .firstMatch
+    XCTAssertTrue(lesson.waitForExistence(timeout: 5), "Ders satırı bulunamadı")
+    lesson.tap()
+
+    // Markdown ekranı: anlatım → alıştırmalar → tamamla → sonraki ders.
+    XCTAssertTrue(app.staticTexts["orientation-01.md"].waitForExistence(timeout: 5))
+    XCTAssertTrue(app.staticTexts["BU DERSTE KAZANACAKLARIN"].exists)
+
+    let toExercises = app.buttons["Alıştırmalara geç"]
+    XCTAssertTrue(toExercises.waitForExistence(timeout: 5))
+    toExercises.tap()
+
+    let complete = app.buttons["Dersi tamamla"]
+    XCTAssertTrue(complete.waitForExistence(timeout: 5))
+    complete.tap()
+
+    XCTAssertTrue(
+      app.buttons
+        .containing(NSPredicate(format: "label CONTAINS %@", "Sonraki ders"))
+        .firstMatch.waitForExistence(timeout: 5),
+      "Tamamlanan dersten sonraki derse geçiş görünmeli"
+    )
+  }
+
   /// İlk açılış akışı yalnızca temiz kurulumda görünür; testin her iki durumda
   /// da aynı yerden devam edebilmesi için varsa atlanır.
   private func dismissOnboardingIfPresent(in app: XCUIApplication) {
