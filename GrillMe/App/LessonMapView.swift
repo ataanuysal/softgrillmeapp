@@ -10,6 +10,11 @@ struct LessonMapView: View {
   let dashboard: LearningDashboardSnapshot
   let reviewItems: [ReviewItem]
   let onLessonCompleted: (LessonRunResult) -> Void
+  /// Kavram kitaplığı; yol haritasında kod okumanın yanında ikinci bir hat
+  /// olarak durur, aynı ekrandan açılır.
+  let readingCourse: ReadingCourse
+  let progress: LessonProgress
+  let onReadingLessonCompleted: (String) -> Void
   @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
   var body: some View {
@@ -32,6 +37,7 @@ struct LessonMapView: View {
           weeklySummary
           growthSummary
           reviewCard
+          readingCourseCard
 
           ForEach(CurriculumSection.allCases, id: \.self) { section in
             let sectionItems = items.filter { $0.lesson.section == section }
@@ -67,6 +73,28 @@ struct LessonMapView: View {
           onComplete: onLessonCompleted
         )
       }
+    }
+  }
+
+  /// Kavram kitaplığına giriş. İçerik yüklenmediyse hiç görünmez.
+  @ViewBuilder
+  private var readingCourseCard: some View {
+    if !readingCourse.publishedLessons.isEmpty {
+      NavigationLink {
+        ReadingModuleListView(
+          course: readingCourse,
+          progress: progress,
+          onLessonCompleted: onReadingLessonCompleted,
+          codeLessons: allLessons,
+          onCodeLessonCompleted: onLessonCompleted
+        )
+      } label: {
+        ReadingCourseCard(
+          course: readingCourse,
+          completedCount: readingCourse.completedCount(in: progress)
+        )
+      }
+      .buttonStyle(.plain)
     }
   }
 

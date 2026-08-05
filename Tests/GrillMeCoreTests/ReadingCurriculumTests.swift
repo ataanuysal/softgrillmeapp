@@ -131,6 +131,50 @@ struct ReadingCurriculumTests {
     }
   }
 
+  @Test("Kavram dersleri kod okuma derslerine çözümlenen bağlar kurar")
+  func linksToRealCodeLessons() throws {
+    let course = try ReadingLibrary.loadCourse()
+    let codeLessonIDs = Set(LessonCatalog.standard.lessons.map(\.id))
+
+    let linked = course.publishedLessons.filter { !$0.relatedCodeLessonIDs.isEmpty }
+    #expect(linked.count >= 5, "Kavram dersleri kod okuma katmanına bağlanmalı")
+
+    for lesson in course.publishedLessons {
+      for codeLessonID in lesson.relatedCodeLessonIDs {
+        #expect(
+          codeLessonIDs.contains(codeLessonID),
+          Comment(rawValue: "\(lesson.id) → \(codeLessonID) çözümlenemedi")
+        )
+      }
+    }
+  }
+
+  @Test("Var olmayan kod okuma dersine bağ yükleme sırasında hata verir")
+  func rejectsUnknownCodeLessonLinks() throws {
+    let root = try makeFixture([
+      "00-first": [
+        "README.md": moduleFrontMatter(id: "first", order: 0),
+        "01-a.md": lessonFrontMatter(
+          id: "first-01",
+          module: "first",
+          order: 0,
+          lesson: 1,
+          relatedCodeLessons: ["boyle-bir-kod-dersi-yok"]
+        ),
+      ]
+    ])
+    defer { try? FileManager.default.removeItem(at: root) }
+
+    #expect(
+      throws: ReadingCurriculumError.unknownCodeLesson(
+        lessonID: "first-01",
+        codeLessonID: "boyle-bir-kod-dersi-yok"
+      )
+    ) {
+      _ = try ReadingLibrary.loadCourse(from: root)
+    }
+  }
+
   // MARK: - Okuma oturumu
 
   @Test("Ders alıştırmalar görülmeden tamamlanamaz")
@@ -337,12 +381,18 @@ struct ReadingCurriculumTests {
     order: Int,
     lesson: Int,
     prerequisites: [String] = [],
+    relatedCodeLessons: [String] = [],
     status: String = "published"
   ) -> String {
     let prerequisiteBlock =
       prerequisites.isEmpty
       ? "prerequisites: []"
       : (["prerequisites:"] + prerequisites.map { "  - \($0)" }).joined(separator: "\n")
+    let relatedBlock =
+      relatedCodeLessons.isEmpty
+      ? ""
+      : (["relatedCodeLessons:"] + relatedCodeLessons.map { "  - \($0)" })
+        .joined(separator: "\n") + "\n"
 
     return """
       ---
@@ -357,7 +407,7 @@ struct ReadingCurriculumTests {
       difficulty: beginner
       estimatedMinutes: 10
       \(prerequisiteBlock)
-      objectives:
+      \(relatedBlock)objectives:
         - Test kazanımı
       status: \(status)
       version: 1

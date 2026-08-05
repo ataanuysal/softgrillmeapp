@@ -102,7 +102,10 @@ struct ContentView: View {
             asOf: Date()
           ),
           reviewItems: ReviewQueue.items(from: progress, asOf: Date()),
-          onLessonCompleted: complete
+          onLessonCompleted: complete,
+          readingCourse: readingCourse,
+          progress: progress,
+          onReadingLessonCompleted: completeReading
         )
       }
       .tabItem {

@@ -15,6 +15,9 @@ objectives:
   - Alt problemler arasındaki gerçek tekrarı fark etmek
   - Değişen kısmı değişmeyen kısımdan ayırmak
   - Yüzeysel benzerliği gerçek örüntüden ayırt etmek
+relatedCodeLessons:
+  - loops
+  - map-intro
 status: published
 version: 1
 ---

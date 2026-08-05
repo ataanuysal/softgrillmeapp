@@ -120,7 +120,9 @@ struct LessonContentsView: View {
         ReadingModuleListView(
           course: readingCourse,
           progress: progress,
-          onLessonCompleted: onReadingLessonCompleted
+          onLessonCompleted: onReadingLessonCompleted,
+          codeLessons: catalog.lessons,
+          onCodeLessonCompleted: onLessonCompleted
         )
       } label: {
         ReadingCourseCard(

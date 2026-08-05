@@ -55,6 +55,9 @@ struct ReadingModuleListView: View {
   let course: ReadingCourse
   let progress: LessonProgress
   let onLessonCompleted: (String) -> Void
+  /// Kavram dersinden ilgili kod okuma dersine geçmek için gereken katalog.
+  let codeLessons: [XRayLesson]
+  let onCodeLessonCompleted: (LessonRunResult) -> Void
 
   var body: some View {
     ZStack {
@@ -71,7 +74,9 @@ struct ReadingModuleListView: View {
                   course: course,
                   module: module,
                   progress: progress,
-                  onLessonCompleted: onLessonCompleted
+                  onLessonCompleted: onLessonCompleted,
+                  codeLessons: codeLessons,
+                  onCodeLessonCompleted: onCodeLessonCompleted
                 )
               } label: {
                 ReadingModuleRow(
@@ -194,6 +199,8 @@ struct ReadingLessonListView: View {
   let module: ReadingModule
   let progress: LessonProgress
   let onLessonCompleted: (String) -> Void
+  let codeLessons: [XRayLesson]
+  let onCodeLessonCompleted: (LessonRunResult) -> Void
 
   var body: some View {
     ZStack {
@@ -221,7 +228,9 @@ struct ReadingLessonListView: View {
                 course: course,
                 lesson: lesson,
                 progress: progress,
-                onLessonCompleted: onLessonCompleted
+                onLessonCompleted: onLessonCompleted,
+                codeLessons: codeLessons,
+                onCodeLessonCompleted: onCodeLessonCompleted
               )
             } label: {
               ReadingLessonRow(
@@ -305,6 +314,8 @@ struct ReadingLessonView: View {
   let lesson: ReadingLesson
   let progress: LessonProgress
   let onLessonCompleted: (String) -> Void
+  let codeLessons: [XRayLesson]
+  let onCodeLessonCompleted: (LessonRunResult) -> Void
 
   @State private var session: ReadingSession
   @Environment(\.dismiss) private var dismiss
@@ -313,12 +324,16 @@ struct ReadingLessonView: View {
     course: ReadingCourse,
     lesson: ReadingLesson,
     progress: LessonProgress,
-    onLessonCompleted: @escaping (String) -> Void
+    onLessonCompleted: @escaping (String) -> Void,
+    codeLessons: [XRayLesson],
+    onCodeLessonCompleted: @escaping (LessonRunResult) -> Void
   ) {
     self.course = course
     self.lesson = lesson
     self.progress = progress
     self.onLessonCompleted = onLessonCompleted
+    self.codeLessons = codeLessons
+    self.onCodeLessonCompleted = onCodeLessonCompleted
     _session = State(
       initialValue: ReadingSession(
         lesson: lesson,
@@ -446,13 +461,17 @@ struct ReadingLessonView: View {
         filled: true
       )
 
+      relatedCodeLessonsPanel
+
       if let next = course.nextLesson(after: lesson.id) {
         NavigationLink {
           ReadingLessonView(
             course: course,
             lesson: next,
             progress: progress,
-            onLessonCompleted: onLessonCompleted
+            onLessonCompleted: onLessonCompleted,
+            codeLessons: codeLessons,
+            onCodeLessonCompleted: onCodeLessonCompleted
           )
         } label: {
           nextLessonLabel(next)
@@ -472,6 +491,61 @@ struct ReadingLessonView: View {
         .adaptiveFont(size: 14, weight: .bold)
         .foregroundStyle(AppPalette.link)
         .frame(maxWidth: .infinity, minHeight: 44)
+    }
+  }
+
+  /// Kavramı satır satır çalışabileceğin kod okuma dersleri.
+  ///
+  /// Okuma katmanı tek başına "neden böyle"yi anlatır; öğrenci aynı kavramı
+  /// çalışan kodda görmeden bağ kurulmuş sayılmaz.
+  @ViewBuilder
+  private var relatedCodeLessonsPanel: some View {
+    let related = codeLessons.filter { lesson.relatedCodeLessonIDs.contains($0.id) }
+
+    if !related.isEmpty {
+      VStack(alignment: .leading, spacing: 9) {
+        Text("BU KAVRAMI KODDA GÖR")
+          .adaptiveFont(size: 10, weight: .bold, design: .monospaced)
+          .foregroundStyle(AppPalette.link)
+
+        ForEach(related, id: \.id) { codeLesson in
+          NavigationLink {
+            XRayLessonView(
+              lesson: codeLesson,
+              totalLessonCount: codeLessons.count,
+              onComplete: onCodeLessonCompleted
+            )
+          } label: {
+            HStack(spacing: 10) {
+              Image(systemName: "chevron.left.forwardslash.chevron.right")
+                .adaptiveFont(size: 13, weight: .semibold)
+                .foregroundStyle(AppPalette.link)
+              VStack(alignment: .leading, spacing: 2) {
+                Text("\(codeLesson.order). ders")
+                  .adaptiveFont(size: 10, weight: .bold, design: .monospaced)
+                  .foregroundStyle(AppPalette.tertiaryText)
+                Text(codeLesson.title)
+                  .adaptiveFont(size: 14, weight: .semibold)
+                  .foregroundStyle(AppPalette.primaryText)
+                  .fixedSize(horizontal: false, vertical: true)
+              }
+              Spacer(minLength: 0)
+              Image(systemName: "arrow.right")
+                .adaptiveFont(size: 12, weight: .bold)
+                .foregroundStyle(AppPalette.tertiaryText)
+            }
+            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            .padding(12)
+            .background(AppPalette.card, in: RoundedRectangle(cornerRadius: 12))
+            .overlay(
+              RoundedRectangle(cornerRadius: 12)
+                .stroke(AppPalette.link.opacity(0.35), lineWidth: 1)
+            )
+          }
+          .buttonStyle(.plain)
+          .accessibilityLabel("Kod okuma dersine geç: \(codeLesson.title)")
+        }
+      }
     }
   }
 

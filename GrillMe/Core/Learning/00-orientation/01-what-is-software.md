@@ -14,6 +14,8 @@ objectives:
   - Yazılım ile donanım arasındaki farkı açıklamak
   - Talimat sırasının sonucu nasıl değiştirdiğini göstermek
   - Algoritma, kod ve program terimlerini birbirinden ayırmak
+relatedCodeLessons:
+  - variables
 status: published
 version: 1
 ---

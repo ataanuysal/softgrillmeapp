@@ -2765,7 +2765,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Tanımları yukarıdan aşağı sırayla çalışıyor sanmak. Tanımlar beklemede durur; yürütme en alttaki ilk gerçek satırdan başlar.",
       realWorldUse:
-        "Kod incelemesinde ve teknik mülakatta ölçülen şey tam olarak budur: sonucu değil, sonuca hangi kanıtla vardığını göstermek."
+        "Kod incelemesinde ve teknik mülakatta ölçülen şey tam olarak budur: sonucu değil, sonuca hangi kanıtla vardığını göstermek.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "struct S { let n: Int }"),
+          CodeLine(number: 2, text: "print([S(n: 2), S(n: 3)].map(\\.n).reduce(0, +))"),
+        ],
+        choices: ["5", "6", "23", "0"],
+        correctAnswer: "5",
+        reveal:
+          "map değerleri nesnenin içinden çıkarır, reduce onları tek sayıya indirir."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let sureler = [2, 3]"),
+          CodeLine(number: 2, text: "let toplam = sureler.reduce(0, +)"),
+        ],
+        note:
+          "Nesnelerden sayıya inildiği anda toplam, sıradan bir toplama işlemine dönüşür."
+      ),
+      connection:
+        "14. derste seç–dönüştür–topla zincirini okudun; burada aynı zincir kendi yazdığın sınıfın içinde çalışıyor."
     ),
     code: [
       "struct Gorev {",
@@ -2955,7 +2976,29 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Beklenen değeri test edilen kodun kendisiyle hesaplamak. O zaman test kodu değil, kendini doğrular.",
       realWorldUse:
-        "Başarısız bir test raporunda ilk bakılan şey beklenen ile gerçek değerin farkıdır; bu ayrımı Assert adımı üretir."
+        "Başarısız bir test raporunda ilk bakılan şey beklenen ile gerçek değerin farkıdır; bu ayrımı Assert adımı üretir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let beklenen = 4"),
+          CodeLine(number: 2, text: "print(2 + 2 == beklenen)"),
+        ],
+        choices: ["true", "4", "false", "2"],
+        correctAnswer: "true",
+        reveal:
+          "Yazılan şey hesabın kendisi değil, karşılaştırmanın sonucudur; test tam olarak bunu yapar."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let beklenen = 5"),
+          CodeLine(number: 2, text: "let gercek = 2 + 3"),
+          CodeLine(number: 3, text: "print(gercek == beklenen)"),
+        ],
+        note:
+          "Üç satır üç aşamadır: hazırla, çalıştır, doğrula. Sıraları karışırsa test okunmaz olur."
+      ),
+      connection:
+        "23. derste çalışan ama yanlış sonuç veren kodu okudun; test tam olarak o sessiz yanlışı yakalar."
     ),
     code: [
       "func topla(_ a: Int, _ b: Int) -> Int { a + b }",
@@ -3029,7 +3072,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Tek testte birden çok davranışı doğrulamak. Test kırıldığında hangi davranışın bozulduğu anlaşılmaz.",
       realWorldUse:
-        "Fiyat, vergi ve indirim kuralları ayrı ayrı test edilirse bir kuralın değişmesi diğerlerinin testini kırmaz."
+        "Fiyat, vergi ve indirim kuralları ayrı ayrı test edilirse bir kuralın değişmesi diğerlerinin testini kırmaz.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "func yarisi(_ x: Int) -> Int { x / 2 }"),
+          CodeLine(number: 2, text: "print(yarisi(9))"),
+        ],
+        choices: ["4", "4.5", "5", "9"],
+        correctAnswer: "4",
+        reveal:
+          "Tam sayı bölmesi kalanı atar. Tek davranışı izole eden bir test bunu ilk denemede gösterir."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let sonuc = yarisi(10)"),
+          CodeLine(number: 2, text: "print(sonuc == 5)"),
+        ],
+        note:
+          "Tek çağrı, tek beklenti. Test kırıldığında hangi davranışın bozulduğu tartışmaya kapalıdır."
+      ),
+      connection:
+        "31. derste testin üç adımını kurdun; burada o iskelete tek bir davranış yerleşiyor."
     ),
     code: [
       "func indirimliFiyat(_ fiyat: Int) -> Int {",
@@ -3113,7 +3177,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Yalnızca rahat değerlerle test etmek: 30 ve 40 geçtiği için kuralın doğru olduğunu sanmak.",
       realWorldUse:
-        "Yaş sınırı, ücretsiz kargo eşiği ve kota limitleri hep sınırın bir altı, kendisi ve bir üstüyle test edilir."
+        "Yaş sınırı, ücretsiz kargo eşiği ve kota limitleri hep sınırın bir altı, kendisi ve bir üstüyle test edilir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let yas = 18"),
+          CodeLine(number: 2, text: "print(yas > 18)"),
+        ],
+        choices: ["false", "true", "18", "0"],
+        correctAnswer: "false",
+        reveal:
+          "Sınırın kendisi '>' ile dışarıda kalır; kuralın hangi tarafta olduğu tam burada belli olur."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "print(17 >= 18)"),
+          CodeLine(number: 2, text: "print(18 >= 18)"),
+        ],
+        note:
+          "Sınırı sınamak, eşiğin bir altını ve eşiğin kendisini birlikte denemektir."
+      ),
+      connection:
+        "2. derste hangi yolun çalıştığını okudun; burada aynı karar tam eşiğin üzerinde sınanıyor."
     ),
     code: [
       "func kayitOlabilir(yas: Int) -> Bool {",
@@ -3204,7 +3289,29 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Bağımlılığı fonksiyonun içinde üretmek. Dışarıdan verilmeyen bir bağımlılık testte değiştirilemez.",
       realWorldUse:
-        "Ödeme sağlayıcısı, tarih ve konum servisleri testlerde neredeyse her zaman sahte bir temsille değiştirilir."
+        "Ödeme sağlayıcısı, tarih ve konum servisleri testlerde neredeyse her zaman sahte bir temsille değiştirilir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "protocol S { var x: Int { get } }"),
+          CodeLine(number: 2, text: "struct A: S { let x = 9 }"),
+          CodeLine(number: 3, text: "print(A().x)"),
+        ],
+        choices: ["9", "0", "A", "S"],
+        correctAnswer: "9",
+        reveal:
+          "Protokol yalnızca verilen sözü tanımlar; değeri üreten, dışarıdan verilen somut tiptir."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "struct SabitSaat: SaatSaglayan { let saat: Int }"),
+          CodeLine(number: 2, text: "print(mesaj(saat: SabitSaat(saat: 23)))"),
+        ],
+        note:
+          "Saati dışarıdan verdiğin an testin gece yarısını da deneyebilir; gerçek saati beklemek zorunda kalmazsın."
+      ),
+      connection:
+        "20. derste davranışın protokolle özelleştirilmesini okudun; test double aynı tekniğin testteki adıdır."
     ),
     code: [
       "protocol SaatSaglayan { var saat: Int { get } }",
@@ -3292,7 +3399,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Bütün unit testler geçtiği için sistemin çalıştığını varsaymak. Unit testler parçalar arasındaki anlaşmayı ölçmez.",
       realWorldUse:
-        "Bir hata düzeltildikten sonra o senaryo için yazılan test, aynı hatanın geri gelmesini engelleyen regression testidir."
+        "Bir hata düzeltildikten sonra o senaryo için yazılan test, aynı hatanın geri gelmesini engelleyen regression testidir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "func f() -> [Int] { [2, 3] }"),
+          CodeLine(number: 2, text: "print(f().reduce(0, +))"),
+        ],
+        choices: ["5", "23", "2", "0"],
+        correctAnswer: "5",
+        reveal:
+          "İki parça ayrı ayrı doğru çalışıyor; ölçülen şey ikisinin birlikte ürettiği sonuç."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let depo = Depo()"),
+          CodeLine(number: 2, text: "print(toplam(depo: depo) == 5)"),
+        ],
+        note:
+          "Entegrasyon testi parçaların içini değil, aralarındaki anlaşmayı doğrular."
+      ),
+      connection:
+        "32. derste tek bir davranışı izole ettin; burada iki parçanın birbirine verdiği söz ölçülüyor."
     ),
     code: [
       "struct Depo {",
@@ -3383,7 +3511,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Eşiği belirsiz bırakmak: '500 üzerinde' ifadesi 500'ün kendisinin dahil olup olmadığını söylemez.",
       realWorldUse:
-        "Kabul kriterleri hem geliştiricinin ne yazacağını hem de test edenin neyi doğrulayacağını aynı cümleyle belirler."
+        "Kabul kriterleri hem geliştiricinin ne yazacağını hem de test edenin neyi doğrulayacağını aynı cümleyle belirler.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let sepet = 500"),
+          CodeLine(number: 2, text: "print(sepet > 500)"),
+        ],
+        choices: ["false", "true", "500", "0"],
+        correctAnswer: "false",
+        reveal:
+          "'500 üzerinde' cümlesi 500'ün kendisini dışarıda bırakır; kabul kriteri bunu açıkça yazmalıdır."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let ucretsiz = 500 >= 500"),
+          CodeLine(number: 2, text: "print(ucretsiz)"),
+        ],
+        note:
+          "Kabul kriteri bir temenni değil, çalıştırılabilir tek bir karşılaştırmadır."
+      ),
+      connection:
+        "33. derste sınır değerini okudun; kabul kriteri o sınırı yazıya döken belgedir."
     ),
     code: [
       "func kargoUcreti(sepet: Int) -> Int {",
@@ -3479,7 +3628,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Yalnızca her şeyin yolunda gittiği yolu çizmek. Hata yolu yazılmazsa kullanıcı boş ekranla karşılaşır.",
       realWorldUse:
-        "Giriş, ödeme ve dosya yükleme akışlarının her adımı için 'burada başarısız olursa kullanıcı ne görür' sorusu cevaplanır."
+        "Giriş, ödeme ve dosya yükleme akışlarının her adımı için 'burada başarısız olursa kullanıcı ne görür' sorusu cevaplanır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let token = \"\""),
+          CodeLine(number: 2, text: "print(!token.isEmpty)"),
+        ],
+        choices: ["false", "true", "boş metin", "0"],
+        correctAnswer: "false",
+        reveal:
+          "Boş kimlik doğrulamayı düşürür; akışın hata yolu tam buradan başlar."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "let girisVar = kimlikDogrula(token: \"\")"),
+          CodeLine(number: 2, text: "print(profilYukle(girisVar: girisVar))"),
+        ],
+        note:
+          "Akışı çizerken mutlu yolun yanına başarısız yolu da koyarsın; yoksa kullanıcı boş ekranla kalır."
+      ),
+      connection:
+        "29. derste isteğin katmanlar arasında inip çıkışını izledin; burada aynı yolculuğun kararları çiziliyor."
     ),
     code: [
       "func kimlikDogrula(token: String) -> Bool { !token.isEmpty }",
@@ -3567,7 +3737,28 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Sunucu şimdiye kadar hep dolu gönderdiği için alanı zorunlu saymak. Sözleşme 'olabilir' diyorsa bir gün boş gelir.",
       realWorldUse:
-        "API dokümanındaki 'nullable' işareti, istemcide varsayılan değer mi hata mesajı mı gösterileceğini belirleyen karardır."
+        "API dokümanındaki 'nullable' işareti, istemcide varsayılan değer mi hata mesajı mı gösterileceğini belirleyen karardır.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let ad: String? = nil"),
+          CodeLine(number: 2, text: "print(ad ?? \"Misafir\")"),
+        ],
+        choices: ["Misafir", "nil", "boş metin", "Optional(nil)"],
+        correctAnswer: "Misafir",
+        reveal:
+          "Sözleşme 'olmayabilir' diyorsa, olmadığı gün ne yazılacağına önceden karar vermiş olursun."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "struct KullaniciDTO { let ad: String? }"),
+          CodeLine(number: 2, text: "print(baslik(KullaniciDTO(ad: \"Ada\")))"),
+        ],
+        note:
+          "Aynı sözleşme hem dolu hem boş değerde tanımlıdır; kod ikisini birden karşılamak zorundadır."
+      ),
+      connection:
+        "25. derste değerin olmayabileceğini okudun; veri sözleşmesi bu ihtimali yazıya geçirir."
     ),
     code: [
       "struct KullaniciDTO { let ad: String? }",
@@ -3662,7 +3853,30 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Yalnızca değiştirilen dosyaya bakmak. Sözleşmeyi kullanan her çağrı noktası aynı değişiklikten etkilenir.",
       realWorldUse:
-        "Vergi oranı, ücret kuralı veya API alanı değişirken 'kimler bu sözleşmeye bağlı' sorusu değişikliğin gerçek kapsamını verir."
+        "Vergi oranı, ücret kuralı veya API alanı değişirken 'kimler bu sözleşmeye bağlı' sorusu değişikliğin gerçek kapsamını verir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "protocol V { func h() -> Int }"),
+          CodeLine(number: 2, text: "struct S: V { func h() -> Int { 20 } }"),
+          CodeLine(number: 3, text: "print(S().h())"),
+        ],
+        choices: ["20", "0", "V", "S"],
+        correctAnswer: "20",
+        reveal:
+          "Değeri veren somut tiptir; sözleşme değişirse onu kullanan her çağrı noktası etkilenir."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "struct YuzdeVergi: Vergi {"),
+          CodeLine(number: 2, text: "    func hesapla(fiyat: Int) -> Int { fiyat / 5 }"),
+          CodeLine(number: 3, text: "}"),
+        ],
+        note:
+          "Aynı sözleşmenin ikinci uygulaması: imza değişmediği için çağrı noktaları kırılmaz."
+      ),
+      connection:
+        "20. derste protokolün davranışı değiştirdiğini gördün; etki analizi o değişikliğin nereye yayıldığını sorar."
     ),
     code: [
       "protocol Vergi { func hesapla(fiyat: Int) -> Int }",
@@ -3772,7 +3986,29 @@ private let roadmapBlueprints: [RoadmapBlueprint] = [
       commonMistake:
         "Yalnızca onay yolunu planlayıp geçersiz girdi ile stok yokluğunu 'sonra bakarız' diye bırakmak. Bu iki yol da kullanıcı deneyiminin parçası.",
       realWorldUse:
-        "Sipariş, rezervasyon ve ödeme akışlarında her guard bir kabul kriterine, her kriter de bir teste karşılık gelir."
+        "Sipariş, rezervasyon ve ödeme akışlarında her guard bir kabul kriterine, her kriter de bir teste karşılık gelir.",
+      hook: TeachingHook(
+        question: "Sence bu kod ne yazar?",
+        code: [
+          CodeLine(number: 1, text: "let adet = 0"),
+          CodeLine(number: 2, text: "print(adet > 0 ? \"Onay\" : \"Geçersiz adet\")"),
+        ],
+        choices: ["Geçersiz adet", "Onay", "0", "Stok yok"],
+        correctAnswer: "Geçersiz adet",
+        reveal:
+          "Plan, onay yolundan önce geçersiz girdinin ne döndüreceğini söylemek zorundadır."
+      ),
+      microExample: MicroExample(
+        code: [
+          CodeLine(number: 1, text: "guard siparis.adet > 0 else { return \"Geçersiz adet\" }"),
+          CodeLine(
+            number: 2, text: "guard stok.varMi(adet: siparis.adet) else { return \"Stok yok\" }"),
+        ],
+        note:
+          "İki guard iki ayrı başarısızlık yolunu adlandırır; geriye tek bir mutlu yol kalır."
+      ),
+      connection:
+        "36–39. derslerde kriter, akış, sözleşme ve risk ayrı ayrı çalışıldı; burada dördü tek planda birleşiyor."
     ),
     code: [
       "struct Siparis { let adet: Int }",

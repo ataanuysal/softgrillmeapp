@@ -42,6 +42,11 @@ public struct ReadingLesson: Equatable, Sendable, Identifiable {
   public let difficulty: ReadingDifficulty
   public let estimatedMinutes: Int
   public let prerequisites: [String]
+  /// Bu kavramın uygulandığı kod okuma derslerinin kimlikleri.
+  ///
+  /// İki katmanı birbirine bağlar: kavramı okuyan öğrenci onu satır satır
+  /// çalışırken görebilsin diye. Boş bırakılabilir.
+  public let relatedCodeLessonIDs: [String]
   public let objectives: [String]
   public let status: ReadingStatus
   public let version: Int
@@ -60,6 +65,7 @@ public struct ReadingLesson: Equatable, Sendable, Identifiable {
     difficulty: ReadingDifficulty,
     estimatedMinutes: Int,
     prerequisites: [String],
+    relatedCodeLessonIDs: [String] = [],
     objectives: [String],
     status: ReadingStatus,
     version: Int,
@@ -77,6 +83,7 @@ public struct ReadingLesson: Equatable, Sendable, Identifiable {
     self.difficulty = difficulty
     self.estimatedMinutes = estimatedMinutes
     self.prerequisites = prerequisites
+    self.relatedCodeLessonIDs = relatedCodeLessonIDs
     self.objectives = objectives
     self.status = status
     self.version = version
@@ -275,6 +282,7 @@ public enum ReadingCurriculumError: Error, Equatable, CustomStringConvertible {
   case invalidField(path: String, field: String, value: String)
   case duplicateLessonID(String, paths: [String])
   case missingPrerequisite(lessonID: String, prerequisiteID: String)
+  case unknownCodeLesson(lessonID: String, codeLessonID: String)
 
   public var description: String {
     switch self {
@@ -288,6 +296,8 @@ public enum ReadingCurriculumError: Error, Equatable, CustomStringConvertible {
       return "Yinelenen ders kimliği '\(id)': \(paths.joined(separator: ", "))"
     case .missingPrerequisite(let lessonID, let prerequisiteID):
       return "\(lessonID) dersi var olmayan bir ön koşula işaret ediyor: \(prerequisiteID)"
+    case .unknownCodeLesson(let lessonID, let codeLessonID):
+      return "\(lessonID) dersi var olmayan bir kod okuma dersine bağlanıyor: \(codeLessonID)"
     }
   }
 }

@@ -444,6 +444,39 @@ struct RoadmapCurriculumTests {
     }
   }
 
+  @Test("Her ders tahmin adımı, mikro örnek ve önceki derse bağlantı taşır")
+  func everyLessonCarriesTheFullTeachingSet() {
+    for lesson in LessonCatalog.standard.lessons {
+      let teaching = lesson.teaching
+
+      #expect(
+        teaching.hook != nil,
+        Comment(rawValue: "\(lesson.id): anlatım öncesi tahmin yok")
+      )
+      #expect(
+        teaching.microExample != nil,
+        Comment(rawValue: "\(lesson.id): anlatım içinde mikro örnek yok")
+      )
+      #expect(
+        teaching.connection?.isEmpty == false || lesson.order == 1,
+        Comment(rawValue: "\(lesson.id): önceki derse bağlantı yok")
+      )
+    }
+  }
+
+  @Test("Tahmin seçenekleri doğru cevabı içerir ve çeldirici taşır")
+  func predictionHooksOfferRealChoices() {
+    for lesson in LessonCatalog.standard.lessons {
+      guard let hook = lesson.teaching.hook else { continue }
+
+      #expect(!hook.code.isEmpty)
+      #expect(hook.choices.count >= 2)
+      #expect(hook.choices.contains(hook.correctAnswer))
+      #expect(Set(hook.choices).count == hook.choices.count)
+      #expect(!hook.reveal.isEmpty)
+    }
+  }
+
   private var lessonsByID: [String: XRayLesson] {
     Dictionary(
       uniqueKeysWithValues: LessonCatalog.standard.lessons.map { ($0.id, $0) }

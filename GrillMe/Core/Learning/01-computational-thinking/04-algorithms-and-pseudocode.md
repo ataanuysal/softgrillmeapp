@@ -15,6 +15,9 @@ objectives:
   - Bir algoritmanın taşıması gereken dört özelliği uygulamak
   - Sıra, karar ve tekrar yapılarıyla pseudocode yazmak
   - Bir algoritmayı elle adım adım izlemek
+relatedCodeLessons:
+  - conditions
+  - loops
 status: published
 version: 1
 ---

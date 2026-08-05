@@ -15,6 +15,9 @@ objectives:
   - Bir problemi girdi, işlem ve çıktı olarak tanımlamak
   - Problemi bağımsız çözülebilir alt problemlere ayırmak
   - Parçalar arasındaki bağımlılığı görünür kılmak
+relatedCodeLessons:
+  - function-call
+  - parameters-return
 status: published
 version: 1
 ---

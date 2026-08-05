@@ -15,6 +15,9 @@ objectives:
   - Bir çözümün doğruluğunu uç durumlarla sınamak
   - Yanlışlayan bir örnek üretmek
   - İki çözümü iş miktarına göre karşılaştırmak
+relatedCodeLessons:
+  - edge-cases
+  - boundary-testing
 status: published
 version: 1
 ---

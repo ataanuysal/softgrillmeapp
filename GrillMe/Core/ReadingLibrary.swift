@@ -72,6 +72,21 @@ public enum ReadingLibrary {
       }
     }
 
+    // Çapraz bağlar da çözümlenmek zorunda: kırık bir bağ, kullanıcıyı hiçbir
+    // yere götürmeyen bir düğme demektir.
+    let codeLessonIDs = Set(LessonCatalog.standard.lessons.map(\.id))
+    for module in modules {
+      for lesson in module.lessons {
+        for codeLessonID in lesson.relatedCodeLessonIDs where !codeLessonIDs.contains(codeLessonID)
+        {
+          throw ReadingCurriculumError.unknownCodeLesson(
+            lessonID: lesson.id,
+            codeLessonID: codeLessonID
+          )
+        }
+      }
+    }
+
     return ReadingCourse(
       id: courseID,
       title: courseTitle,
@@ -173,6 +188,7 @@ public enum ReadingLibrary {
       difficulty: difficulty,
       estimatedMinutes: try requiredInt(fields, "estimatedMinutes", path),
       prerequisites: fields["prerequisites"]?.listValue ?? [],
+      relatedCodeLessonIDs: fields["relatedCodeLessons"]?.listValue ?? [],
       objectives: fields["objectives"]?.listValue ?? [],
       status: try requiredStatus(fields, path: path),
       version: fields["version"]?.intValue ?? 1,

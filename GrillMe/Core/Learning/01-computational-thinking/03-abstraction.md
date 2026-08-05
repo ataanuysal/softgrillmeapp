@@ -15,6 +15,9 @@ objectives:
   - Bir problemde hangi ayrıntının önemli olduğuna karar vermek
   - Arayüz ile uygulamayı birbirinden ayırmak
   - İsimlendirmeyi soyutlamanın parçası olarak kullanmak
+relatedCodeLessons:
+  - scope
+  - pure-side-effects
 status: published
 version: 1
 ---
