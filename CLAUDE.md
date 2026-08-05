@@ -106,8 +106,11 @@ klasörler içerik sayılmaz.
 - **`id` değişmezdir.** Kullanıcı ilerlemesi dosya yoluna değil bu kimliğe
   bağlıdır; başlık veya dosya adı serbestçe değişebilir, `id` değişirse o dersi
   okumuş herkesin ilerlemesi kaybolur.
-- Yinelenen `id` ve var olmayan `prerequisites` referansı `ReadingLibrary`
-  yüklemesinde hata verir; `ReadingCurriculumTests` bunu zorunlu kılar.
+- Yinelenen `id`, var olmayan `prerequisites` ve çözümlenmeyen
+  `relatedCodeLessons` referansı `ReadingLibrary` yüklemesinde hata verir;
+  `ReadingCurriculumTests` bunu zorunlu kılar. `relatedCodeLessons` bir kavram
+  dersini kod okuma dersine bağlar ve `LessonCatalog.standard` kimliklerine
+  işaret etmek zorundadır.
 - Yalnızca `status: published` içerik gösterilir. `draft` hiç görünmez,
   `comingSoon` modül "Yakında" satırı olur ve açılamaz.
 - `ReadingSession`: anlatım → alıştırmalar → tamamlandı. Alıştırmalar
@@ -129,6 +132,8 @@ testi de günceller. Aynı paket üç içerik sözleşmesini de zorunlu kılar:
 
 - Her ders kendi `LessonTeaching` metnini taşır; iki ders aynı "sık hata" veya
   "gerçek projede" cümlesini paylaşamaz.
+- Her ders `hook` (anlatım öncesi tahmin), `microExample` ve `connection`
+  taşır; ilk ders dışında bağlantı boş bırakılamaz.
 - Birden fazla değer izleyen her ders en az üç farklı bellek durumundan geçer.
 - Hiçbir ders 4 satırdan kısa değildir; debugging bölümü en az 6 satır taşır.
   Doğru çalışan bir derse hata avı eklerken `debugCode` ile ayrı bir bozuk

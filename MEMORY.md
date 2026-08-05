@@ -32,8 +32,9 @@ hata bağlamını rehberli örnekte gösterir; en son farklı kodlu quiz açıl�
 - Kod okuma derslerinin yanında bir **okuma katmanı** vardır: Kavram Kitaplığı.
   İçeriği `GrillMe/Core/Learning` altında Markdown olarak durur, Swift'e
   kopyalanmaz ve aynı İçindekiler sekmesinden açılır — paralel bir kurs sistemi
-  kurulmadı. İlk yayında iki modül açıktır (Yönelim 3 ders, Hesaplamalı Düşünme
-  5 ders); 02–14 arası modüller `comingSoon`.
+  kurulmadı. Üç modül açıktır (Yönelim 3, Hesaplamalı Düşünme 5, Programlamanın
+  Temelleri 7 — toplam 15 ders); 03–14 arası modüller `comingSoon`. Kavram
+  dersleri `relatedCodeLessons` ile kod okuma derslerine bağlanır.
 - Okuma ilerlemesi ayrı sayaçtır (`readingCompletions`). Kod okuma ölçümlerine
   (quiz doğruluğu, pratik yüzdesi, rubrik puanı) ve "40 ders" toplamına
   karışmaz.

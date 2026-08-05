@@ -63,7 +63,7 @@ Bir modülü bitirmeden sonrakine geçme. Sıra rastgele değil: her modül bir
 | --- | --- | --- |
 | 00 | [Yönelim ve Çalışma Yöntemi](./00-orientation/README.md) | Yayında |
 | 01 | [Hesaplamalı Düşünme](./01-computational-thinking/README.md) | Yayında |
-| 02 | [Programlamanın Temelleri](./02-programming-fundamentals/README.md) | Planlandı |
+| 02 | [Programlamanın Temelleri](./02-programming-fundamentals/README.md) | Yayında |
 | 03 | [Program Tasarımı](./03-program-design/README.md) | Planlandı |
 | 04 | [Veri Yapıları ve Algoritmalar](./04-data-structures-and-algorithms/README.md) | Planlandı |
 | 05 | [Bilgisayar Mimarisi](./05-computer-architecture/README.md) | Planlandı |

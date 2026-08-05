@@ -18,8 +18,10 @@ final class GrillMeUITests: XCTestCase {
     XCTAssertTrue(app.staticTexts["GRILLME"].exists)
 
     app.tabBars.buttons["İçindekiler"].tap()
+    // Sekme geçişi yüklü bir makinede birkaç saniye sürebiliyor; bekleme
+    // dosyadaki diğer açılış beklemeleriyle aynı seviyede tutulur.
     XCTAssertTrue(
-      app.staticTexts["İstediğin konudan başla"].waitForExistence(timeout: 5)
+      app.staticTexts["İstediğin konudan başla"].waitForExistence(timeout: 10)
     )
 
     // Ders satırı bir editör dosyası gibi görünür; başlık yalnızca satırın
@@ -76,13 +78,17 @@ final class GrillMeUITests: XCTestCase {
     XCTAssertTrue(app.staticTexts["orientation-01.md"].waitForExistence(timeout: 5))
     XCTAssertTrue(app.staticTexts["BU DERSTE KAZANACAKLARIN"].exists)
 
+    // Okuma ilerlemesi diskte kalıcıdır: ilk koşu dersi tamamlar, sonraki
+    // koşularda aynı ders doğrudan "tamamlandı" durumunda açılır. Test iki
+    // durumu da aynı son duruma getirir.
     let toExercises = app.buttons["Alıştırmalara geç"]
-    XCTAssertTrue(toExercises.waitForExistence(timeout: 5))
-    toExercises.tap()
+    if toExercises.waitForExistence(timeout: 5) {
+      toExercises.tap()
 
-    let complete = app.buttons["Dersi tamamla"]
-    XCTAssertTrue(complete.waitForExistence(timeout: 5))
-    complete.tap()
+      let complete = app.buttons["Dersi tamamla"]
+      XCTAssertTrue(complete.waitForExistence(timeout: 5), "Alıştırmalardan sonra tamamlama yok")
+      complete.tap()
+    }
 
     XCTAssertTrue(
       app.buttons

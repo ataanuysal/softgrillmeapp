@@ -13,7 +13,7 @@ struct ReadingCurriculumTests {
 
     #expect(course.id == "software-engineering-fundamentals")
     #expect(!course.modules.isEmpty)
-    #expect(course.publishedLessons.count == 8)
+    #expect(course.publishedLessons.count == 15)
   }
 
   @Test("Front matter alanları derse doğru aktarılır")
@@ -42,7 +42,9 @@ struct ReadingCurriculumTests {
     #expect(course.modules.first?.id == "orientation")
 
     let openModuleIDs = course.modules.filter(\.isOpen).map(\.id)
-    #expect(openModuleIDs == ["orientation", "computational-thinking"])
+    #expect(
+      openModuleIDs == ["orientation", "computational-thinking", "programming-fundamentals"]
+    )
 
     let computational = try #require(course.modules.first { $0.id == "computational-thinking" })
     #expect(computational.publishedLessons.map(\.lessonOrder) == [1, 2, 3, 4, 5])
@@ -53,6 +55,10 @@ struct ReadingCurriculumTests {
         "computational-thinking-01", "computational-thinking-02",
         "computational-thinking-03", "computational-thinking-04",
         "computational-thinking-05",
+        "programming-fundamentals-01", "programming-fundamentals-02",
+        "programming-fundamentals-03", "programming-fundamentals-04",
+        "programming-fundamentals-05", "programming-fundamentals-06",
+        "programming-fundamentals-07",
       ]
     )
   }
@@ -100,7 +106,9 @@ struct ReadingCurriculumTests {
     // Modül sınırını da geçer.
     #expect(course.nextLesson(after: "orientation-03")?.id == "computational-thinking-01")
     #expect(course.previousLesson(before: "computational-thinking-01")?.id == "orientation-03")
-    #expect(course.nextLesson(after: "computational-thinking-05") == nil)
+    #expect(
+      course.nextLesson(after: "computational-thinking-05")?.id == "programming-fundamentals-01")
+    #expect(course.nextLesson(after: "programming-fundamentals-07") == nil)
   }
 
   @Test("Yayında olmayan modüllerin dersi kullanıcıya gösterilmez")
@@ -111,7 +119,7 @@ struct ReadingCurriculumTests {
     #expect(course.visibleModules.allSatisfy { $0.status != .draft })
 
     let comingSoon = course.modules.filter { $0.status == .comingSoon }
-    #expect(comingSoon.count == 13)
+    #expect(comingSoon.count == 12)
     #expect(comingSoon.allSatisfy { !$0.isOpen })
     #expect(comingSoon.allSatisfy { $0.publishedLessons.isEmpty })
   }

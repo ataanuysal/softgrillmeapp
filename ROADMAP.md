@@ -227,6 +227,8 @@ Bu aşama yeni özellik değil, mevcut vaatlerin kapsama derinliğidir.
 - ✅ 33 dersin şablon yürütme izi kaldırıldı; izler elle yazılıyor ve 40 dersin
   38'i en az üç farklı bellek durumundan geçiyor.
 - ✅ Konu anlatımı ders başına yazılıyor; 40 derste 40 farklı "sık hata" metni.
+- ✅ 40 dersin tamamı anlatım öncesi tahmin, anlatım içinde mikro örnek ve
+  önceki derse bağlantı taşıyor (29/40 → 40/40), iki testle korunuyor.
 - ✅ Mentor akış kararı `MentorCoordinator` ile çekirdeğe taşındı ve test edildi.
 - ✅ Bütün quizler dört seçenekli; çeldiriciler tipik yanlış zihinsel modelden
   türetildi.
@@ -238,7 +240,9 @@ Bu aşama yeni özellik değil, mevcut vaatlerin kapsama derinliğidir.
 - 🚧 Ders kodu uzunluğunu çıkış değerlendirmesinin 20 satırına kademeli olarak
   taşımak — taban 2'den 4 satıra, ortanca 5'ten 6'ya çıktı ve testle korunuyor;
   hata avcılığı bölümü 2–4 satırdan 6–8 satıra taşındı. Kademeli merdiven
-  (bölüm ilerledikçe artan uzunluk) henüz yok.
+  (bölüm ilerledikçe artan uzunluk) hâlâ yok: bunun için 28 dersin kodu ve elle
+  yazılmış yürütme izi birlikte yeniden yazılmalı. Salt satır sayısı için
+  doldurma yapılmayacak.
 - ✅ Dil karşılaştırması temeller bölümünün tamamında (5 ders, dört dil).
 - ✅ Pratik bölüm başına en az bir derste (18/40 ders, testle korunuyor).
 - 🚧 Hata avcılığı altı bölüme yayıldı (11/40); asenkron, uygulama mimarisi ve
@@ -262,11 +266,13 @@ oluyor" sorusunu cevaplıyordu; bu katman "neden böyle" sorusunu cevaplar.
   alıştırmalar görülmeden ders kapanmıyor.
 - ✅ İlerleme kararlı ders kimliğine bağlı ve ayrı sayaçta; kod okuma ölçümleri
   etkilenmiyor.
-- ✅ Yayında iki modül: Yönelim (3 ders) ve Hesaplamalı Düşünme (5 ders).
-- 🚧 02–14 arası 13 modül yalnızca kapsam beyanı taşıyor ve `comingSoon`
+- ✅ Yayında üç modül: Yönelim (3 ders), Hesaplamalı Düşünme (5 ders) ve
+  Programlamanın Temelleri (7 ders) — toplam 15 kavram dersi.
+- ✅ Okuma katmanı kod okuma dersleriyle çapraz bağlı; `relatedCodeLessons`
+  çözümlenmezse içerik yüklenmiyor.
+- ✅ Kavram Kitaplığı hem İçindekiler hem Yol Haritası sekmesinden açılıyor.
+- 🚧 03–14 arası 12 modül yalnızca kapsam beyanı taşıyor ve `comingSoon`
   durumunda; dersleri yazılmadı.
-- ⏳ Okuma katmanının kod okuma dersleriyle çapraz bağlanması (bir kavram
-  dersinden ilgili kod okuma dersine geçiş).
 
 Kabul ölçütü: yalnızca `status: published` içerik kullanıcıya görünür ve içerik
 sözleşmeleri testle korunur.

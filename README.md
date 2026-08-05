@@ -59,7 +59,8 @@ derinleştiğini olduğu gibi gösterir.
 | --- | ---: | --- |
 | 00 · Yönelim ve Çalışma Yöntemi | 3 | Yayında |
 | 01 · Hesaplamalı Düşünme | 5 | Yayında |
-| 02–14 (temeller, tasarım, veri yapıları, mimari, işletim sistemleri, veritabanları, ağlar, mühendislik, test, güvenlik, dağıtık sistemler, bitirme) | — | Yakında |
+| 02 · Programlamanın Temelleri | 7 | Yayında |
+| 03–14 (tasarım, veri yapıları, mimari, işletim sistemleri, veritabanları, ağlar, mühendislik, test, güvenlik, dağıtık sistemler, bitirme) | — | Yakında |
 
 - İçerik `GrillMe/Core/Learning` altında Markdown olarak durur; Swift koduna
   kopyalanmaz, uygulama paketine klasör olarak kopyalanır
@@ -68,11 +69,14 @@ derinleştiğini olduğu gibi gösterir.
   görülmeden ders kapanmaz
 - Yalnızca `status: published` içerik gösterilir; yazılmamış modüller "Yakında"
   satırı olarak görünür ve açılamaz
+- Kavram dersleri ilgili kod okuma derslerine bağlanır; bağ çözümlenmezse
+  içerik hiç yüklenmez
 
 ### Bir kısım derste var
 
 | Yetenek | Ders sayısı |
 | --- | ---: |
+| Anlatım öncesi tahmin, mikro örnek ve önceki derse bağlantı | 40 / 40 |
 | Hipotez zorunlu hata avcılığı | 11 / 40 (altı bölümde) |
 | Pratik soruları | 18 / 40 (her bölümde en az bir ders) |
 | Rubrikli açık uçlu değerlendirme | 2 / 40 |
@@ -119,7 +123,7 @@ pratik sorusu var.
   yüzdesi ve rubrik puanı bundan etkilenmez
 - Uygulama açılışı, iki ana sekme, derse giriş ve kavram kitaplığı akışı için
   gerçek XCUITest hedefi
-- Format, 159 çekirdek test, uygulama derlemesi ve UI duman testlerini
+- Format, 164 çekirdek test, uygulama derlemesi ve UI duman testlerini
   çalıştıran CI
 
 ## Gereksinimler
